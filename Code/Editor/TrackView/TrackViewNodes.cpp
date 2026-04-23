@@ -36,6 +36,7 @@
 #include <AzQtComponents/Components/InputDialog.h>
 #include <AzQtComponents/Components/Widgets/ColorPicker.h>
 #include <AzQtComponents/Components/Widgets/FileDialog.h>
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 // CryCommon
 #include <CryCommon/Maestro/Bus/EditorSequenceComponentBus.h>
@@ -366,6 +367,10 @@ CTrackViewNodesCtrl::CTrackViewNodesCtrl(QWidget* hParentWnd, CTrackViewDialog* 
     ui->searchField->hide();
     ui->searchCount->hide();
     ui->searchField->installEventFilter(this);
+
+    ui->searchField->setPlaceholderText(tr("Search..."));
+    ui->searchField->setClearButtonEnabled(true);
+    AzQtComponents::LineEdit::applySearchStyle(ui->searchField);
 
     ui->treeWidget->setController(this);
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
