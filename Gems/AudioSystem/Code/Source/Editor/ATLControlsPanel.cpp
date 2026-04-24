@@ -6,11 +6,11 @@
  *
  */
 
-
 #include <ATLControlsPanel.h>
 
 #include <AzCore/StringFunc/StringFunc.h>
 #include <AzQtComponents/Components/Style.h>
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 #include <ACEEnums.h>
 #include <ATLControlsModel.h>
@@ -20,20 +20,19 @@
 #include <IAudioSystemEditor.h>
 #include <QAudioControlEditorIcons.h>
 
-#include <QWidgetAction>
-#include <QPushButton>
-#include <QPaintEvent>
-#include <QPainter>
+#include <QCoreApplication>
+#include <QIcon>
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QKeyEvent>
-#include <QSortFilterProxyModel>
 #include <QModelIndex>
-#include <QCoreApplication>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QSortFilterProxyModel>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QWidgetAction>
-#include <QIcon>
 
 namespace AudioControls
 {
@@ -106,6 +105,10 @@ namespace AudioControls
     {
         setupUi(this);
 
+        m_pTextFilter->setPlaceholderText(tr("Search..."));
+        m_pTextFilter->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(m_pTextFilter);
+
         m_pATLControlsTree->installEventFilter(this);
         m_pATLControlsTree->viewport()->installEventFilter(this);
 
@@ -126,7 +129,7 @@ namespace AudioControls
         // ************ Filtering ************
         for (int i = 0; i < eACET_NUM_TYPES; ++i)
         {
-            EACEControlType type = ( EACEControlType )i;
+            EACEControlType type = (EACEControlType)i;
             QWidgetAction* pWidgetAction = new QWidgetAction(this);
 
             m_pControlTypeFilterButtons[type] = new QFilterButton(GetControlTypeIcon(type), "", this);
@@ -176,8 +179,16 @@ namespace AudioControls
         connect(pAction, SIGNAL(triggered()), this, SLOT(DeleteSelectedControl()));
         m_pATLControlsTree->addAction(pAction);
 
-        connect(m_pATLControlsTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SIGNAL(SelectedControlChanged()));
-        connect(m_pATLControlsTree->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(StopControlExecution()));
+        connect(
+            m_pATLControlsTree->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+            this,
+            SIGNAL(SelectedControlChanged()));
+        connect(
+            m_pATLControlsTree->selectionModel(),
+            SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
+            this,
+            SLOT(StopControlExecution()));
         connect(m_pTreeModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(ItemModified(QStandardItem*)));
     }
 
@@ -552,7 +563,9 @@ namespace AudioControls
 
             if (!pParent)
             {
-                AZ_Assert(pControl->GetType() != eACET_SWITCH_STATE, "AddControl - SwitchState control being added needs to be placed under a suitable parent (Switch)");
+                AZ_Assert(
+                    pControl->GetType() != eACET_SWITCH_STATE,
+                    "AddControl - SwitchState control being added needs to be placed under a suitable parent (Switch)");
                 pParent = CreateFolder();
             }
 
@@ -595,12 +608,14 @@ namespace AudioControls
         contextMenu.addMenu(&addMenu);
 
         QAction* pAction = new QAction(tr("Rename"), this);
-        connect(pAction, &QAction::triggered, m_pATLControlsTree,
+        connect(
+            pAction,
+            &QAction::triggered,
+            m_pATLControlsTree,
             [&]()
             {
                 m_pATLControlsTree->edit(m_pATLControlsTree->currentIndex());
-            }
-        );
+            });
         contextMenu.addAction(pAction);
 
         pAction = new QAction(tr("Delete"), this);
@@ -715,7 +730,8 @@ namespace AudioControls
             QModelIndex index = m_pTreeModel->indexFromItem(pItem);
             if (index.isValid())
             {
-                m_pATLControlsTree->selectionModel()->setCurrentIndex(m_pProxyModel->mapFromSource(index), QItemSelectionModel::ClearAndSelect);
+                m_pATLControlsTree->selectionModel()->setCurrentIndex(
+                    m_pProxyModel->mapFromSource(index), QItemSelectionModel::ClearAndSelect);
             }
         }
     }
@@ -741,7 +757,7 @@ namespace AudioControls
                 while (!stream.atEnd())
                 {
                     int row, col;
-                    QMap<int,  QVariant> roleDataMap;
+                    QMap<int, QVariant> roleDataMap;
                     stream >> row >> col >> roleDataMap;
                     if (!roleDataMap.isEmpty())
                     {
@@ -781,8 +797,10 @@ namespace AudioControls
                                     }
                                     else
                                     {
-                                        // If place where item was dropped is not valid as a parent, we have to look for a valid control where to create one that is
-                                        const EACEControlType eParentType = pAudioSystemEditorImpl->ImplTypeToATLType(pAudioControlParent->GetType());
+                                        // If place where item was dropped is not valid as a parent, we have to look for a valid control
+                                        // where to create one that is
+                                        const EACEControlType eParentType =
+                                            pAudioSystemEditorImpl->ImplTypeToATLType(pAudioControlParent->GetType());
                                         QStandardItem* pParent = pTargetItem;
                                         while (pParent && !IsValidParent(pParent, eParentType))
                                         {
@@ -807,7 +825,7 @@ namespace AudioControls
 
                                 // Create the new control and connect it to the one dragged in externally
                                 AZStd::string sControlName(roleDataMap[Qt::DisplayRole].toString().toUtf8().data());
-                                if (eControlType  == eACET_PRELOAD)
+                                if (eControlType == eACET_PRELOAD)
                                 {
                                     AZ::StringFunc::Path::StripExtension(sControlName);
                                 }
@@ -829,7 +847,8 @@ namespace AudioControls
                                 CATLControl* pTargetControl2 = m_pTreeModel->CreateControl(eControlType, sControlName, pATLParent);
                                 if (pTargetControl2)
                                 {
-                                    TConnectionPtr pAudioConnection = pAudioSystemEditorImpl->CreateConnectionToControl(pTargetControl2->GetType(), pAudioSystemControl);
+                                    TConnectionPtr pAudioConnection =
+                                        pAudioSystemEditorImpl->CreateConnectionToControl(pTargetControl2->GetType(), pAudioSystemControl);
                                     if (pAudioConnection)
                                     {
                                         pTargetControl2->AddConnection(pAudioConnection);
