@@ -6,8 +6,9 @@
  *
  */
 
-
 #include <AudioSystemPanel.h>
+
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 #include <ATLControlsModel.h>
 #include <AudioControl.h>
@@ -15,12 +16,12 @@
 #include <IAudioSystemEditor.h>
 #include <QAudioControlEditorIcons.h>
 
-#include <QWidgetAction>
-#include <QPushButton>
-#include <QPaintEvent>
-#include <QPainter>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QWidgetAction>
 
 namespace AudioControls
 {
@@ -28,6 +29,10 @@ namespace AudioControls
     CAudioSystemPanel::CAudioSystemPanel()
     {
         setupUi(this);
+
+        m_pExternalListFilter->setPlaceholderText(tr("Search..."));
+        m_pExternalListFilter->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(m_pExternalListFilter);
 
         m_filter.SetTree(m_pControlList);
         m_filter.AddFilter(&m_nameFilter);
