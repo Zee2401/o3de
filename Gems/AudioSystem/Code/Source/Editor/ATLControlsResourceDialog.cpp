@@ -9,6 +9,8 @@
 
 #include <ATLControlsResourceDialog.h>
 
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <AzCore/StringFunc/StringFunc.h>
 
 #include <ACEEnums.h>
@@ -41,6 +43,8 @@ namespace AudioControls
         m_TextFilterLineEdit = new QLineEdit(this);
         m_TextFilterLineEdit->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
         m_TextFilterLineEdit->setPlaceholderText(QApplication::translate("ATLControlsPanel", "Search", 0));
+        m_TextFilterLineEdit->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(m_TextFilterLineEdit);
         connect(m_TextFilterLineEdit, &QLineEdit::textChanged, this, &ATLControlsDialog::SetTextFilter);
         connect(m_TextFilterLineEdit, &QLineEdit::returnPressed, this, &ATLControlsDialog::EnterPressed);
         pLayout->addWidget(m_TextFilterLineEdit, 0);
