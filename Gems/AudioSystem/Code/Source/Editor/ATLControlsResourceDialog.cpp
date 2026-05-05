@@ -81,7 +81,7 @@ namespace AudioControls
             SLOT(UpdateSelectedControl()));
         ApplyFilter();
         UpdateSelectedControl();
-        m_pControlTree->setFocus();
+        m_TextFilterLineEdit->setFocus();
 
         m_pControlTree->installEventFilter(this);
         m_pControlTree->viewport()->installEventFilter(this);

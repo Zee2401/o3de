@@ -234,7 +234,6 @@ if (PAL_TRAIT_BUILD_HOST_TOOLS)
                 Legacy::CryCommon   # Temporary, needs to be removed
             PRIVATE
                 Gem::${gem_name}.Private.Object
-                AZ::AzQtComponents
                 3rdParty::Qt::Core
                 3rdParty::Qt::Widgets
                 3rdParty::Qt::Gui
