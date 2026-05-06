@@ -6,6 +6,7 @@
  *
  */
 
+
 #include <ATLControlsResourceDialog.h>
 
 #include <AzCore/StringFunc/StringFunc.h>
@@ -16,12 +17,12 @@
 #include <AudioControlsEditorPlugin.h>
 #include <QAudioControlTreeWidget.h>
 
-#include <QApplication>
-#include <QBoxLayout>
 #include <QDialogButtonBox>
+#include <QBoxLayout>
+#include <QApplication>
 #include <QHeaderView>
-#include <QPushButton>
 #include <QStandardItemModel>
+#include <QPushButton>
 
 namespace AudioControls
 {
@@ -74,11 +75,7 @@ namespace AudioControls
         connect(pDialogButtons, SIGNAL(rejected()), this, SLOT(reject()));
         pLayout->addWidget(pDialogButtons, 0);
 
-        connect(
-            m_pControlTree->selectionModel(),
-            SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-            this,
-            SLOT(UpdateSelectedControl()));
+        connect(m_pControlTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(UpdateSelectedControl()));
         ApplyFilter();
         UpdateSelectedControl();
         m_pControlTree->setFocus();
@@ -87,8 +84,7 @@ namespace AudioControls
         m_pControlTree->viewport()->installEventFilter(this);
         m_TextFilterLineEdit->installEventFilter(this);
 
-        connect(
-            m_pControlTree->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(StopTrigger()));
+        connect(m_pControlTree->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(StopTrigger()));
     }
 
     //-------------------------------------------------------------------------------------------//
@@ -288,8 +284,7 @@ namespace AudioControls
     {
         if (m_pTreeModel && m_pATLModel)
         {
-            QModelIndexList indexes = m_pTreeModel->match(
-                m_pTreeModel->index(0, 0, QModelIndex()), Qt::DisplayRole, QString(sControlName.data()), -1, Qt::MatchRecursive);
+            QModelIndexList indexes = m_pTreeModel->match(m_pTreeModel->index(0, 0, QModelIndex()), Qt::DisplayRole, QString(sControlName.data()), -1, Qt::MatchRecursive);
             if (!indexes.empty())
             {
                 const int size = indexes.size();
