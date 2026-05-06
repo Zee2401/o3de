@@ -17,6 +17,9 @@
 #include <QMessageBox>
 #include <QScopedValueRollback>
 #include <QLineEdit>
+
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <QTimer>
 #include <QPushButton>
 #include <QHeaderView>
@@ -353,6 +356,7 @@ namespace ScriptCanvasEditor
         QObject::connect(ui->graphVariables, &QWidget::customContextMenuRequested, this, &VariableDockWidget::OnContextMenuRequested);
 
         ui->searchFilter->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(ui->searchFilter);
         QObject::connect(ui->searchFilter, &QLineEdit::textChanged, this, &VariableDockWidget::OnQuickFilterChanged);
         QObject::connect(ui->searchFilter, &QLineEdit::returnPressed, this, &VariableDockWidget::OnReturnPressed);
 

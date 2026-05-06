@@ -8,6 +8,9 @@
 
 #include <QEvent>
 #include <QLineEdit>
+
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <QListView>
 #include <QWidgetAction>
 #include <QKeyEvent>
@@ -265,6 +268,9 @@ namespace ScriptCanvasEditor
         m_listWidget = new Ui::EBusHandlerActionListWidget();
         
         m_listWidget->setupUi(listWidget);
+
+        m_listWidget->searchFilter->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(m_listWidget->searchFilter);
         
         actionWidget->setDefaultWidget(listWidget);
         
