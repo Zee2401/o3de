@@ -271,6 +271,7 @@ if(SCRIPTCANVAS_BUILD_STANDALONE_APPLICATION)
             PRIVATE
                 AZ::AzCore
                 AZ::AzToolsFramework
+                AZ::AzQtComponents
                 Legacy::EditorCore
                 Gem::${gem_name}.Editor
                 Gem::${gem_name}.Editor.Static
