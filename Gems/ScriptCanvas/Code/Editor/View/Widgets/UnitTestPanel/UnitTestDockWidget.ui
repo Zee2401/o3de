@@ -156,6 +156,9 @@
                     </item>
                     <item alignment="Qt::AlignRight">
                       <widget class="QPushButton" name="closeResults">
+                        <property name="accessibleName">
+                          <string>Close Frame</string>
+                        </property>
                         <property name="toolTip">
                           <string>Close Frame</string>
                         </property>
