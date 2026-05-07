@@ -8,9 +8,7 @@
 
 #include <QEvent>
 #include <QLineEdit>
-
 #include <AzQtComponents/Components/Widgets/LineEdit.h>
-
 #include <QListView>
 #include <QWidgetAction>
 #include <QKeyEvent>

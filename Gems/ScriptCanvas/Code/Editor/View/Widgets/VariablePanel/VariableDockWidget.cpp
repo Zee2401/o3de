@@ -17,9 +17,7 @@
 #include <QMessageBox>
 #include <QScopedValueRollback>
 #include <QLineEdit>
-
 #include <AzQtComponents/Components/Widgets/LineEdit.h>
-
 #include <QTimer>
 #include <QPushButton>
 #include <QHeaderView>
