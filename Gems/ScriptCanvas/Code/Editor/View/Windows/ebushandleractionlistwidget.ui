@@ -25,6 +25,9 @@
      <property name="placeholderText">
       <string>Search...</string>
      </property>
+     <property name="accessibleName">
+      <string>Search</string>
+     </property>
     </widget>
    </item>
    <item>
