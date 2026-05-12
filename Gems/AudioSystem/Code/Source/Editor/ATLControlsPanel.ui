@@ -37,6 +37,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="1,0,0">
      <item>
       <widget class="QLineEdit" name="m_pTextFilter">
+       <property name="accessibleName">
+        <string>Search</string>
+       </property>
        <property name="toolTip">
         <string>Show only controls with this name</string>
        </property>

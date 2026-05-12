@@ -32,7 +32,6 @@ namespace AudioControls
 
         m_pExternalListFilter->setPlaceholderText(tr("Search..."));
         m_pExternalListFilter->setClearButtonEnabled(true);
-        m_pExternalListFilter->setAccessibleName(tr("Search"));
         AzQtComponents::LineEdit::applySearchStyle(m_pExternalListFilter);
 
         m_filter.SetTree(m_pControlList);

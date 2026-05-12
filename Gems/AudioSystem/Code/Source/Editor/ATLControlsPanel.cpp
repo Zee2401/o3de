@@ -107,7 +107,6 @@ namespace AudioControls
 
         m_pTextFilter->setPlaceholderText(tr("Search..."));
         m_pTextFilter->setClearButtonEnabled(true);
-        m_pTextFilter->setAccessibleName(tr("Search"));
         AzQtComponents::LineEdit::applySearchStyle(m_pTextFilter);
 
         m_pATLControlsTree->installEventFilter(this);
