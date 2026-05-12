@@ -6,15 +6,14 @@
  *
  */
 
-
-#include "EditorDefs.h"
-#include "Editor/Resource.h"
-#include "UiEditorAnimationBus.h"
 #include "UiAnimViewNodes.h"
+#include "Editor/Resource.h"
+#include "EditorDefs.h"
+#include "UiAVEventsDialog.h"
+#include "UiAnimViewDialog.h"
 #include "UiAnimViewDopeSheetBase.h"
 #include "UiAnimViewUndo.h"
-#include "UiAnimViewDialog.h"
-#include "UiAVEventsDialog.h"
+#include "UiEditorAnimationBus.h"
 
 #include "Clipboard.h"
 
@@ -23,23 +22,24 @@
 #include "ViewManager.h"
 #include <Editor/Util/fastlib.h>
 
-#include "QtUtilWin.h"
 #include "QtUtil.h"
+#include "QtUtilWin.h"
 
+#include <QCompleter>
+#include <QDebug>
+#include <QDragMoveEvent>
 #include <QHeaderView>
-#include <QVBoxLayout>
 #include <QLineEdit>
 #include <QMenu>
-#include <QDragMoveEvent>
 #include <QMimeData>
-#include <QDebug>
-#include <QTreeWidget>
-#include <QCompleter>
-#include <QStyledItemDelegate>
-#include <QStyleOptionViewItem>
 #include <QScrollBar>
+#include <QStyleOptionViewItem>
+#include <QStyledItemDelegate>
+#include <QTreeWidget>
+#include <QVBoxLayout>
 
 #include <AzQtComponents/Components/Widgets/ColorPicker.h>
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 #include <AzQtComponents/Utilities/Conversions.h>
 
 CUiAnimViewNodesCtrl::CRecord::CRecord(CUiAnimViewNode* pNode /*= nullptr*/)
@@ -54,13 +54,13 @@ CUiAnimViewNodesCtrl::CRecord::CRecord(CUiAnimViewNode* pNode /*= nullptr*/)
     }
 }
 
-class CUiAnimViewNodesCtrlDelegate
-    : public QStyledItemDelegate
+class CUiAnimViewNodesCtrlDelegate : public QStyledItemDelegate
 {
 public:
     CUiAnimViewNodesCtrlDelegate(QObject* parent = nullptr)
         : QStyledItemDelegate(parent)
-    {}
+    {
+    }
 
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
     {
@@ -74,9 +74,7 @@ public:
     }
 };
 
-
-class CUiAnimViewNodesTreeWidget
-    : public QTreeWidget
+class CUiAnimViewNodesTreeWidget : public QTreeWidget
 {
 public:
     CUiAnimViewNodesTreeWidget(QWidget* parent)
@@ -121,10 +119,9 @@ protected:
         QTreeWidget::keyPressEvent(event);
     }
 
-
     bool focusNextPrevChild([[maybe_unused]] bool next)
     {
-        return false;   // so we get the tab key
+        return false; // so we get the tab key
     }
 
 private:
@@ -153,22 +150,20 @@ private:
         return nodes;
     }
 
-    CUiAnimViewNodesCtrl*   m_controller;
+    CUiAnimViewNodesCtrl* m_controller;
 };
 
 QDataStream& operator<<(QDataStream& out, const CUiAnimViewNodePtr& obj)
 {
-    out.writeRawData((const char*) &obj, sizeof(obj));
+    out.writeRawData((const char*)&obj, sizeof(obj));
     return out;
 }
 
 QDataStream& operator>>(QDataStream& in, CUiAnimViewNodePtr& obj)
 {
-    in.readRawData((char*) &obj, sizeof(obj));
+    in.readRawData((char*)&obj, sizeof(obj));
     return in;
 }
-
-
 
 enum EMenuItem
 {
@@ -222,7 +217,6 @@ enum EMenuItem
 
 #include <Editor/Animation/ui_UiAnimViewNodes.h>
 
-
 //////////////////////////////////////////////////////////////////////////
 CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialog* parent /* = 0 */)
     : QWidget(hParentWnd)
@@ -243,6 +237,11 @@ CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialo
     ui->treeWidget->hide();
     ui->searchField->hide();
     ui->searchCount->hide();
+
+    ui->searchField->setPlaceholderText(tr("Search..."));
+    ui->searchField->setClearButtonEnabled(true);
+    AzQtComponents::LineEdit::applySearchStyle(ui->searchField);
+    ui->searchField->setAccessibleName(tr("Search nodes"));
     ui->searchField->installEventFilter(this);
 
     ui->treeWidget->setController(this);
@@ -270,8 +269,10 @@ CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialo
     QAction* action = new QAction(QString("Delete"), this);
     action->setShortcut(QKeySequence::Delete);
     action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    QObject::connect(action,
-        &QAction::triggered, this,
+    QObject::connect(
+        action,
+        &QAction::triggered,
+        this,
         [this]([[maybe_unused]] bool checked)
         {
             CUiAnimViewSequence* pSequence = nullptr;
@@ -306,7 +307,6 @@ bool CUiAnimViewNodesCtrl::eventFilter(QObject* o, QEvent* e)
     }
     return QWidget::eventFilter(o, e);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 void CUiAnimViewNodesCtrl::OnSequenceChanged()
@@ -401,11 +401,11 @@ void CUiAnimViewNodesCtrl::AddNodeRecord(CRecord* pRecord, CUiAnimViewNode* pNod
 
     if (pNewRecord)
     {
-        if (!pNode->IsGroupNode() && pNode->GetChildCount() == 0)       // groups and compound tracks are draggable
+        if (!pNode->IsGroupNode() && pNode->GetChildCount() == 0) // groups and compound tracks are draggable
         {
             pNewRecord->setFlags(pNewRecord->flags() & ~Qt::ItemIsDragEnabled);
         }
-        if (!pNode->IsGroupNode())                                      // only groups can be dropped into
+        if (!pNode->IsGroupNode()) // only groups can be dropped into
         {
             pNewRecord->setFlags(pNewRecord->flags() & ~Qt::ItemIsDropEnabled);
         }
@@ -501,7 +501,7 @@ QIcon CUiAnimViewNodesCtrl::NodeTypeToTrackViewIcon(EUiAnimNodeType nodeType)
     case eUiAnimNodeType_Comment:
         return QIcon(QStringLiteral(":/nodes/tvnodes-23.png"));
     case eUiAnimNodeType_Light:
-        return QIcon( QStringLiteral(":/nodes/tvnodes-18.png"));
+        return QIcon(QStringLiteral(":/nodes/tvnodes-18.png"));
     case eUiAnimNodeType_HDRSetup:
         return QIcon(QStringLiteral(":/nodes/tvnodes-26.png"));
     case eUiAnimNodeType_ShadowSetup:
@@ -605,7 +605,7 @@ void CUiAnimViewNodesCtrl::OnFillItems()
 //////////////////////////////////////////////////////////////////////////
 void CUiAnimViewNodesCtrl::OnItemExpanded(QTreeWidgetItem* item)
 {
-    CRecord* pRecord = (CRecord*) item;
+    CRecord* pRecord = (CRecord*)item;
 
     if (pRecord && pRecord->GetNode())
     {
@@ -729,7 +729,7 @@ void CUiAnimViewNodesCtrl::OnNMRclick(QPoint point)
         {
             UiAnimUndo undo("Add UI Elements to Animation");
             pGroupNode->AddSelectedUiElements();
-            //pGroupNode->BindToEditorObjects(); // this causes problems (since it causes multiple registers with components?)
+            // pGroupNode->BindToEditorObjects(); // this causes problems (since it causes multiple registers with components?)
         }
         else if (cmd == eMI_AddScreenfader)
         {
@@ -957,7 +957,7 @@ struct UiAnimTrackMenuTreeNode
 {
     QMenu menu;
     CUiAnimParamType paramType;
-    std::map<QString, std::unique_ptr<UiAnimTrackMenuTreeNode> > children;
+    std::map<QString, std::unique_ptr<UiAnimTrackMenuTreeNode>> children;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -993,7 +993,8 @@ void CUiAnimViewNodesCtrl::AddMenuSeperatorConditional(QMenu& menu, bool& bAppen
 }
 
 //////////////////////////////////////////////////////////////////////////
-int CUiAnimViewNodesCtrl::ShowPopupMenuSingleSelection(UiAnimContextMenu& contextMenu, CUiAnimViewSequence* pSequence, CUiAnimViewNode* pNode)
+int CUiAnimViewNodesCtrl::ShowPopupMenuSingleSelection(
+    UiAnimContextMenu& contextMenu, CUiAnimViewSequence* pSequence, CUiAnimViewNode* pNode)
 {
     bool bAppended = false;
 
@@ -1067,20 +1068,20 @@ int CUiAnimViewNodesCtrl::ShowPopupMenuSingleSelection(UiAnimContextMenu& contex
         bAppended = true;
     }
 
-   // TODO: look into support track colors
-   // We have removed support for saving out the custom colors per track
-   // it may be added back at some point
-   // Track color
-   // if (bOnTrack)
-   // {
-   //     AddMenuSeperatorConditional(contextMenu.main, bAppended);
-   //     contextMenu.main.addAction("Customize Track Color...")->setData(eMI_CustomizeTrackColor);
-   //     if (pTrack->HasCustomColor())
-   //     {
-   //         contextMenu.main.addAction("Clear Custom Track Color")->setData(eMI_ClearCustomTrackColor);
-   //     }
-   //     bAppended = true;
-   // }
+    // TODO: look into support track colors
+    // We have removed support for saving out the custom colors per track
+    // it may be added back at some point
+    // Track color
+    // if (bOnTrack)
+    // {
+    //     AddMenuSeperatorConditional(contextMenu.main, bAppended);
+    //     contextMenu.main.addAction("Customize Track Color...")->setData(eMI_CustomizeTrackColor);
+    //     if (pTrack->HasCustomColor())
+    //     {
+    //         contextMenu.main.addAction("Clear Custom Track Color")->setData(eMI_ClearCustomTrackColor);
+    //     }
+    //     bAppended = true;
+    // }
 
     // Track hide/unhide flags
     if (bOnNode && !pNode->IsGroupNode())
@@ -1265,15 +1266,15 @@ void CUiAnimViewNodesCtrl::OnFilterChange(const QString& text)
 
     if (pSequence)
     {
-        m_currentMatchIndex = 0;    // Reset the match index
-        m_matchCount = 0;           // and the count.
+        m_currentMatchIndex = 0; // Reset the match index
+        m_matchCount = 0; // and the count.
         if (!text.isEmpty())
         {
             QList<QTreeWidgetItem*> items = ui->treeWidget->findItems(text, Qt::MatchContains | Qt::MatchRecursive);
 
             CUiAnimViewAnimNodeBundle animNodes = pSequence->GetAllAnimNodes();
 
-            m_matchCount = items.size();                    // and the count.
+            m_matchCount = items.size(); // and the count.
 
             if (!items.empty())
             {
@@ -1325,7 +1326,7 @@ void CUiAnimViewNodesCtrl::ShowNextResult()
 
             CUiAnimViewAnimNodeBundle animNodes = pSequence->GetAllAnimNodes();
 
-            m_matchCount = items.size();                    // and the count.
+            m_matchCount = items.size(); // and the count.
 
             if (!items.empty())
             {
@@ -1345,7 +1346,8 @@ void CUiAnimViewNodesCtrl::keyPressEvent([[maybe_unused]] QKeyEvent* event)
 {
 }
 
-void CUiAnimViewNodesCtrl::CreateSetAnimationLayerPopupMenu([[maybe_unused]] QMenu& menuSetLayer, [[maybe_unused]] CUiAnimViewTrack* pTrack) const
+void CUiAnimViewNodesCtrl::CreateSetAnimationLayerPopupMenu(
+    [[maybe_unused]] QMenu& menuSetLayer, [[maybe_unused]] CUiAnimViewTrack* pTrack) const
 {
     // UI_ANIMATION_REVISIT : not used
 }
@@ -1366,7 +1368,8 @@ void CUiAnimViewNodesCtrl::CustomizeTrackColor(CUiAnimViewTrack* pTrack)
         defaultColor = pTrack->GetCustomColor();
         defaultColor.SetA(1.f);
     }
-    const AZ::Color color = AzQtComponents::ColorPicker::getColor(AzQtComponents::ColorPicker::Configuration::RGB, defaultColor, QObject::tr("Select Color"));
+    const AZ::Color color =
+        AzQtComponents::ColorPicker::getColor(AzQtComponents::ColorPicker::Configuration::RGB, defaultColor, QObject::tr("Select Color"));
 
     if (color != defaultColor)
     {
@@ -1412,7 +1415,7 @@ CUiAnimViewNodesCtrl::CRecord* CUiAnimViewNodesCtrl::GetNodeRecord(const CUiAnim
         return nullptr;
     }
 
-    assert (findIter->second->GetNode() == pNode);
+    assert(findIter->second->GetNode() == pNode);
     return findIter->second;
 }
 
