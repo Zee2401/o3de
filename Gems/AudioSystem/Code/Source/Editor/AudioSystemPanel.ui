@@ -35,15 +35,12 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_29">
      <item>
-      <widget class="AzQtComponents::SearchLineEdit" name="m_pExternalListFilter">
-       <property name="accessibleName">
-        <string>Search</string>
-       </property>
+      <widget class="QLineEdit" name="m_pExternalListFilter">
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="placeholderText">
-        <string>Search...</string>
+        <string>Search</string>
        </property>
       </widget>
      </item>
@@ -86,11 +83,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>AzQtComponents::SearchLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">AzQtComponents/Components/SearchLineEdit.h</header>
-  </customwidget>
   <customwidget>
    <class>AudioControls::QSimpleAudioControlListWidget</class>
    <extends>QTreeWidget</extends>
