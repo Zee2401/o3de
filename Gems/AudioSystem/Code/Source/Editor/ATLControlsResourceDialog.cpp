@@ -9,7 +9,6 @@
 #include <ATLControlsResourceDialog.h>
 
 #include <AzCore/StringFunc/StringFunc.h>
-#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 #include <ACEEnums.h>
 #include <ATLControlsModel.h>
@@ -42,8 +41,7 @@ namespace AudioControls
         m_TextFilterLineEdit->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
         m_TextFilterLineEdit->setPlaceholderText(QApplication::translate("ATLControlsPanel", "Search", 0));
         m_TextFilterLineEdit->setClearButtonEnabled(true);
-        m_TextFilterLineEdit->setAccessibleName(tr("Search"));
-        AzQtComponents::LineEdit::applySearchStyle(m_TextFilterLineEdit);
+        m_TextFilterLineEdit->setAccessibleName(QApplication::translate("ATLControlsPanel", "Search", 0));
         connect(m_TextFilterLineEdit, &QLineEdit::textChanged, this, &ATLControlsDialog::SetTextFilter);
         connect(m_TextFilterLineEdit, &QLineEdit::returnPressed, this, &ATLControlsDialog::EnterPressed);
         pLayout->addWidget(m_TextFilterLineEdit, 0);
