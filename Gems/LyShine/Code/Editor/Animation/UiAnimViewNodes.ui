@@ -27,9 +27,18 @@
     <number>2</number>
    </property>
    <item row="2" column="0">
-    <widget class="QLineEdit" name="searchField">
+    <widget class="AzQtComponents::SearchLineEdit" name="searchField">
      <property name="focusPolicy">
       <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Search...</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="accessibleName">
+      <string>Search</string>
      </property>
     </widget>
    </item>
@@ -86,6 +95,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>AzQtComponents::SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">AzQtComponents/Components/SearchLineEdit.h</header>
+  </customwidget>
   <customwidget>
    <class>CUiAnimViewNodesTreeWidget</class>
    <extends>QTreeWidget</extends>
