@@ -30,7 +30,7 @@
         </widget>
       </item>
       <item>
-        <widget class="AzQtComponents::SearchLineEdit" name="FILTER">
+        <widget class="QLineEdit" name="FILTER">
           <property name="geometry">
             <rect>
               <x>10</x>
@@ -107,11 +107,4 @@
     </item>
   </layout>
   </widget>
-  <customwidgets>
-    <customwidget>
-      <class>AzQtComponents::SearchLineEdit</class>
-      <extends>QLineEdit</extends>
-      <header location="global">AzQtComponents/Components/SearchLineEdit.h</header>
-    </customwidget>
-  </customwidgets>
 </ui>
