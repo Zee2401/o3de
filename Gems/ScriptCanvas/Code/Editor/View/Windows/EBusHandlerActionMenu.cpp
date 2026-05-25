@@ -265,7 +265,8 @@ namespace ScriptCanvasEditor
         m_listWidget = new Ui::EBusHandlerActionListWidget();
         
         m_listWidget->setupUi(listWidget);
-        
+        m_listWidget->searchFilter->setClearButtonEnabled(true);
+
         actionWidget->setDefaultWidget(listWidget);
         
         addAction(actionWidget);
