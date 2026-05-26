@@ -93,26 +93,53 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="placeholderText">
+         <string>Search...</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="accessibleName">
+         <string>Search</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findPrevButton">
+        <property name="toolTip">
+         <string>Find Previous</string>
+        </property>
         <property name="text">
+         <string>Find Previous</string>
+        </property>
+        <property name="accessibleName">
          <string>Find Previous</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findNextButton">
+        <property name="toolTip">
+         <string>Find Next</string>
+        </property>
         <property name="text">
+         <string>Find Next</string>
+        </property>
+        <property name="accessibleName">
          <string>Find Next</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="closeButton">
+        <property name="toolTip">
+         <string>Close Search Bar</string>
+        </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="accessibleName">
+         <string>Close Search Bar</string>
         </property>
        </widget>
       </item>
@@ -187,15 +214,27 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Console Variables</string>
+        </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="accessibleName">
+         <string>Console Variables</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findButton">
+        <property name="toolTip">
+         <string>Search</string>
+        </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="accessibleName">
+         <string>Search</string>
         </property>
        </widget>
       </item>
@@ -235,8 +274,14 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Console Options</string>
+        </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="accessibleName">
+         <string>Console Options</string>
         </property>
        </widget>
       </item>
