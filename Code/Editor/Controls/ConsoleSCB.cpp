@@ -317,6 +317,8 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     setMinimumHeight(120);
 
     ui->findBar->setVisible(false);
+    ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
+    ui->lineEditFind->setClearButtonEnabled(true);
     AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
 
     SetupOptionsMenu();
