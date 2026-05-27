@@ -1219,10 +1219,13 @@ ConsoleVariableEditor::ConsoleVariableEditor(QWidget* parent)
     // Setup a filter widget with a search label and line edit input for filtering
     // the console variables
     QWidget* m_filterWidget = new QWidget(this);
-    QLabel* label = new QLabel(tr("Search"), this);
     QLineEdit* m_filterLineEdit = new QLineEdit(this);
+    m_filterLineEdit->setPlaceholderText(tr("Search..."));
+    m_filterLineEdit->setClearButtonEnabled(true);
+    m_filterLineEdit->setAccessibleName(tr("Search"));
+    AzQtComponents::LineEdit::applySearchStyle(m_filterLineEdit);
+
     QHBoxLayout* filterlayout = new QHBoxLayout(m_filterWidget);
-    filterlayout->addWidget(label);
     filterlayout->addWidget(m_filterLineEdit);
 
     // Setup our model to be filterable by the name column from our line edit
