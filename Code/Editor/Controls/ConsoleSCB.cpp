@@ -319,7 +319,26 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     ui->findBar->setVisible(false);
     ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setClearButtonEnabled(true);
+    ui->lineEditFind->setAccessibleName(tr("Search"));
     AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
+
+    ui->findPrevButton->setToolTip(tr("Find Previous"));
+    ui->findPrevButton->setAccessibleName(tr("Find Previous"));
+
+    ui->findNextButton->setToolTip(tr("Find Next"));
+    ui->findNextButton->setAccessibleName(tr("Find Next"));
+
+    ui->closeButton->setToolTip(tr("Close"));
+    ui->closeButton->setAccessibleName(tr("Close"));
+
+    ui->button->setToolTip(tr("Console Variables"));
+    ui->button->setAccessibleName(tr("Console Variables"));
+
+    ui->findButton->setToolTip(tr("Search Console"));
+    ui->findButton->setAccessibleName(tr("Search Console"));
+
+    ui->optionsButton->setToolTip(tr("Options"));
+    ui->optionsButton->setAccessibleName(tr("Options"));
 
     SetupOptionsMenu();
 
@@ -1216,13 +1235,16 @@ ConsoleVariableEditor::ConsoleVariableEditor(QWidget* parent)
     m_tableView->verticalHeader()->hide();
     m_tableView->horizontalHeader()->hide();
 
-    // Setup a filter widget with a search label and line edit input for filtering
+    // Setup a filter widget with a line edit input for filtering
     // the console variables
     QWidget* m_filterWidget = new QWidget(this);
-    QLabel* label = new QLabel(tr("Search"), this);
     QLineEdit* m_filterLineEdit = new QLineEdit(this);
+    m_filterLineEdit->setPlaceholderText(tr("Search..."));
+    m_filterLineEdit->setClearButtonEnabled(true);
+    m_filterLineEdit->setAccessibleName(tr("Search"));
+    AzQtComponents::LineEdit::applySearchStyle(m_filterLineEdit);
+
     QHBoxLayout* filterlayout = new QHBoxLayout(m_filterWidget);
-    filterlayout->addWidget(label);
     filterlayout->addWidget(m_filterLineEdit);
 
     // Setup our model to be filterable by the name column from our line edit
