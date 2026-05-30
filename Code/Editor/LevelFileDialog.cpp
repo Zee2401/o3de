@@ -13,9 +13,6 @@
 
 #include <AzFramework/API/ApplicationAPI.h>
 
-// AzQtComponents
-#include <AzQtComponents/Components/Widgets/LineEdit.h>
-
 // Qt
 #include <QMessageBox>
 #include <QInputDialog>
@@ -42,9 +39,6 @@ CLevelFileDialog::CLevelFileDialog(bool openDialog, QWidget* parent)
     , m_filterModel(new LevelTreeModelFilter(this))
 {
     ui->setupUi(this);
-
-    AzQtComponents::LineEdit::applySearchStyle(ui->filterLineEdit);
-
     ui->treeView->header()->close();
     m_filterModel->setSourceModel(m_model);
     ui->treeView->setModel(m_filterModel);
