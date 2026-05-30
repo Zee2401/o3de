@@ -21,6 +21,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="filterLabel">
+     <property name="text">
+      <string>Filter:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLineEdit" name="filterLineEdit">
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -63,9 +73,6 @@
        <property name="text">
         <string>New Folder...</string>
        </property>
-       <property name="accessibleName">
-        <string>New Folder</string>
-       </property>
       </widget>
      </item>
     </layout>
@@ -74,9 +81,6 @@
     <widget class="QLabel" name="levelNameLavel">
      <property name="text">
       <string>Level Name (e.g. MyFolder/MyName):</string>
-     </property>
-     <property name="buddy">
-      <cstring>nameLineEdit</cstring>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
