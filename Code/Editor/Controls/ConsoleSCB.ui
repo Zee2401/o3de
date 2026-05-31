@@ -86,9 +86,6 @@
         <property name="text">
          <string>Find: </string>
         </property>
-        <property name="buddy">
-         <cstring>lineEditFind</cstring>
-        </property>
        </widget>
       </item>
       <item>
@@ -96,17 +93,11 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="accessibleName">
-         <string>Find</string>
-        </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findPrevButton">
         <property name="text">
-         <string>Find Previous</string>
-        </property>
-        <property name="accessibleName">
          <string>Find Previous</string>
         </property>
        </widget>
@@ -116,21 +107,12 @@
         <property name="text">
          <string>Find Next</string>
         </property>
-        <property name="accessibleName">
-         <string>Find Next</string>
-        </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="closeButton">
-        <property name="toolTip">
-         <string>Close Find Bar</string>
-        </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="accessibleName">
-         <string>Close Find Bar</string>
         </property>
        </widget>
       </item>
@@ -205,27 +187,15 @@
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip">
-         <string>Console Variables</string>
-        </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="accessibleName">
-         <string>Console Variables</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findButton">
-        <property name="toolTip">
-         <string>Find</string>
-        </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="accessibleName">
-         <string>Find</string>
         </property>
        </widget>
       </item>
@@ -236,9 +206,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-        <property name="accessibleName">
-         <string>Console Input</string>
         </property>
        </widget>
       </item>
@@ -268,14 +235,8 @@
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip">
-         <string>Console Options</string>
-        </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="accessibleName">
-         <string>Console Options</string>
         </property>
        </widget>
       </item>
