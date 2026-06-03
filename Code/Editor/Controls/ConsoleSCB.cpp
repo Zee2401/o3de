@@ -327,6 +327,13 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
 
     SetupOptionsMenu();
 
+    m_optionsMenu->addSeparator();
+    auto clearConsoleAction = new QAction(tr("Clear Console"), this);
+    connect(clearConsoleAction, &QAction::triggered, [this] {
+        ui->textEdit->clear();
+    });
+    m_optionsMenu->addAction(clearConsoleAction);
+
     // Setup the color table for the default (light) theme
     m_colorTable << QColor(0, 0, 0)
         << QColor(0, 0, 0)
