@@ -17,6 +17,8 @@
 
 #include <QListWidgetItem>
 
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <Editor/Animation/ui_UiAnimViewFindDlg.h>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -34,6 +36,13 @@ CUiAnimViewFindDlg::CUiAnimViewFindDlg(const char* title, QWidget* pParent /*=NU
 
     ui->setupUi(this);
     ui->LIST->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    ui->FILTER->setPlaceholderText(tr("Filter..."));
+    ui->FILTER->setClearButtonEnabled(true);
+    ui->FILTER->setAccessibleName(tr("Filter"));
+    AzQtComponents::LineEdit::applySearchStyle(ui->FILTER);
+
+    ui->STATIC->setBuddy(ui->FILTER);
 
     connect(ui->OK, &QPushButton::clicked, this, &CUiAnimViewFindDlg::OnOK);
     connect(ui->CANCEL, &QPushButton::clicked, this, &CUiAnimViewFindDlg::OnCancel);
