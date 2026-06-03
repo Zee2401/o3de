@@ -317,12 +317,13 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     setMinimumHeight(120);
 
     ui->findBar->setVisible(false);
-    ui->lineEditFind->setPlaceholderText(tr("Search..."));
+    ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setClearButtonEnabled(true);
     ui->lineEditFind->setAccessibleName(tr("Search"));
     ui->label->setBuddy(ui->lineEditFind);
     AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
 
+    ui->lineEdit->setPlaceholderText(tr("Enter command..."));
     ui->lineEdit->setAccessibleName(tr("Console Command"));
 
     SetupOptionsMenu();
@@ -460,7 +461,6 @@ void CConsoleSCB::RefreshStyle()
     ui->optionsButton->setIcon(QIcon(ConsoleConstants::MenuIcon));
     ui->optionsButton->setToolTip(tr("Options"));
     ui->optionsButton->setAccessibleName(tr("Options"));
-
     // Set the debug/warning text colors appropriately for the background theme
     // (e.g. not have black text on black background)
     QColor textColor = Qt::black;
