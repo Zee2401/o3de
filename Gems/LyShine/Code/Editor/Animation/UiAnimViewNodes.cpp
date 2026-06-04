@@ -40,7 +40,6 @@
 #include <QScrollBar>
 
 #include <AzQtComponents/Components/Widgets/ColorPicker.h>
-#include <AzQtComponents/Components/Widgets/LineEdit.h>
 #include <AzQtComponents/Utilities/Conversions.h>
 
 CUiAnimViewNodesCtrl::CRecord::CRecord(CUiAnimViewNode* pNode /*= nullptr*/)
@@ -248,7 +247,6 @@ CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialo
     ui->searchField->setPlaceholderText(tr("Search..."));
     ui->searchField->setClearButtonEnabled(true);
     ui->searchField->setAccessibleName(tr("Search"));
-    AzQtComponents::LineEdit::applySearchStyle(ui->searchField);
 
     ui->searchField->installEventFilter(this);
 
