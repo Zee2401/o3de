@@ -243,11 +243,6 @@ CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialo
     ui->treeWidget->hide();
     ui->searchField->hide();
     ui->searchCount->hide();
-
-    ui->searchField->setPlaceholderText(tr("Search..."));
-    ui->searchField->setClearButtonEnabled(true);
-    ui->searchField->setAccessibleName(tr("Search"));
-
     ui->searchField->installEventFilter(this);
 
     ui->treeWidget->setController(this);
