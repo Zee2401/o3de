@@ -319,7 +319,11 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     ui->findBar->setVisible(false);
     ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setClearButtonEnabled(true);
+    ui->lineEditFind->setAccessibleName(tr("Search"));
     AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
+
+    ui->label->setBuddy(ui->lineEditFind);
+    ui->lineEdit->setAccessibleName(tr("Console Command"));
 
     SetupOptionsMenu();
 
@@ -398,6 +402,10 @@ void CConsoleSCB::SetupOptionsMenu()
     m_clearOnPlayAction->setCheckable(true);
     connect(m_clearOnPlayAction, &QAction::triggered, this, &CConsoleSCB::toggleClearOnPlay);
     m_optionsMenu->addAction(m_clearOnPlayAction);
+
+    QAction* clearConsoleAction = new QAction(tr("Clear Console"), this);
+    connect(clearConsoleAction, &QAction::triggered, [this] { ui->textEdit->clear(); });
+    m_optionsMenu->addAction(clearConsoleAction);
 }
 
 void CConsoleSCB::UpdateOptionsMenu()
@@ -435,9 +443,20 @@ void CConsoleSCB::OnEditorPreferencesChanged()
 void CConsoleSCB::RefreshStyle()
 {
     ui->button->setIcon(QIcon(ConsoleConstants::ButtonIcon));
+    ui->button->setToolTip(tr("Console Variables"));
+    ui->button->setAccessibleName(ui->button->toolTip());
+
     ui->findButton->setIcon(QIcon(ConsoleConstants::SearchIcon));
+    ui->findButton->setToolTip(tr("Find in Console"));
+    ui->findButton->setAccessibleName(ui->findButton->toolTip());
+
     ui->closeButton->setIcon(QIcon(ConsoleConstants::ClearIcon));
+    ui->closeButton->setToolTip(tr("Close Find Bar"));
+    ui->closeButton->setAccessibleName(ui->closeButton->toolTip());
+
     ui->optionsButton->setIcon(QIcon(ConsoleConstants::MenuIcon));
+    ui->optionsButton->setToolTip(tr("Console Options"));
+    ui->optionsButton->setAccessibleName(ui->optionsButton->toolTip());
     // Set the debug/warning text colors appropriately for the background theme
     // (e.g. not have black text on black background)
     QColor textColor = Qt::black;
