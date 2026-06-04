@@ -457,7 +457,6 @@ void CConsoleSCB::RefreshStyle()
     ui->optionsButton->setIcon(QIcon(ConsoleConstants::MenuIcon));
     ui->optionsButton->setToolTip(tr("Console Options"));
     ui->optionsButton->setAccessibleName(ui->optionsButton->toolTip());
-
     // Set the debug/warning text colors appropriately for the background theme
     // (e.g. not have black text on black background)
     QColor textColor = Qt::black;
