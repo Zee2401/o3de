@@ -245,10 +245,6 @@ CUiAnimViewNodesCtrl::CUiAnimViewNodesCtrl(QWidget* hParentWnd, CUiAnimViewDialo
     ui->searchCount->hide();
     ui->searchField->installEventFilter(this);
 
-    ui->searchField->setPlaceholderText(tr("Search..."));
-    ui->searchField->setClearButtonEnabled(true);
-    ui->searchField->setAccessibleName(tr("Search"));
-
     ui->treeWidget->setController(this);
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeWidget, &QTreeWidget::customContextMenuRequested, this, &CUiAnimViewNodesCtrl::OnNMRclick);
