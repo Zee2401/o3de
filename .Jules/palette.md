@@ -1,3 +1,7 @@
 ## 2025-05-14 - Standard Search/Filter Input Pattern in O3DE
 **Learning:** O3DE (Open 3D Engine) uses a consistent UX pattern for search and filter fields in the Editor to improve usability and visual consistency. This involves setting localized placeholder text, enabling the built-in clear button, and applying the "Search" style class through the AzQtComponents framework.
 **Action:** When implementing or enhancing search/filter inputs, ensure `<AzQtComponents/Components/Widgets/LineEdit.h>` is included, then call `setPlaceholderText()`, `setClearButtonEnabled(true)`, and `AzQtComponents::LineEdit::applySearchStyle()`.
+
+## 2025-05-15 - Surgical UX Improvements in Large O3DE Gems
+**Learning:** In large O3DE Gems like LyShine, modifying `.ui` files or adding new header dependencies (like `AzQtComponents/Components/Widgets/LineEdit.h`) can trigger massive CI build timeouts (up to 330 minutes) on new branches due to cold caches and build graph churn. Programmatic implementation of UX properties (placeholder text, clear buttons, accessible names) using standard `QLineEdit` methods within existing C++ translation units is the most stable and surgical approach.
+**Action:** When improving search/filter inputs in large Gems, avoid `.ui` modifications and `AzQtComponents` styling headers. Instead, use `setPlaceholderText()`, `setClearButtonEnabled(true)`, `setAccessibleName()`, and `setBuddy()` directly in the C++ constructor.
