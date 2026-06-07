@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <ui version="4.0">
  <class>Console</class>
  <widget class="QWidget" name="Console">
@@ -47,7 +47,7 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true" />
      </property>
      <property name="undoRedoEnabled">
       <bool>false</bool>
@@ -93,28 +93,28 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
-       </widget>
+       <property name="placeholderText"><string>Search...</string></property><property name="clearButtonEnabled"><bool>true</bool></property><property name="accessibleName"><string>Search</string></property></widget>
       </item>
       <item>
        <widget class="QToolButton" name="findPrevButton">
         <property name="text">
          <string>Find Previous</string>
         </property>
-       </widget>
+       <property name="toolTip"><string>Find Previous</string></property><property name="accessibleName"><string>Find Previous</string></property></widget>
       </item>
       <item>
        <widget class="QToolButton" name="findNextButton">
         <property name="text">
          <string>Find Next</string>
         </property>
-       </widget>
+       <property name="toolTip"><string>Find Next</string></property><property name="accessibleName"><string>Find Next</string></property></widget>
       </item>
       <item>
        <widget class="QToolButton" name="closeButton">
         <property name="text">
-         <string/>
+         <string />
         </property>
-       </widget>
+       <property name="toolTip"><string>Close Search Bar</string></property><property name="accessibleName"><string>Close Search Bar</string></property></widget>
       </item>
      </layout>
     </widget>
@@ -143,7 +143,7 @@
       <bool>true</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true" />
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -188,16 +188,16 @@
          </size>
         </property>
         <property name="text">
-         <string/>
+         <string />
         </property>
-       </widget>
+       <property name="toolTip"><string>Console Variables</string></property><property name="accessibleName"><string>Console Variables</string></property></widget>
       </item>
       <item>
        <widget class="QToolButton" name="findButton">
         <property name="text">
-         <string/>
+         <string />
         </property>
-       </widget>
+       <property name="toolTip"><string>Search</string></property><property name="accessibleName"><string>Search</string></property></widget>
       </item>
       <item>
        <widget class="ConsoleLineEdit" name="lineEdit">
@@ -207,7 +207,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-       </widget>
+       <property name="accessibleName"><string>Command Input</string></property></widget>
       </item>
       <item>
        <widget class="QToolButton" name="optionsButton">
@@ -236,9 +236,9 @@
          </size>
         </property>
         <property name="text">
-         <string/>
+         <string />
         </property>
-       </widget>
+       <property name="toolTip"><string>Console Options</string></property><property name="accessibleName"><string>Console Options</string></property></widget>
       </item>
      </layout>
     </widget>
@@ -263,7 +263,7 @@
   <tabstop>textEdit</tabstop>
  </tabstops>
  <resources>
-  <include location="ConsoleSCB.qrc"/>
+  <include location="ConsoleSCB.qrc" />
  </resources>
- <connections/>
+ <connections />
 </ui>
