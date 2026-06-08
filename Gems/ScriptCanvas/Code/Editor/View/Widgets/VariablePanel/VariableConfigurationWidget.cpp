@@ -82,6 +82,8 @@ namespace ScriptCanvasEditor
         ui->variablePalette->SetActiveScene(scriptCanvasId);
 
         ui->searchFilter->setClearButtonEnabled(true);
+        ui->searchFilter->setAccessibleName(tr("Search"));
+        ui->label_2->setBuddy(ui->searchFilter);
         QObject::connect(ui->searchFilter, &QLineEdit::textChanged, this, &VariableConfigurationWidget::OnQuickFilterChanged);
         QObject::connect(ui->slotName, &QLineEdit::returnPressed, this, &VariableConfigurationWidget::OnReturnPressed);
         QObject::connect(ui->slotName, &QLineEdit::textChanged, this, &VariableConfigurationWidget::OnNameChanged);

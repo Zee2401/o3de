@@ -227,6 +227,7 @@ namespace ScriptCanvasEditor
         UnitTestWidgetNotificationBus::Handler::BusConnect();
 
         m_ui->searchFilter->setClearButtonEnabled(true);
+        m_ui->searchFilter->setAccessibleName(tr("Search"));
         QObject::connect(m_ui->searchFilter, &QLineEdit::textChanged, this, &UnitTestDockWidget::OnQuickFilterChanged);
         QObject::connect(m_ui->searchFilter, &QLineEdit::returnPressed, this, &UnitTestDockWidget::OnReturnPressed);
 
