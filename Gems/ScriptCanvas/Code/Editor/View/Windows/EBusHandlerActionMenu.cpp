@@ -296,6 +296,7 @@ namespace ScriptCanvasEditor
     {
         m_listWidget->actionListView->selectionModel()->clearSelection();
         m_listWidget->searchFilter->setText("");
+        m_listWidget->searchFilter->setFocus();
     }
 
     void EBusHandlerActionMenu::ItemClicked(const QModelIndex& modelIndex)
