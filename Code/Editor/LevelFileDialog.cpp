@@ -23,7 +23,6 @@
 #include "CryEditDoc.h"
 #include "API/ToolsApplicationAPI.h"
 
-#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 #include <ui_LevelFileDialog.h>
 
@@ -40,7 +39,17 @@ CLevelFileDialog::CLevelFileDialog(bool openDialog, QWidget* parent)
     , m_filterModel(new LevelTreeModelFilter(this))
 {
     ui->setupUi(this);
-    AzQtComponents::LineEdit::applySearchStyle(ui->filterLineEdit);
+
+    ui->filterLineEdit->setPlaceholderText(tr("Search..."));
+    ui->filterLineEdit->setClearButtonEnabled(true);
+    ui->filterLineEdit->setAccessibleName(tr("Search"));
+    ui->filterLabel->setBuddy(ui->filterLineEdit);
+
+    ui->nameLineEdit->setPlaceholderText(tr("Level name"));
+    ui->nameLineEdit->setClearButtonEnabled(true);
+    ui->nameLineEdit->setAccessibleName(tr("Level name"));
+    ui->levelNameLavel->setBuddy(ui->nameLineEdit);
+
     ui->treeView->header()->close();
     m_filterModel->setSourceModel(m_model);
     ui->treeView->setModel(m_filterModel);
