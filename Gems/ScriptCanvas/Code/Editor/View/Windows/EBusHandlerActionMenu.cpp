@@ -12,6 +12,8 @@
 #include <QWidgetAction>
 #include <QKeyEvent>
 
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <GraphCanvas/Components/SceneBus.h>
 #include <GraphCanvas/Components/Nodes/Wrapper/WrapperNodeBus.h>
 
@@ -281,6 +283,10 @@ namespace ScriptCanvasEditor
 
         m_listWidget->actionListView->setModel(m_proxyModel);
 
+        m_listWidget->searchFilter->setClearButtonEnabled(true);
+        m_listWidget->searchFilter->setAccessibleName("Search");
+        AzQtComponents::LineEdit::applySearchStyle(m_listWidget->searchFilter);
+
         QObject::connect(m_listWidget->actionListView, &QListView::clicked, this, &EBusHandlerActionMenu::ItemClicked);
     }
 
@@ -296,6 +302,7 @@ namespace ScriptCanvasEditor
     {
         m_listWidget->actionListView->selectionModel()->clearSelection();
         m_listWidget->searchFilter->setText("");
+        m_listWidget->searchFilter->setFocus();
     }
 
     void EBusHandlerActionMenu::ItemClicked(const QModelIndex& modelIndex)
