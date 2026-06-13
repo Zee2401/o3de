@@ -281,9 +281,6 @@ namespace ScriptCanvasEditor
 
         m_listWidget->actionListView->setModel(m_proxyModel);
 
-        m_listWidget->searchFilter->setClearButtonEnabled(true);
-        m_listWidget->searchFilter->setAccessibleName(tr("Search"));
-
         QObject::connect(m_listWidget->actionListView, &QListView::clicked, this, &EBusHandlerActionMenu::ItemClicked);
     }
 
