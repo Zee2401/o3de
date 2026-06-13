@@ -319,7 +319,10 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     ui->findBar->setVisible(false);
     ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setClearButtonEnabled(true);
+    ui->lineEditFind->setAccessibleName(tr("Search"));
     AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
+
+    ui->lineEdit->setAccessibleName(tr("Console Input"));
 
     SetupOptionsMenu();
 
@@ -398,6 +401,10 @@ void CConsoleSCB::SetupOptionsMenu()
     m_clearOnPlayAction->setCheckable(true);
     connect(m_clearOnPlayAction, &QAction::triggered, this, &CConsoleSCB::toggleClearOnPlay);
     m_optionsMenu->addAction(m_clearOnPlayAction);
+
+    QAction* clearConsoleAction = new QAction(tr("Clear Console"), this);
+    connect(clearConsoleAction, &QAction::triggered, this, [this] { ui->textEdit->clear(); });
+    m_optionsMenu->addAction(clearConsoleAction);
 }
 
 void CConsoleSCB::UpdateOptionsMenu()
@@ -435,9 +442,17 @@ void CConsoleSCB::OnEditorPreferencesChanged()
 void CConsoleSCB::RefreshStyle()
 {
     ui->button->setIcon(QIcon(ConsoleConstants::ButtonIcon));
+    ui->button->setToolTip(tr("Console Variables"));
+    ui->button->setAccessibleName(tr("Console Variables"));
     ui->findButton->setIcon(QIcon(ConsoleConstants::SearchIcon));
+    ui->findButton->setToolTip(tr("Find in Console"));
+    ui->findButton->setAccessibleName(tr("Find in Console"));
     ui->closeButton->setIcon(QIcon(ConsoleConstants::ClearIcon));
+    ui->closeButton->setToolTip(tr("Close Find Bar"));
+    ui->closeButton->setAccessibleName(tr("Close Find Bar"));
     ui->optionsButton->setIcon(QIcon(ConsoleConstants::MenuIcon));
+    ui->optionsButton->setToolTip(tr("Console Options"));
+    ui->optionsButton->setAccessibleName(tr("Console Options"));
     // Set the debug/warning text colors appropriately for the background theme
     // (e.g. not have black text on black background)
     QColor textColor = Qt::black;
@@ -1221,9 +1236,16 @@ ConsoleVariableEditor::ConsoleVariableEditor(QWidget* parent)
     QWidget* m_filterWidget = new QWidget(this);
     QLabel* label = new QLabel(tr("Search"), this);
     QLineEdit* m_filterLineEdit = new QLineEdit(this);
+    m_filterLineEdit->setPlaceholderText(tr("Search..."));
+    m_filterLineEdit->setClearButtonEnabled(true);
+    m_filterLineEdit->setAccessibleName(tr("Search"));
+    AzQtComponents::LineEdit::applySearchStyle(m_filterLineEdit);
+
     QHBoxLayout* filterlayout = new QHBoxLayout(m_filterWidget);
     filterlayout->addWidget(label);
     filterlayout->addWidget(m_filterLineEdit);
+
+    label->setBuddy(m_filterLineEdit);
 
     // Setup our model to be filterable by the name column from our line edit
     QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
