@@ -172,6 +172,7 @@ private Q_SLOTS:
     void findPrevious();
     void findNext();
     void toggleClearOnPlay();
+    void clearConsole();
 
 private:
     void OnEditorNotifyEvent(EEditorNotifyEvent event) override;
@@ -191,6 +192,7 @@ private:
 
     QMenu* m_optionsMenu;
     QAction* m_clearOnPlayAction;
+    QAction* m_clearConsoleAction;
 };
 
 #endif // CRYINCLUDE_EDITOR_CONTROLS_CONSOLESCB_H
