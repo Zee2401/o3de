@@ -322,7 +322,6 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     ui->lineEditFind->setClearButtonEnabled(true);
     ui->lineEditFind->setAccessibleName(tr("Search"));
     ui->lineEdit->setAccessibleName(tr("Console Command"));
-    AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
 
     SetupOptionsMenu();
 
@@ -1240,7 +1239,6 @@ ConsoleVariableEditor::ConsoleVariableEditor(QWidget* parent)
     m_filterLineEdit->setPlaceholderText(tr("Search..."));
     m_filterLineEdit->setClearButtonEnabled(true);
     m_filterLineEdit->setAccessibleName(tr("Search"));
-    AzQtComponents::LineEdit::applySearchStyle(m_filterLineEdit);
 
     QHBoxLayout* filterlayout = new QHBoxLayout(m_filterWidget);
     filterlayout->addWidget(m_filterLineEdit);
