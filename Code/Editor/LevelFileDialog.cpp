@@ -58,17 +58,6 @@ CLevelFileDialog::CLevelFileDialog(bool openDialog, QWidget* parent)
         });
 
     connect(ui->filterLineEdit, &QLineEdit::textChanged, this, &CLevelFileDialog::OnFilterChanged);
-
-    ui->filterLineEdit->setPlaceholderText(tr("Search..."));
-    ui->filterLineEdit->setClearButtonEnabled(true);
-    ui->filterLineEdit->setAccessibleName(tr("Search"));
-    ui->filterLabel->setBuddy(ui->filterLineEdit);
-
-    ui->nameLineEdit->setPlaceholderText(tr("Level name"));
-    ui->nameLineEdit->setClearButtonEnabled(true);
-    ui->nameLineEdit->setAccessibleName(tr("Level name"));
-    ui->levelNameLavel->setBuddy(ui->nameLineEdit);
-
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &CLevelFileDialog::OnCancel);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &CLevelFileDialog::OnOK);
     connect(ui->newFolderButton, &QPushButton::clicked, this, &CLevelFileDialog::OnNewFolder);
