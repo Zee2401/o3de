@@ -317,11 +317,9 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     setMinimumHeight(120);
 
     ui->findBar->setVisible(false);
-    ui->label->setBuddy(ui->lineEditFind);
     ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setClearButtonEnabled(true);
-    ui->lineEditFind->setAccessibleName(tr("Search"));
-    ui->lineEdit->setAccessibleName(tr("Console Command"));
+    AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
 
     SetupOptionsMenu();
 
@@ -400,11 +398,6 @@ void CConsoleSCB::SetupOptionsMenu()
     m_clearOnPlayAction->setCheckable(true);
     connect(m_clearOnPlayAction, &QAction::triggered, this, &CConsoleSCB::toggleClearOnPlay);
     m_optionsMenu->addAction(m_clearOnPlayAction);
-
-    m_optionsMenu->addSeparator();
-    auto clearConsoleAction = new QAction(tr("Clear Console"), this);
-    connect(clearConsoleAction, &QAction::triggered, ui->textEdit, &AzToolsFramework::ConsoleTextEdit::clear);
-    m_optionsMenu->addAction(clearConsoleAction);
 }
 
 void CConsoleSCB::UpdateOptionsMenu()
@@ -442,18 +435,9 @@ void CConsoleSCB::OnEditorPreferencesChanged()
 void CConsoleSCB::RefreshStyle()
 {
     ui->button->setIcon(QIcon(ConsoleConstants::ButtonIcon));
-    ui->button->setToolTip(tr("Console Variables"));
-    ui->button->setAccessibleName(ui->button->toolTip());
     ui->findButton->setIcon(QIcon(ConsoleConstants::SearchIcon));
-    ui->findButton->setToolTip(tr("Find in Console"));
-    ui->findButton->setAccessibleName(ui->findButton->toolTip());
     ui->closeButton->setIcon(QIcon(ConsoleConstants::ClearIcon));
-    ui->closeButton->setToolTip(tr("Close Find Bar"));
-    ui->closeButton->setAccessibleName(ui->closeButton->toolTip());
     ui->optionsButton->setIcon(QIcon(ConsoleConstants::MenuIcon));
-    ui->optionsButton->setToolTip(tr("Console Options"));
-    ui->optionsButton->setAccessibleName(ui->optionsButton->toolTip());
-
     // Set the debug/warning text colors appropriately for the background theme
     // (e.g. not have black text on black background)
     QColor textColor = Qt::black;
@@ -1232,15 +1216,13 @@ ConsoleVariableEditor::ConsoleVariableEditor(QWidget* parent)
     m_tableView->verticalHeader()->hide();
     m_tableView->horizontalHeader()->hide();
 
-    // Setup a filter widget with a line edit input for filtering
+    // Setup a filter widget with a search label and line edit input for filtering
     // the console variables
     QWidget* m_filterWidget = new QWidget(this);
+    QLabel* label = new QLabel(tr("Search"), this);
     QLineEdit* m_filterLineEdit = new QLineEdit(this);
-    m_filterLineEdit->setPlaceholderText(tr("Search..."));
-    m_filterLineEdit->setClearButtonEnabled(true);
-    m_filterLineEdit->setAccessibleName(tr("Search"));
-
     QHBoxLayout* filterlayout = new QHBoxLayout(m_filterWidget);
+    filterlayout->addWidget(label);
     filterlayout->addWidget(m_filterLineEdit);
 
     // Setup our model to be filterable by the name column from our line edit
