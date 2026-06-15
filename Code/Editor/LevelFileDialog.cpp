@@ -39,6 +39,15 @@ CLevelFileDialog::CLevelFileDialog(bool openDialog, QWidget* parent)
     , m_filterModel(new LevelTreeModelFilter(this))
 {
     ui->setupUi(this);
+
+    ui->filterLabel->setBuddy(ui->filterLineEdit);
+    ui->filterLineEdit->setPlaceholderText(tr("Search..."));
+    ui->filterLineEdit->setClearButtonEnabled(true);
+
+    ui->levelNameLavel->setBuddy(ui->nameLineEdit);
+    ui->nameLineEdit->setPlaceholderText(tr("Level name"));
+    ui->nameLineEdit->setClearButtonEnabled(true);
+
     ui->treeView->header()->close();
     m_filterModel->setSourceModel(m_model);
     ui->treeView->setModel(m_filterModel);
