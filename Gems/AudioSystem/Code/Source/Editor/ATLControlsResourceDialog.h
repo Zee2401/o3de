@@ -6,7 +6,6 @@
  *
  */
 
-
 #pragma once
 
 #if !defined(Q_MOC_RUN)
@@ -16,9 +15,10 @@
 #include <AudioControlFilters.h>
 #include <QTreeWidgetFilter.h>
 
-#include <QWidget>
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 #include <QDialog>
 #include <QLineEdit>
+#include <QWidget>
 #endif
 
 class QAudioControlsTreeView;
@@ -32,8 +32,7 @@ namespace AudioControls
     class CATLControl;
 
     //-------------------------------------------------------------------------------------------//
-    class ATLControlsDialog
-        : public QDialog
+    class ATLControlsDialog : public QDialog
     {
         Q_OBJECT
     public:
@@ -53,7 +52,6 @@ namespace AudioControls
         void showEvent(QShowEvent* e) override;
 
     private:
-
         QModelIndex FindItem(const AZStd::string_view sControlName);
         void ApplyFilter();
         bool ApplyFilter(const QModelIndex parent);
