@@ -42,7 +42,6 @@ namespace AudioControls
         m_TextFilterLineEdit->setPlaceholderText(tr("Search..."));
         m_TextFilterLineEdit->setClearButtonEnabled(true);
         m_TextFilterLineEdit->setAccessibleName(tr("Search"));
-        AzQtComponents::LineEdit::applySearchStyle(m_TextFilterLineEdit);
         connect(m_TextFilterLineEdit, &QLineEdit::textChanged, this, &ATLControlsDialog::SetTextFilter);
         connect(m_TextFilterLineEdit, &QLineEdit::returnPressed, this, &ATLControlsDialog::EnterPressed);
         pLayout->addWidget(m_TextFilterLineEdit, 0);
