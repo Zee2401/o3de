@@ -6,6 +6,7 @@
  *
  */
 
+
 #include <InspectorPanel.h>
 
 #include <ACETypes.h>
@@ -13,11 +14,12 @@
 #include <IAudioSystemControl.h>
 #include <QAudioControlEditorIcons.h>
 
-#include <QDropEvent>
-#include <QKeyEvent>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QDropEvent>
+#include <QKeyEvent>
 #include <QRegularExpression>
+
 
 namespace AudioControls
 {
@@ -35,11 +37,6 @@ namespace AudioControls
         connect(m_nameLineEditor, SIGNAL(editingFinished()), this, SLOT(FinishedEditingName()));
         connect(m_scopeDropDown, SIGNAL(activated(QString)), this, SLOT(SetControlScope(QString)));
         connect(m_autoLoadCheckBox, SIGNAL(clicked(bool)), this, SLOT(SetAutoLoadForCurrentControl(bool)));
-
-        m_nameLabel->setBuddy(m_nameLineEditor);
-        m_nameLineEditor->setAccessibleName(tr("Control Name"));
-        m_nameLineEditor->setPlaceholderText(tr("Enter name..."));
-        m_nameLineEditor->setClearButtonEnabled(true);
 
         // data validators
         m_nameLineEditor->setValidator(new QRegularExpressionValidator(QRegularExpression("^[a-zA-Z0-9_]*$"), m_nameLineEditor));
@@ -204,13 +201,13 @@ namespace AudioControls
             }
             else
             {
-                m_nameLineEditor->setText(" <" + QString::number(size) + tr(" items selected>"));
+                m_nameLineEditor->setText(" <" +  QString::number(size) + tr(" items selected>"));
                 m_nameLineEditor->setEnabled(false);
             }
         }
         else
         {
-            m_nameLineEditor->setText(" <" + QString::number(size) + tr(" items selected>"));
+            m_nameLineEditor->setText(" <" +  QString::number(size) + tr(" items selected>"));
             m_nameLineEditor->setEnabled(false);
         }
     }
@@ -327,8 +324,7 @@ namespace AudioControls
                 {
                     if (!m_atlControlsModel->IsNameValid(newName, control->GetType(), control->GetScope(), control->GetParent()))
                     {
-                        newName =
-                            m_atlControlsModel->GenerateUniqueName(newName, control->GetType(), control->GetScope(), control->GetParent());
+                        newName = m_atlControlsModel->GenerateUniqueName(newName, control->GetType(), control->GetScope(), control->GetParent());
                     }
                     control->SetName(newName);
                 }
