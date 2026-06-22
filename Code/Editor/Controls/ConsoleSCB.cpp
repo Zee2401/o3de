@@ -321,7 +321,6 @@ CConsoleSCB::CConsoleSCB(QWidget* parent)
     ui->lineEditFind->setPlaceholderText(QObject::tr("Search..."));
     ui->lineEditFind->setAccessibleName(tr("Search"));
     ui->lineEditFind->setClearButtonEnabled(true);
-    AzQtComponents::LineEdit::applySearchStyle(ui->lineEditFind);
 
     ui->lineEdit->setPlaceholderText(tr("Console Command"));
     ui->lineEdit->setAccessibleName(ui->lineEdit->placeholderText());
