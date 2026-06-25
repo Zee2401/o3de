@@ -19,6 +19,10 @@
 #include <QDropEvent>
 #include <QKeyEvent>
 #include <QRegularExpression>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
 
 
 namespace AudioControls
@@ -41,6 +45,9 @@ namespace AudioControls
         m_nameLabel->setBuddy(m_nameLineEditor);
         m_scopeLabel->setBuddy(m_scopeDropDown);
         m_autoLoadLabel->setBuddy(m_autoLoadCheckBox);
+
+        m_scopeDropDown->setAccessibleName(tr("Scope"));
+        m_autoLoadCheckBox->setAccessibleName(tr("Auto Load"));
 
         connect(m_nameLineEditor, SIGNAL(editingFinished()), this, SLOT(FinishedEditingName()));
         connect(m_scopeDropDown, SIGNAL(activated(QString)), this, SLOT(SetControlScope(QString)));
