@@ -35,9 +35,13 @@ namespace AudioControls
         setupUi(this);
 
         m_nameLabel->setBuddy(m_nameLineEditor);
+        m_scopeLabel->setBuddy(m_scopeDropDown);
+        m_autoLoadLabel->setBuddy(m_autoLoadCheckBox);
+
         m_nameLineEditor->setPlaceholderText(tr("Enter name..."));
         m_nameLineEditor->setClearButtonEnabled(true);
         m_nameLineEditor->setAccessibleName(tr("Control Name"));
+        m_nameLineEditor->setToolTip(tr("Only alphanumeric characters and underscores are allowed."));
 
         connect(m_nameLineEditor, SIGNAL(editingFinished()), this, SLOT(FinishedEditingName()));
         connect(m_scopeDropDown, SIGNAL(activated(QString)), this, SLOT(SetControlScope(QString)));
