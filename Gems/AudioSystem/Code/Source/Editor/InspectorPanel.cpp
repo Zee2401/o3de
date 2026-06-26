@@ -19,10 +19,6 @@
 #include <QDropEvent>
 #include <QKeyEvent>
 #include <QRegularExpression>
-#include <QLabel>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QCheckBox>
 
 
 namespace AudioControls

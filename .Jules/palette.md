@@ -4,4 +4,4 @@
 
 ## 2025-05-22 - Programmatic Accessibility for Inspector Panels
 **Learning:** Enhancing accessibility in O3DE Inspector panels (especially in Gems) is most stable when done programmatically in the C++ constructor using standard Qt methods. This avoids the risk of 330-minute CI timeouts often associated with modifying .ui files or adding heavyweight AzQtComponents headers in sensitive targets.
-**Action:** In the C++ constructor, set localized `accessibleName` for all interactive widgets and establish `setBuddy()` relationships for their corresponding `QLabel` widgets. Use standard Qt headers like `<QLabel>`, `<QLineEdit>`, `<QComboBox>`, and `<QCheckBox>` as needed.
+**Action:** In the C++ constructor, set localized `accessibleName` for all interactive widgets and establish `setBuddy()` relationships for their corresponding `QLabel` widgets. Avoid adding explicit Qt headers (`<QLabel>`, `<QLineEdit>`, etc.) in Gem targets if they are already available transitively (e.g. through generated UI headers), to minimize include graph changes that can trigger CI ccache misses and timeouts.
