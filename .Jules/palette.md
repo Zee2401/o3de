@@ -1,3 +1,7 @@
 ## 2025-05-14 - Standard Search/Filter Input Pattern in O3DE
 **Learning:** O3DE (Open 3D Engine) uses a consistent UX pattern for search and filter fields in the Editor to improve usability and visual consistency. This involves setting localized placeholder text, enabling the built-in clear button, and applying the "Search" style class through the AzQtComponents framework.
 **Action:** When implementing or enhancing search/filter inputs, ensure `<AzQtComponents/Components/Widgets/LineEdit.h>` is included, then call `setPlaceholderText()`, `setClearButtonEnabled(true)`, and `AzQtComponents::LineEdit::applySearchStyle()`.
+
+## 2025-05-22 - Programmatic Accessibility for Inspector Panels
+**Learning:** Enhancing accessibility in O3DE Inspector panels (especially in Gems) is most stable when done programmatically in the C++ constructor using standard Qt methods. This avoids the risk of 330-minute CI timeouts often associated with modifying .ui files or adding heavyweight AzQtComponents headers in sensitive targets.
+**Action:** In the C++ constructor, set localized `accessibleName` for all interactive widgets and establish `setBuddy()` relationships for their corresponding `QLabel` widgets. Avoid adding explicit Qt headers (`<QLabel>`, `<QLineEdit>`, etc.) in Gem targets if they are already available transitively (e.g. through generated UI headers), to minimize include graph changes that can trigger CI ccache misses and timeouts.
