@@ -77,9 +77,15 @@ CNewLevelDialog::CNewLevelDialog(QWidget* pParent /*=nullptr*/)
     QRegularExpression rx("[_a-zA-Z0-9-]+");
     QValidator* validator = new QRegularExpressionValidator(rx, this);
     ui->LEVEL->setValidator(validator);
+    ui->LEVEL->setPlaceholderText(tr("Level name"));
+    ui->LEVEL->setAccessibleName(tr("Level name"));
 
     validator = new LevelFolderValidator(this);
     ui->LEVEL_FOLDERS->lineEdit()->setValidator(validator);
+    ui->LEVEL_FOLDERS->lineEdit()->setPlaceholderText(tr("Level location"));
+    ui->LEVEL_FOLDERS->lineEdit()->setAccessibleName(tr("Level location"));
+
+    ui->listTemplates->setAccessibleName(tr("Level templates"));
     ui->LEVEL_FOLDERS->setErrorToolTip(
         QString("The location must be a folder underneath the current project's %1 folder. (%2)")
             .arg(kNewLevelDialog_LevelsFolder)
