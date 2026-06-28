@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLineEdit" name="searchFilter">
+    <widget class="AzQtComponents::SearchLineEdit" name="searchFilter">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -24,6 +24,9 @@
      </property>
      <property name="placeholderText">
       <string>Search...</string>
+     </property>
+     <property name="accessibleName">
+      <string>Search</string>
      </property>
     </widget>
    </item>
@@ -75,6 +78,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AzQtComponents::SearchLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">AzQtComponents/Components/SearchLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
