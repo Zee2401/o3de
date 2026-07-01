@@ -370,7 +370,6 @@ CTrackViewNodesCtrl::CTrackViewNodesCtrl(QWidget* hParentWnd, CTrackViewDialog* 
 
     ui->searchField->setPlaceholderText(tr("Search..."));
     ui->searchField->setClearButtonEnabled(true);
-    ui->searchField->setAccessibleName(tr("Search"));
     AzQtComponents::LineEdit::applySearchStyle(ui->searchField);
 
     ui->treeWidget->setController(this);
