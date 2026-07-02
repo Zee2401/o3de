@@ -6,22 +6,20 @@
  *
  */
 
-
 #include "EditorDefs.h"
 
 #include "TrackViewFindDlg.h"
 
 // Editor
-#include "TrackViewSequenceManager.h"
 #include "AnimationContext.h"
+#include "TrackViewSequenceManager.h"
 
-#include <TrackView/ui_TrackViewFindDlg.h>
 #include "Maestro/Types/AnimNodeType.h"
+#include <TrackView/ui_TrackViewFindDlg.h>
 
 #include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 // CTrackViewFindDlg dialog
-
 
 CTrackViewFindDlg::CTrackViewFindDlg(const char* title, QWidget* pParent /*=nullptr*/)
     : QDialog(pParent)
@@ -37,6 +35,8 @@ CTrackViewFindDlg::CTrackViewFindDlg(const char* title, QWidget* pParent /*=null
 
     ui->FILTER->setPlaceholderText(tr("Filter..."));
     ui->FILTER->setClearButtonEnabled(true);
+    ui->FILTER->setAccessibleName(tr("Filter"));
+    ui->STATIC->setBuddy(ui->FILTER);
     AzQtComponents::LineEdit::applySearchStyle(ui->FILTER);
 
     connect(ui->OK, &QPushButton::clicked, this, &CTrackViewFindDlg::OnOK);
