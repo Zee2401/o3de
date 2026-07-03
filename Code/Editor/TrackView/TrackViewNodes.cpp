@@ -21,6 +21,8 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMenu>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QScrollBar>
@@ -369,6 +371,7 @@ CTrackViewNodesCtrl::CTrackViewNodesCtrl(QWidget* hParentWnd, CTrackViewDialog* 
     ui->searchField->installEventFilter(this);
 
     ui->searchField->setPlaceholderText(tr("Search..."));
+    ui->searchField->setAccessibleName(tr("Search"));
     ui->searchField->setClearButtonEnabled(true);
     AzQtComponents::LineEdit::applySearchStyle(ui->searchField);
 

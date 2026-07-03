@@ -11,6 +11,8 @@
 
 #include "TrackViewFindDlg.h"
 
+#include <QLabel>
+#include <QLineEdit>
 // Editor
 #include "TrackViewSequenceManager.h"
 #include "AnimationContext.h"
@@ -38,6 +40,8 @@ CTrackViewFindDlg::CTrackViewFindDlg(const char* title, QWidget* pParent /*=null
     ui->FILTER->setPlaceholderText(tr("Filter..."));
     ui->FILTER->setClearButtonEnabled(true);
     AzQtComponents::LineEdit::applySearchStyle(ui->FILTER);
+    ui->FILTER->setAccessibleName(tr("Filter"));
+    ui->STATIC->setBuddy(ui->FILTER);
 
     connect(ui->OK, &QPushButton::clicked, this, &CTrackViewFindDlg::OnOK);
     connect(ui->CANCEL, &QPushButton::clicked, this, &CTrackViewFindDlg::OnCancel);
