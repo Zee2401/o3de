@@ -21,6 +21,8 @@
 #include <QListWidgetItem>
 #include <QRegularExpression>
 
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
+
 #include <ui_NewLevelDialog.h>
 
 // Folder in which levels are stored
@@ -67,6 +69,15 @@ CNewLevelDialog::CNewLevelDialog(QWidget* pParent /*=nullptr*/)
     , m_initialized(false)
 {
     ui->setupUi(this);
+
+    ui->LEVEL->setPlaceholderText(tr("Level name"));
+    ui->LEVEL->setClearButtonEnabled(true);
+    ui->LEVEL->setAccessibleName(tr("Level name"));
+
+    ui->LEVEL_FOLDERS->lineEdit()->setPlaceholderText(tr("Level location"));
+    ui->LEVEL_FOLDERS->lineEdit()->setAccessibleName(tr("Level location"));
+
+    ui->listTemplates->setAccessibleName(tr("Templates"));
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(tr("New Level"));
