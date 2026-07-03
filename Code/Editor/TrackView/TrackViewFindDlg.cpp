@@ -10,6 +10,9 @@
 
 #include "TrackViewFindDlg.h"
 
+#include <QLabel>
+#include <QLineEdit>
+
 // Editor
 #include "AnimationContext.h"
 #include "TrackViewSequenceManager.h"
