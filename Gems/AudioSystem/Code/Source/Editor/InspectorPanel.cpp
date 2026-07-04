@@ -14,6 +14,10 @@
 #include <IAudioSystemControl.h>
 #include <QAudioControlEditorIcons.h>
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QDropEvent>
@@ -33,6 +37,19 @@ namespace AudioControls
         AZ_Assert(m_atlControlsModel, "CInspectorPanel - The ATL Controls model is null!");
 
         setupUi(this);
+
+        m_nameLabel->setBuddy(m_nameLineEditor);
+        m_nameLineEditor->setPlaceholderText(tr("Enter name..."));
+        m_nameLineEditor->setClearButtonEnabled(true);
+        m_nameLineEditor->setAccessibleName(tr("Name"));
+
+        m_scopeLabel->setBuddy(m_scopeDropDown);
+        m_scopeDropDown->setAccessibleName(tr("Scope"));
+
+        m_autoLoadLabel->setBuddy(m_autoLoadCheckBox);
+        m_autoLoadCheckBox->setAccessibleName(tr("Auto Load"));
+
+        m_connectedControlsLabel->setBuddy(m_connectionList);
 
         connect(m_nameLineEditor, SIGNAL(editingFinished()), this, SLOT(FinishedEditingName()));
         connect(m_scopeDropDown, SIGNAL(activated(QString)), this, SLOT(SetControlScope(QString)));
@@ -96,10 +113,12 @@ namespace AudioControls
             if (m_selectedType == eACET_PRELOAD)
             {
                 m_connectedControlsLabel->setText(QString(tr("Sound Banks:")));
+                m_connectionList->setAccessibleName(tr("Sound Banks"));
             }
             else
             {
                 m_connectedControlsLabel->setText(QString(tr("Connected Controls:")));
+                m_connectionList->setAccessibleName(tr("Connected Controls"));
             }
 
             m_connectedControlsLabel->setHidden(false);
