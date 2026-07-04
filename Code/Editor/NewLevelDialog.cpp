@@ -21,8 +21,6 @@
 #include <QListWidgetItem>
 #include <QRegularExpression>
 
-#include <AzQtComponents/Components/Widgets/LineEdit.h>
-
 #include <ui_NewLevelDialog.h>
 
 // Folder in which levels are stored
