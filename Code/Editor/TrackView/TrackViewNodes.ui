@@ -31,11 +31,8 @@
      <property name="focusPolicy">
       <enum>Qt::ClickFocus</enum>
      </property>
-     <property name="placeholderText">
-      <string>Search...</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
+     <property name="toolTip">
+      <string>Search nodes</string>
      </property>
     </widget>
    </item>
