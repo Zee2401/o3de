@@ -35,10 +35,7 @@ CTrackViewFindDlg::CTrackViewFindDlg(const char* title, QWidget* pParent /*=null
     ui->setupUi(this);
     ui->LIST->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    ui->FILTER->setPlaceholderText(tr("Filter..."));
-    ui->FILTER->setClearButtonEnabled(true);
     ui->FILTER->setAccessibleName(tr("Filter"));
-    ui->STATIC->setBuddy(ui->FILTER);
     AzQtComponents::LineEdit::applySearchStyle(ui->FILTER);
 
     connect(ui->OK, &QPushButton::clicked, this, &CTrackViewFindDlg::OnOK);
