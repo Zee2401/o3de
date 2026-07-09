@@ -274,9 +274,6 @@
         </property>
         <item>
          <widget class="QPushButton" name="supportButton">
-          <property name="toolTip">
-           <string>Open Asset Pipeline documentation</string>
-          </property>
           <property name="flat">
            <bool>true</bool>
           </property>
@@ -988,20 +985,10 @@
                   <property name="text">
                    <string>Add Host Name</string>
                   </property>
-                  <property name="buddy">
-                   <cstring>allowedListAddHostNameLineEdit</cstring>
-                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="allowedListAddHostNameLineEdit">
-                  <property name="placeholderText">
-                   <string>e.g. MyComputer321</string>
-                  </property>
-                  <property name="clearButtonEnabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                 <widget class="QLineEdit" name="allowedListAddHostNameLineEdit"/>
                 </item>
                 <item>
                  <widget class="QToolButton" name="allowedListAddHostNameToolButton">
@@ -1041,20 +1028,10 @@
                   <property name="text">
                    <string>Add IP Address</string>
                   </property>
-                  <property name="buddy">
-                   <cstring>allowedListAddIPLineEdit</cstring>
-                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="allowedListAddIPLineEdit">
-                  <property name="placeholderText">
-                   <string>e.g. 192.168.0.20</string>
-                  </property>
-                  <property name="clearButtonEnabled">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                 <widget class="QLineEdit" name="allowedListAddIPLineEdit"/>
                 </item>
                 <item>
                  <widget class="QToolButton" name="allowedListAddIPToolButton">
@@ -2349,12 +2326,6 @@
                <property name="toolTip">
                 <string>Set the remote folder location for the shared cache</string>
                </property>
-               <property name="placeholderText">
-                <string>Remote folder path...</string>
-               </property>
-               <property name="clearButtonEnabled">
-                <bool>true</bool>
-               </property>
               </widget>
              </item>
              <item row="9" column="4">
@@ -2432,9 +2403,6 @@
                <property name="text">
                 <string>Step 2: Select a remote folder</string>
                </property>
-               <property name="buddy">
-                <cstring>serverAddressLineEdit</cstring>
-               </property>
               </widget>
              </item>
              <item row="6" column="0">
@@ -2507,9 +2475,6 @@
              </item>
              <item row="0" column="4">
               <widget class="QPushButton" name="sharedCacheSupport">
-               <property name="toolTip">
-                <string>Open Shared Cache documentation</string>
-               </property>
                <property name="text">
                 <string/>
                </property>
