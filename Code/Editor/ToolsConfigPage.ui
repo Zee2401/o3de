@@ -51,9 +51,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroNew">
-            <property name="toolTip">
-             <string>Create a new macro</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Add.svg</normaloff>:/Gallery/Add.svg</iconset>
@@ -62,9 +59,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroDelete">
-            <property name="toolTip">
-             <string>Delete the selected macro</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Delete.svg</normaloff>:/Gallery/Delete.svg</iconset>
@@ -73,9 +67,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroUp">
-            <property name="toolTip">
-             <string>Move the selected macro up</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-next-level.svg</normaloff>:/Gallery/Goto-next-level.svg</iconset>
@@ -84,9 +75,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroDown">
-            <property name="toolTip">
-             <string>Move the selected macro down</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-previous-level.svg</normaloff>:/Gallery/Goto-previous-level.svg</iconset>
@@ -143,9 +131,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandNew">
-            <property name="toolTip">
-             <string>Add a new command</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Add.svg</normaloff>:/Gallery/Add.svg</iconset>
@@ -154,9 +139,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandDelete">
-            <property name="toolTip">
-             <string>Delete the selected command</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Delete.svg</normaloff>:/Gallery/Delete.svg</iconset>
@@ -165,9 +147,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandUp">
-            <property name="toolTip">
-             <string>Move the selected command up</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-next-level.svg</normaloff>:/Gallery/Goto-next-level.svg</iconset>
@@ -176,9 +155,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandDown">
-            <property name="toolTip">
-             <string>Move the selected command down</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-previous-level.svg</normaloff>:/Gallery/Goto-previous-level.svg</iconset>
@@ -213,9 +189,6 @@
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
-        <property name="placeholderText">
-         <string>Enter command</string>
-        </property>
        </widget>
       </item>
       <item row="1" column="0">
@@ -241,9 +214,6 @@
       </item>
       <item row="0" column="4">
        <widget class="QPushButton" name="m_assignCommand">
-        <property name="toolTip">
-         <string>Assign the current text to the selected command</string>
-        </property>
         <property name="text">
          <string>Assign</string>
         </property>
@@ -294,9 +264,6 @@
         </item>
         <item>
          <widget class="QPushButton" name="m_selectIcon">
-          <property name="toolTip">
-           <string>Select an icon for the macro</string>
-          </property>
           <property name="text">
            <string>Select...</string>
           </property>
@@ -304,9 +271,6 @@
         </item>
         <item>
          <widget class="QPushButton" name="m_clearIcon">
-          <property name="toolTip">
-           <string>Clear the macro icon</string>
-          </property>
           <property name="text">
            <string>Clear</string>
           </property>
