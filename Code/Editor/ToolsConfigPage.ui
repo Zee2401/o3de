@@ -51,9 +51,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroNew">
-            <property name="toolTip">
-             <string>Add new macro</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Add.svg</normaloff>:/Gallery/Add.svg</iconset>
@@ -62,9 +59,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroDelete">
-            <property name="toolTip">
-             <string>Delete selected macro</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Delete.svg</normaloff>:/Gallery/Delete.svg</iconset>
@@ -73,9 +67,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroUp">
-            <property name="toolTip">
-             <string>Move selected macro up</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-next-level.svg</normaloff>:/Gallery/Goto-next-level.svg</iconset>
@@ -84,9 +75,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonMacroDown">
-            <property name="toolTip">
-             <string>Move selected macro down</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-previous-level.svg</normaloff>:/Gallery/Goto-previous-level.svg</iconset>
@@ -143,9 +131,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandNew">
-            <property name="toolTip">
-             <string>Add new command</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Add.svg</normaloff>:/Gallery/Add.svg</iconset>
@@ -154,9 +139,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandDelete">
-            <property name="toolTip">
-             <string>Delete selected command</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Delete.svg</normaloff>:/Gallery/Delete.svg</iconset>
@@ -165,9 +147,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandUp">
-            <property name="toolTip">
-             <string>Move selected command up</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-next-level.svg</normaloff>:/Gallery/Goto-next-level.svg</iconset>
@@ -176,9 +155,6 @@
           </item>
           <item>
            <widget class="QToolButton" name="m_buttonCommandDown">
-            <property name="toolTip">
-             <string>Move selected command down</string>
-            </property>
             <property name="icon">
              <iconset>
               <normaloff>:/Gallery/Goto-previous-level.svg</normaloff>:/Gallery/Goto-previous-level.svg</iconset>
@@ -212,12 +188,6 @@
        <widget class="QLineEdit" name="m_macroCmd">
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>Command line</string>
-        </property>
-        <property name="clearButtonEnabled">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
