@@ -300,7 +300,7 @@ namespace OpenParticleSystemEditor
         return m_ui->btnParticleName;
     }
 
-    void ParticleItemWidget::painEvent(QPaintEvent* event)
+    void ParticleItemWidget::paintEvent(QPaintEvent* event)
     {
         Q_UNUSED(event);
         QStyleOption opt;
