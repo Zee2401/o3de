@@ -76,7 +76,7 @@ namespace OpenParticleSystemEditor
         void OnClickRenderer(bool bCheck);
 
     protected:
-        void painEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent* event) override;
 
     public:
         QScopedPointer<Ui::particleItemWidget> m_ui;
