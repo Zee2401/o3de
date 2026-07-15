@@ -35,10 +35,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="nameLabel">
      <property name="text">
-      <string>&amp;Filter name</string>
-     </property>
-     <property name="buddy">
-      <cstring>tabNameEdit</cstring>
+      <string>Filter name</string>
      </property>
     </widget>
    </item>
@@ -48,20 +45,14 @@
       <string>Required!</string>
      </property>
      <property name="placeholderText">
-      <string>Tab name</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
+      <string>Hint text</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="windowNameBoxLabel">
      <property name="text">
-      <string>Category f&amp;ilter (optional)</string>
-     </property>
-     <property name="buddy">
-      <cstring>windowNameBox</cstring>
+      <string>Category filter (optional)</string>
      </property>
     </widget>
    </item>
@@ -78,20 +69,14 @@
    <item row="2" column="0">
     <widget class="QLabel" name="filterLabel">
      <property name="text">
-      <string>&amp;Text filter (optional)</string>
-     </property>
-     <property name="buddy">
-      <cstring>filterEdit</cstring>
+      <string>Text filter (optional)</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1" colspan="2">
     <widget class="QLineEdit" name="filterEdit">
      <property name="placeholderText">
-      <string>Search...</string>
-     </property>
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
+      <string>Hint text</string>
      </property>
     </widget>
    </item>
@@ -105,7 +90,7 @@
    <item row="3" column="1" colspan="2">
     <widget class="QCheckBox" name="checkNormal">
      <property name="text">
-      <string>Show &amp;messages</string>
+      <string>Show messages</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -115,7 +100,7 @@
    <item row="4" column="1" colspan="2">
     <widget class="QCheckBox" name="checkWarning">
      <property name="text">
-      <string>Show &amp;warnings</string>
+      <string>Show warnings</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -125,7 +110,7 @@
    <item row="5" column="1" colspan="2">
     <widget class="QCheckBox" name="checkError">
      <property name="text">
-      <string>Show &amp;errors</string>
+      <string>Show errors</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -135,7 +120,7 @@
    <item row="6" column="1" colspan="2">
     <widget class="QCheckBox" name="checkDebug">
      <property name="text">
-      <string>Show &amp;debug</string>
+      <string>Show debug</string>
      </property>
      <property name="checked">
       <bool>true</bool>
