@@ -86,22 +86,12 @@
          </size>
         </property>
         <property name="text">
-         <string>Variable &amp;Name</string>
-        </property>
-        <property name="buddy">
-         <cstring>variableName</cstring>
+         <string>Variable Name</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="variableName">
-        <property name="placeholderText">
-         <string>Enter variable name...</string>
-        </property>
-        <property name="clearButtonEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="variableName"/>
       </item>
      </layout>
     </widget>
@@ -151,10 +141,7 @@
          <string>Specifies the type of Container to create.</string>
         </property>
         <property name="text">
-         <string>&amp;Container Type</string>
-        </property>
-        <property name="buddy">
-         <cstring>containerTypeBox</cstring>
+         <string>Container Type</string>
         </property>
        </widget>
       </item>
@@ -276,10 +263,7 @@
          </size>
         </property>
         <property name="text">
-         <string>&amp;Pin To Variable List</string>
-        </property>
-        <property name="buddy">
-         <cstring>checkBox</cstring>
+         <string>Pin To Variable List</string>
         </property>
        </widget>
       </item>
