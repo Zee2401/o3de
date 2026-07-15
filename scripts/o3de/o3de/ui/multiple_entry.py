@@ -18,7 +18,7 @@ class Dialog(object):
     def __init__(self, parent, input_value):
 
         root = self.root = tk.Toplevel(parent)
-        root.title('Configure Files')
+        root.title('Configure Entries')
         root.resizable(True,True)
 
         px = parent.winfo_rootx()
@@ -56,11 +56,11 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
-        button_add.grid(row=0, column=0, sticky=tk.E)
+        button_add = tk.Button(button_frame, text="OK", width=8, command=self._on_ok)
+        button_add.grid(row=0, column=0, padx=4, pady=2, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
-        button_remove.grid(row=0, column=1, sticky=tk.E)
+        button_remove = tk.Button(button_frame, text="Cancel", width=8, command=self._on_cancel)
+        button_remove.grid(row=0, column=1, padx=4, pady=2, sticky=tk.E)
 
         root.grid()
 

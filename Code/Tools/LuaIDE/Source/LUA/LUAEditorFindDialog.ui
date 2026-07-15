@@ -66,10 +66,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Text to &amp;Find:</string>
-    </property>
-    <property name="buddy">
-     <cstring>txtFind</cstring>
+     <string>Text to Find:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -89,12 +86,6 @@
       <width>401</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="placeholderText">
-     <string>Search...</string>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="findNextButton">
@@ -422,10 +413,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Replace &amp;With:</string>
-    </property>
-    <property name="buddy">
-     <cstring>txtReplaceWith</cstring>
+     <string>Replace With:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -448,12 +436,6 @@
       <width>401</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="placeholderText">
-     <string>Replace...</string>
-    </property>
-    <property name="clearButtonEnabled">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="replaceButton">
