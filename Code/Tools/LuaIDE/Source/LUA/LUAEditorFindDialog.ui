@@ -66,7 +66,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Text to Find:</string>
+     <string>Text to &amp;Find:</string>
+    </property>
+    <property name="buddy">
+     <cstring>txtFind</cstring>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -86,6 +89,12 @@
       <width>401</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="placeholderText">
+     <string>Text to search for...</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="findNextButton">
@@ -218,7 +227,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Search Up</string>
+      <string>Search &amp;Up</string>
      </property>
     </widget>
     <widget class="QRadioButton" name="searchDownRadioButton">
@@ -231,7 +240,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Search Down</string>
+      <string>Search &amp;Down</string>
      </property>
     </widget>
    </widget>
@@ -257,7 +266,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Case Sensitive</string>
+      <string>Case &amp;Sensitive</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="wholeWordsCheckBox">
@@ -270,7 +279,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Whole Word</string>
+      <string>Whole &amp;Word</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="wrapCheckBox">
@@ -283,7 +292,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Wrap</string>
+      <string>W&amp;rap</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="regularExpressionCheckBox">
@@ -296,7 +305,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Regular Expression</string>
+      <string>Regular E&amp;xpression</string>
      </property>
     </widget>
    </widget>
@@ -397,7 +406,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Replace All</string>
+     <string>Replace Al&amp;l</string>
     </property>
    </widget>
    <widget class="QLabel" name="replaceWithLabel">
@@ -413,7 +422,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Replace With:</string>
+     <string>Replace &amp;With:</string>
+    </property>
+    <property name="buddy">
+     <cstring>txtReplaceWith</cstring>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -437,6 +449,12 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="placeholderText">
+     <string>Replacement text...</string>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="replaceButton">
     <property name="geometry">
@@ -448,7 +466,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Replace</string>
+     <string>&amp;Replace</string>
     </property>
    </widget>
   </widget>
