@@ -438,16 +438,16 @@ class NewComponentWindow:
             details_frame.columnconfigure(i, weight=1 if i == 1 else 0)
 
         # Row 0: Component Name
-        ttk.Label(details_frame, text="Component Name:").grid(
-            row=0, column=0, sticky="e", padx=5, pady=5)
+        lbl_name = ttk.Label(details_frame, text="Component Name:")
+        lbl_name.grid(row=0, column=0, sticky="e", padx=5, pady=5)
 
         self.component_name = ttk.Entry(details_frame)
         self.component_name.grid(row=0, column=1, columnspan=1, sticky="ew", padx=5, pady=5)
         Tooltip(self.component_name,  text="Enter the base name of your C++ component. \nThe template appends the word 'Component'.")
 
         # Row 1: Component Type
-        ttk.Label(details_frame, text="Component Type:").grid(
-            row=1, column=0, sticky="e", padx=5, pady=5)
+        lbl_type = ttk.Label(details_frame, text="Component Type:")
+        lbl_type.grid(row=1, column=0, sticky="e", padx=5, pady=5)
 
         def on_component_select(event):
             """Component type selection"""
@@ -467,8 +467,8 @@ class NewComponentWindow:
         Tooltip(self.component_type, "Select component type: 'Default' for runtime, 'Editor' for editor-specific functionality.")
 
         # Row 2: Namespace
-        ttk.Label(details_frame, text="Namespace:").grid(
-            row=2, column=0, sticky="e", padx=5, pady=5)
+        lbl_namespace = ttk.Label(details_frame, text="Namespace:")
+        lbl_namespace.grid(row=2, column=0, sticky="e", padx=5, pady=5)
 
         self.namespace_entry = ttk.Entry(
             details_frame,
@@ -480,8 +480,8 @@ class NewComponentWindow:
         ttk.Frame(details_frame, width=10).grid(row=2, column=2)
 
         # Row 3: Project Directory
-        ttk.Label(details_frame, text="Project Directory:").grid(
-            row=3, column=0, sticky="e", padx=5, pady=5)
+        lbl_project = ttk.Label(details_frame, text="Project Directory:")
+        lbl_project.grid(row=3, column=0, sticky="e", padx=5, pady=5)
 
         self.project_dir_var = tk.StringVar(value=str(project_path))
         self.project_dir_entry = ttk.Entry(
@@ -513,6 +513,7 @@ class NewComponentWindow:
         cmake_cb = ttk.Checkbutton(
             settings_frame,
             text="Add to project",
+            underline=0,
             variable=self.add_to_project,
             onvalue=True,
             offvalue=False)
@@ -523,6 +524,7 @@ class NewComponentWindow:
         license_cb = ttk.Checkbutton(
             settings_frame,
             text="Default License",
+            underline=0,
             variable=self.default_license,
             onvalue=True,
             offvalue=False)
@@ -544,6 +546,7 @@ class NewComponentWindow:
         ok_btn = ttk.Button(
             button_frame,
             text="Create",
+            underline=0,
             command=self.on_ok,
             style="C.TButton")
         ok_btn.pack(side="right", padx=5)
@@ -552,10 +555,42 @@ class NewComponentWindow:
         cancel_btn = ttk.Button(
             button_frame,
             text="Cancel",
+            underline=5,
             command=self.on_cancel,
             style="C.TButton")
         cancel_btn.pack(side="right")
         Tooltip(cancel_btn, "Close this window without creating a component.")
+
+        # Keyboard Mnemonics and Shortcuts
+        lbl_name.config(underline=10)       # Underline 'N' in Component Name
+        lbl_type.config(underline=10)       # Underline 'T' in Component Type
+        lbl_namespace.config(underline=4)   # Underline 's' in Namespace to match Alt-s/Alt-S
+        lbl_project.config(underline=0)     # Underline 'P' in Project Directory
+
+        # Binding mnemonics to focus/toggle/activate actions
+        self.root.bind("<Alt-n>", lambda e: self.component_name.focus_set())
+        self.root.bind("<Alt-N>", lambda e: self.component_name.focus_set())
+        self.root.bind("<Alt-t>", lambda e: self.component_type.focus_set())
+        self.root.bind("<Alt-T>", lambda e: self.component_type.focus_set())
+        self.root.bind("<Alt-s>", lambda e: self.namespace_entry.focus_set())
+        self.root.bind("<Alt-S>", lambda e: self.namespace_entry.focus_set())
+        self.root.bind("<Alt-p>", lambda e: self.project_dir_entry.focus_set())
+        self.root.bind("<Alt-P>", lambda e: self.project_dir_entry.focus_set())
+
+        # Checkbuttons Alt keyboard bindings
+        self.root.bind("<Alt-a>", lambda e: cmake_cb.invoke())
+        self.root.bind("<Alt-A>", lambda e: cmake_cb.invoke())
+        self.root.bind("<Alt-d>", lambda e: license_cb.invoke())
+        self.root.bind("<Alt-D>", lambda e: license_cb.invoke())
+
+        # Action Buttons Alt bindings
+        self.root.bind("<Alt-c>", lambda e: ok_btn.invoke())
+        self.root.bind("<Alt-C>", lambda e: ok_btn.invoke())
+        self.root.bind("<Alt-l>", lambda e: cancel_btn.invoke())
+        self.root.bind("<Alt-L>", lambda e: cancel_btn.invoke())
+
+        # Binding Escape key to cancel
+        self.root.bind("<Escape>", lambda e: self.on_cancel())
 
     def close_window(self):
         """Centralized for all close operations"""
