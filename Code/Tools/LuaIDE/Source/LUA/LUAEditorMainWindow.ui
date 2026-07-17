@@ -736,7 +736,11 @@
 						</widget>
 					</item>
 					<item row="1" column="0">
-						<widget class="AzQtComponents::FilteredSearchWidget" name="m_searchWidget" native="true"/>
+						<widget class="AzQtComponents::FilteredSearchWidget" name="m_searchWidget" native="true">
+							<property name="placeholderText">
+								<string>Search Classes Reference...</string>
+							</property>
+						</widget>
 					</item>
 					<item row="2" column="0">
 						<widget class="DHClassReferenceWidget" name="classReferenceTreeView">
@@ -794,7 +798,11 @@
 						<number>0</number>
 					</property>
 					<item>
-						<widget class="AzQtComponents::FilteredSearchWidget" name="m_assetBrowserSearchWidget" native="true"/>
+						<widget class="AzQtComponents::FilteredSearchWidget" name="m_assetBrowserSearchWidget" native="true">
+							<property name="placeholderText">
+								<string>Search Lua Files...</string>
+							</property>
+						</widget>
 					</item>
 					<item>
 						<widget class="AzToolsFramework::AssetBrowser::AssetBrowserTreeView" name="m_assetBrowserTreeView">
@@ -891,6 +899,9 @@
 			<property name="text">
 				<string>Save A&amp;ll</string>
 			</property>
+			<property name="toolTip">
+				<string>Save all open files</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+Shift+S</string>
 			</property>
@@ -909,6 +920,9 @@
 			<property name="text">
 				<string>&amp;Undo</string>
 			</property>
+			<property name="toolTip">
+				<string>Undo last action</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+Z</string>
 			</property>
@@ -921,6 +935,9 @@
 			</property>
 			<property name="text">
 				<string>&amp;Redo</string>
+			</property>
+			<property name="toolTip">
+				<string>Redo last undone action</string>
 			</property>
 			<property name="shortcut">
 				<string>Ctrl+Y</string>
@@ -951,6 +968,9 @@
 			<property name="text">
 				<string>&amp;Copy</string>
 			</property>
+			<property name="toolTip">
+				<string>Copy selection</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+C</string>
 			</property>
@@ -963,6 +983,9 @@
 			</property>
 			<property name="text">
 				<string>&amp;Paste</string>
+			</property>
+			<property name="toolTip">
+				<string>Paste from clipboard</string>
 			</property>
 			<property name="shortcut">
 				<string>Ctrl+V</string>
@@ -990,6 +1013,9 @@
 			<property name="text">
 				<string>&amp;Find</string>
 			</property>
+			<property name="toolTip">
+				<string>Find text</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+F</string>
 			</property>
@@ -1002,6 +1028,9 @@
 			</property>
 			<property name="text">
 				<string>Find Next</string>
+			</property>
+			<property name="toolTip">
+				<string>Find next occurrence</string>
 			</property>
 			<property name="shortcut">
 				<string>F3</string>
@@ -1016,6 +1045,9 @@
 			<property name="text">
 				<string>Find in &amp;Open Files</string>
 			</property>
+			<property name="toolTip">
+				<string>Find in all open files</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+Shift+F</string>
 			</property>
@@ -1028,6 +1060,9 @@
 			</property>
 			<property name="text">
 				<string>&amp;Replace</string>
+			</property>
+			<property name="toolTip">
+				<string>Replace text</string>
 			</property>
 			<property name="shortcut">
 				<string>Ctrl+R</string>
@@ -1042,6 +1077,9 @@
 			<property name="text">
 				<string>R&amp;eplace in Open Files</string>
 			</property>
+			<property name="toolTip">
+				<string>Replace in all open files</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+Shift+R</string>
 			</property>
@@ -1054,6 +1092,9 @@
 			</property>
 			<property name="text">
 				<string>Quick Find &amp;Local</string>
+			</property>
+			<property name="toolTip">
+				<string>Quick find local</string>
 			</property>
 			<property name="shortcut">
 				<string>Ctrl+F3</string>
@@ -1068,6 +1109,9 @@
 			<property name="text">
 				<string>Quick Find Local &amp;Reverse</string>
 			</property>
+			<property name="toolTip">
+				<string>Quick find local reverse</string>
+			</property>
 			<property name="shortcut">
 				<string>Ctrl+Shift+F3</string>
 			</property>
@@ -1081,6 +1125,9 @@
 			<property name="text">
 				<string>&amp;New</string>
 			</property>
+			<property name="toolTip">
+				<string>Create a new LUA script</string>
+			</property>
 		</action>
 		<action name="actionSaveAs">
 			<property name="icon">
@@ -1090,6 +1137,9 @@
 			</property>
 			<property name="text">
 				<string>Save As</string>
+			</property>
+			<property name="toolTip">
+				<string>Save the current file with a new name</string>
 			</property>
 		</action>
 		<action name="action_execute">
@@ -1133,6 +1183,9 @@
 			<property name="text">
 				<string>Toggle &amp;Breakpoint</string>
 			</property>
+			<property name="toolTip">
+				<string>Toggle breakpoint on current line</string>
+			</property>
 			<property name="shortcut">
 				<string>F9</string>
 			</property>
@@ -1146,6 +1199,9 @@
 			<property name="text">
 				<string>&amp;Run/Continue</string>
 			</property>
+			<property name="toolTip">
+				<string>Continue running script execution</string>
+			</property>
 			<property name="shortcut">
 				<string>F5</string>
 			</property>
@@ -1158,6 +1214,9 @@
 			</property>
 			<property name="text">
 				<string>Step &amp;Over</string>
+			</property>
+			<property name="toolTip">
+				<string>Step over next statement</string>
 			</property>
 			<property name="shortcut">
 				<string>F10</string>
@@ -1187,6 +1246,9 @@
 			</property>
 			<property name="text">
 				<string>Ste&amp;p Out</string>
+			</property>
+			<property name="toolTip">
+				<string>Step out of current function</string>
 			</property>
 			<property name="shortcut">
 				<string>Shift+F11</string>
