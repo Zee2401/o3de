@@ -38,6 +38,18 @@ namespace AudioControls
         connect(m_scopeDropDown, SIGNAL(activated(QString)), this, SLOT(SetControlScope(QString)));
         connect(m_autoLoadCheckBox, SIGNAL(clicked(bool)), this, SLOT(SetAutoLoadForCurrentControl(bool)));
 
+        m_nameLineEditor->setPlaceholderText(tr("Enter name..."));
+        m_nameLineEditor->setClearButtonEnabled(true);
+        m_nameLineEditor->setAccessibleName(tr("Control Name"));
+        m_nameLabel->setBuddy(m_nameLineEditor);
+        m_nameLabel->setToolTip(tr("Allowed characters: A-Z, a-z, 0-9, and underscore (_)"));
+
+        m_scopeDropDown->setAccessibleName(tr("Scope"));
+        m_scopeLabel->setBuddy(m_scopeDropDown);
+
+        m_autoLoadCheckBox->setAccessibleName(tr("Auto Load"));
+        m_autoLoadLabel->setBuddy(m_autoLoadCheckBox);
+
         // data validators
         m_nameLineEditor->setValidator(new QRegularExpressionValidator(QRegularExpression("^[a-zA-Z0-9_]*$"), m_nameLineEditor));
 
