@@ -217,4 +217,4 @@ six==1.16.0 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
     # via
     #   python-dateutil
-urllib3==1.26.9
+urllib3==2.7.0
