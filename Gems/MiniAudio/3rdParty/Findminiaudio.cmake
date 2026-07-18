@@ -19,25 +19,21 @@ endif()
 # copies this structure.  O3DE doesn't currently ship with opus support as there are patent questions about it.
 find_package(vorbis)
 
-function(Getminiaudio)
-    # Variables inside a local function are scoped to the function body.
+block()
+    # Variables inside a block are scoped to the block body.
     # Putting all of this inside a function lets us basically ensure that any variables set by us before invoking the
     # external 3rdParty CMake file do not have any effect on the outside world, and allows us not to have to save and restore anything
     # except for cache changes.
 
     # Part 1:  Where do you get the library from?  Make sure to inform the user of the source of the library and any patches applied.
-    include(FetchContent)
-    set(MINIAUDIO_GIT_REPO "https://github.com/mackron/miniaudio.git")
-    set(MINIAUDIO_GIT_TAG "0.11.22")
-    set(MINIAUDIO_GIT_HASH "350784a9467a79d0fa65802132668e5afbcf3777") # prefer to pin to hashes for security
-    FetchContent_Declare(
-            miniaudio
-            GIT_REPOSITORY ${MINIAUDIO_GIT_REPO}
-            GIT_TAG ${MINIAUDIO_GIT_HASH}
-            GIT_SHALLOW TRUE
-            # it is not necessary to EXCLUDE_FROM_ALL above because miniaudio does not try to force install anything.
+    o3de_fetch_content(miniaudio
+        VERSION "v0.11.22"
+        LICENSE "MIT No Attribution"
+        URL "https://github.com/mackron/miniaudio/archive/refs/tags/0.11.22.tar.gz"
+        URL_HASH "bcb07bfb27e6fa94d34da73ba2d5642d4940b208ec2a660dbf4e52e6b7cd492f"
+        GIT "https://github.com/mackron/miniaudio.git"
+        GIT_HASH "350784a9467a79d0fa65802132668e5afbcf3777"
     )
-    message(STATUS "MiniAudio Gem uses ${MINIAUDIO_GIT_REPO} ${MINIAUDIO_GIT_TAG} (MIT No Attribution)")
 
     # Part 2: Set the build settings and trigger the actual execution of the downloaded CMakeLists.txt file
     # Note that CMAKE_ARGS does NOT WORK for FetchContent_*, only ExternalProject.
@@ -61,10 +57,13 @@ function(Getminiaudio)
     FetchContent_MakeAvailable(miniaudio)
 
     set(CMAKE_WARN_DEPRECATED ON CACHE BOOL "" FORCE)
-endfunction()
+endblock()
 
-Getminiaudio()
-unset(Getminiaudio)
+# MiniAudio by default calls CoInitializeEx and CoUninitialize, repeatedly,
+# and sets the flags field to whatever you set MA_COINIIT_VALUE to. It does this on the main thread.
+# This needs to be the same as any other calls to CoInitializeEx on the main thread, which in O3DE's
+# case is 2 (STA mode)
+target_compile_definitions(miniaudio PRIVATE "MA_COINIT_VALUE=2")
 
 get_property(this_gem_root GLOBAL PROPERTY "@GEMROOT:${gem_name}@")
 ly_get_engine_relative_source_dir(${this_gem_root} relative_this_gem_root)

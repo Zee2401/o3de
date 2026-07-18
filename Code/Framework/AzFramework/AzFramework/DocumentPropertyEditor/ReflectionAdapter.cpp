@@ -161,7 +161,6 @@ namespace AZ::DocumentPropertyEditor
                 // notify the new value in the container so that listeners can update dom / store overrides / undo redo
                 AZ::Dom::Value newValue = impl->GetContainerValue(m_containerInstance, containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::InProgressEdit);
-                AZ::DocumentPropertyEditor::ReflectionAdapter::InvokeChangeNotify(containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::FinishedEdit);
 
                 impl->m_adapter->NotifyResetDocument();
@@ -176,7 +175,6 @@ namespace AZ::DocumentPropertyEditor
                 // Notify that the document has changed with the new value in the container:
                 AZ::Dom::Value newValue = impl->GetContainerValue(m_containerInstance, containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::InProgressEdit);
-                AZ::DocumentPropertyEditor::ReflectionAdapter::InvokeChangeNotify(containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::FinishedEdit);
                 // rebuild the view based on the new contents, which could be many rows.
                 // This deletes the 'this' pointer!
@@ -475,7 +473,6 @@ namespace AZ::DocumentPropertyEditor
                 // notify about the new values in the container:
                 AZ::Dom::Value newValue = impl->GetContainerValue(m_containerInstance, containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::InProgressEdit);
-                AZ::DocumentPropertyEditor::ReflectionAdapter::InvokeChangeNotify(containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::FinishedEdit);
 
                 impl->m_adapter->NotifyResetDocument();
@@ -489,7 +486,6 @@ namespace AZ::DocumentPropertyEditor
                 //  notify about the new values in the container:
                 AZ::Dom::Value newValue = impl->GetContainerValue(m_containerInstance, containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::InProgressEdit);
-                AZ::DocumentPropertyEditor::ReflectionAdapter::InvokeChangeNotify(containerNode);
                 Nodes::PropertyEditor::OnChanged.InvokeOnDomNode(containerNode, newValue, Nodes::ValueChangeType::FinishedEdit);
 
                 impl->m_adapter->NotifyResetDocument();
@@ -1616,7 +1612,9 @@ namespace AZ::DocumentPropertyEditor
         {
             // For now just trigger a soft reset but the end goal is to handle granular updates.
             // This will still only send the view patches for what's actually changed.
-            NotifyResetDocument();
+            // Also note, this can happen in the middle of property editing, we do NOT want to actually
+            // reset the document immediately and cause the widgets to potentially be destroyed while still being worked on.
+            QueueResetDocument();
         };
 
         return message.Match(

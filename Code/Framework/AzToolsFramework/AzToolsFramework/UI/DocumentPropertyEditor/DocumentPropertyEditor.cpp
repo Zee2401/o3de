@@ -7,10 +7,13 @@
  */
 #include "DocumentPropertyEditor.h"
 
+#include <QAbstractSpinBox>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDialog>
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QSignalBlocker>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -423,7 +426,7 @@ namespace AzToolsFramework
         m_expanderWidget = new QCheckBox(parentWidget());
         m_expanderWidget->setCheckState(m_expanded ? Qt::Checked : Qt::Unchecked);
         AzQtComponents::CheckBox::applyExpanderStyle(m_expanderWidget);
-        connect(m_expanderWidget, &QCheckBox::stateChanged, this, &DPELayout::onCheckstateChanged);
+        connect(m_expanderWidget, &QCheckBox::checkStateChanged, this, &DPELayout::onCheckstateChanged);
     }
 
     void DPELayout::SetAsStartOfNewColumn(size_t widgetIndex)
@@ -452,6 +455,7 @@ namespace AzToolsFramework
                 {
                     childWidget->hide();
                     m_columnLayout->removeWidget(childWidget);
+                    GetDPE()->ClearDirtyHandler(handlerInfo.handlerInterface);
                     DocumentPropertyEditor::ReleaseHandler(handlerInfo);
                 }
                 else if (auto rowWidget = qobject_cast<DPERowWidget*>(childWidget))
@@ -613,6 +617,7 @@ namespace AzToolsFramework
                 RemoveCachedAttributes(childIndex);
                 if (!newOwner)
                 {
+                    GetDPE()->ClearDirtyHandler(handlerInfo.handlerInterface);
                     DocumentPropertyEditor::ReleaseHandler(handlerInfo);
                 }
             }
@@ -912,6 +917,7 @@ namespace AzToolsFramework
                                 {
                                     m_domOrderedChildren[childIndex] = replacementWidget;
                                     AddColumnWidget(replacementWidget, childIndex, valueAtSubPath);
+                                    theDPE->AddDirtyHandler(theDPE->GetInfoFromWidget(replacementWidget).handlerInterface);
                                 }
                             }
                             else if (AZ::DocumentPropertyEditor::PropertyEditorSystem::DPEDebugEnabled())
@@ -936,6 +942,7 @@ namespace AzToolsFramework
                         {
                             childWidget->hide();
                             m_columnLayout->removeWidget(childWidget);
+                            theDPE->ClearDirtyHandler(handlerInfo.handlerInterface);
                             DocumentPropertyEditor::ReleaseHandler(handlerInfo);
 
                             // Replace the existing handler widget with one appropriate for the new type
@@ -948,7 +955,7 @@ namespace AzToolsFramework
                             // handler is the same, set the existing handler with the new value
                             RemoveCachedAttributes(childIndex);
                             SetPropertyEditorAttributes(childIndex, valueAtSubPath, childWidget);
-                            handlerInfo.handlerInterface->SetValueFromDom(valueAtSubPath);
+                            handlerInfo.handlerInterface->SetValueFromDom_Internal(valueAtSubPath, theDPE);
                         }
                     }
                     else
@@ -1005,7 +1012,6 @@ namespace AzToolsFramework
         }
 
         SetPropertyEditorAttributes(domIndex, domValue, columnWidget);
-
         // insert after the found index; even if nothing were found and priorIndex is -1,
         // insert one after it, at position 0
         m_columnLayout->insertWidget(priorColumnIndex + 1, columnWidget);
@@ -1245,6 +1251,10 @@ namespace AzToolsFramework
                     AddChildFromDomValue(myValue[valueIndex], valueIndex);
                 }
             }
+            if ((!expandRecursively) || (initialRecursiveExpander))
+            {
+                dpe->UpdateDirtyHandlers(); // this flushes all pending ui updates.
+            }
             if (initialRecursiveExpander)
             {
                 dpe->SetRecursiveExpansionOngoing(false);
@@ -1369,6 +1379,7 @@ namespace AzToolsFramework
 
     void DocumentPropertyEditor::Clear()
     {
+        m_dirtyHandlers.clear();
         m_rowPool->RecycleInstance(m_rootNode);
         m_rootNode = nullptr;
     }
@@ -1403,6 +1414,60 @@ namespace AzToolsFramework
             hint.setHeight(m_layout->sizeHint().height() + margins.top() + margins.bottom());
         }
         return hint;
+    }
+
+    // =========================================================================
+    // Tab Navigation for DPE
+    // =========================================================================
+    // Skips non-input widgets (QToolButton indicators, expanders, etc.) that
+    // clutter the tab chain. Only stops on actual input widgets.
+
+    static bool IsInputWidget(QWidget* w)
+    {
+        if (!w)
+        {
+            return false;
+        }
+        // Input widgets that should receive tab focus
+        if (qobject_cast<QAbstractSpinBox*>(w))  return true;  // SpinBox, DoubleSpinBox
+        if (qobject_cast<QComboBox*>(w))          return true;
+        if (qobject_cast<QCheckBox*>(w))          return true;
+        if (qobject_cast<QLineEdit*>(w))          return true;  // EntityIdQLineEdit, BrowseEdit line
+        if (qobject_cast<QPushButton*>(w))        return true;  // Browse buttons, action buttons
+        return false;
+    }
+
+    bool DocumentPropertyEditor::focusNextPrevChild(bool next)
+    {
+        QWidget* before = focusWidget();
+
+        // Try up to 50 hops to find the next input widget, skipping
+        // QToolButtons, expanders, and other non-input widgets.
+        for (int hops = 0; hops < 50; ++hops)
+        {
+            bool result = QScrollArea::focusNextPrevChild(next);
+            if (!result)
+            {
+                return false;
+            }
+
+            QWidget* after = focusWidget();
+            if (!after || after == before)
+            {
+                return result;
+            }
+
+            if (IsInputWidget(after))
+            {
+                return true;
+            }
+
+            // Not an input widget -- continue hopping
+            before = after;
+        }
+
+        // Safety: give up after too many hops
+        return false;
     }
 
     void DocumentPropertyEditor::AddAfterWidget(QWidget* precursor, QWidget* widgetToAdd)
@@ -1486,6 +1551,15 @@ namespace AzToolsFramework
             applyFilterRecursively(m_rootNode, applyFilterRecursively);
             update(); // Need to redraw for the linting to be applied
         }
+    }
+
+    // this happens when something *outside* of the control of the DPE has changed the underlying data.
+    // for example, clicking a manipulator in the viewport and changing it.  Since the change
+    // does not originate anywhere in the DPE's domain, it cannot know that the value has changed and that the
+    // tree needs to be refreshed, except by listening for this event which is spontaneous.
+    void DocumentPropertyEditor::QueueInvalidation([[maybe_unused]] PropertyModificationRefreshLevel level)
+    {
+        RequestExecuteQueuedReset();
     }
 
     void DocumentPropertyEditor::SetSavedExpanderStateForRow(const AZ::Dom::Path& rowPath, bool isExpanded)
@@ -1680,6 +1754,7 @@ namespace AzToolsFramework
             }
         }
         m_layout->addStretch();
+        UpdateDirtyHandlers();
         updateGeometry();
         emit RequestSizeUpdate();
     }
@@ -1717,9 +1792,44 @@ namespace AzToolsFramework
             }
             else
             {
+                UpdateDirtyHandlers();
                 updateGeometry();
             }
         }
+        m_dirtyHandlers.clear();
+
+    }
+
+    void DocumentPropertyEditor::AddDirtyHandler(PropertyHandlerWidgetInterface* dirtyHandler)
+    {
+        if (dirtyHandler)
+        {
+            m_dirtyHandlers.insert(dirtyHandler);
+        }
+    }
+
+    void DocumentPropertyEditor::ClearDirtyHandler(PropertyHandlerWidgetInterface* toClear)
+    {
+        m_dirtyHandlers.erase(toClear);
+    }
+
+    void DocumentPropertyEditor::UpdateDirtyHandlers()
+    {
+        AZStd::unordered_set<PropertyHandlerWidgetInterface*> dirtyHandlers;
+        m_dirtyHandlers.swap(dirtyHandlers);
+
+        for (PropertyHandlerWidgetInterface* dirtyHandler : dirtyHandlers)
+        {
+            dirtyHandler->RefreshUI();
+        }
+
+        // additional check - this above loop should not cause any other handlers to be dirty
+        // if it does, it means that someone is setting UI values without blocking signals.
+        AZ_Assert(
+            m_dirtyHandlers.empty(),
+            "DocumentPropertyEditor::UpdateDirtyHandlers - dirty handlers were added during refreshUI."
+            "it means that a handler is setting values without blocking signals.  Ensure that if you "
+            "are calling UI functions like setText / setValue / etc, you are blocking signals.");
     }
 
     void DocumentPropertyEditor::HandleDomMessage(
@@ -1791,11 +1901,37 @@ namespace AzToolsFramework
             }
         };
 
+        auto handlePropertyEditorChanged = [&](const AZ::Dom::Value&, AZ::DocumentPropertyEditor::Nodes::ValueChangeType)
+        {
+            RequestExecuteQueuedReset();
+        };
+
         message.Match(
             AZ::DocumentPropertyEditor::Nodes::Adapter::QueryKey,
             showKeyQueryDialog,
             AZ::DocumentPropertyEditor::Nodes::Adapter::QuerySubclass,
-            showQuerySubclassDialog);
+            showQuerySubclassDialog,
+            AZ::DocumentPropertyEditor::Nodes::PropertyEditor::OnChanged,
+            handlePropertyEditorChanged);
+    }
+
+    void DocumentPropertyEditor::RequestExecuteQueuedReset()
+    {
+        if (m_executeQueuedResetAlreadyQueued)
+        {
+            return;
+        }
+
+        m_executeQueuedResetAlreadyQueued = true;
+        // When a value changes, we'd like to queue the execution of any property editor tree updates.
+        QTimer::singleShot(
+            1,  // 1 to place it AFTER all other 0 timer or queued events.
+            this,
+            [this]()
+            {
+                m_executeQueuedResetAlreadyQueued = false;
+                m_adapter->ExecuteQueuedReset();
+            });
     }
 
     void DocumentPropertyEditor::RegisterHandlerPool(AZ::Name handlerName, AZStd::shared_ptr<AZ::InstancePoolBase> handlerPool)
@@ -1866,7 +2002,7 @@ namespace AzToolsFramework
             RegisterHandlerPool(handlerName, handlerPool);
 
             auto handler = handlerPool->GetInstance();
-            handler->SetValueFromDom(domValue);
+            handler->SetValueFromDom_Internal(domValue, this);
             createdWidget = handler->GetWidget();
             createdWidget->setEnabled(true);
         }

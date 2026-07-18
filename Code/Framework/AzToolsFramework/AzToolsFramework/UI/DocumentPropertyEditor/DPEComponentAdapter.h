@@ -61,6 +61,7 @@ namespace AZ::DocumentPropertyEditor
 
         //! Gets notification from the EntitySystemBus before destroying an entity.
         void OnEntityDestruction(const AZ::EntityId&) override;
+        void OnEntityInitialized(const AZ::EntityId&) override;
 
     private:
         //! Checks if the component is still valid in the entity.
@@ -80,6 +81,9 @@ namespace AZ::DocumentPropertyEditor
 
         //! object, used in conjunction with a QPointer, to track if this component is still alive
         QObject m_stillAlive;
+        // for debugging, detect if someone makes a control that sends a "finished edit" without an
+        // in progress edit.
+        bool m_gotInProgressEdit = false;
     };
 
 } // namespace AZ::DocumentPropertyEditor

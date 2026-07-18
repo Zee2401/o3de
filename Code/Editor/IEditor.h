@@ -174,10 +174,10 @@ enum EEditorNotifyEvent
 // UI event handler
 struct IUIEvent
 {
-    virtual void OnClick(DWORD dwId) = 0;
-    virtual bool IsEnabled(DWORD dwId) = 0;
-    virtual bool IsChecked(DWORD dwId) = 0;
-    virtual const char* GetUIElementName(DWORD dwId) = 0;
+    virtual void OnClick(AZ::u32 id) = 0;
+    virtual bool IsEnabled(AZ::u32 id) = 0;
+    virtual bool IsChecked(AZ::u32 id) = 0;
+    virtual const char* GetUIElementName(AZ::u32 id) = 0;
 };
 
 //! Add object that implements this interface to Load listeners of IEditor
@@ -485,15 +485,6 @@ struct IEditor
     virtual void AcceptUndo(const QString& name) = 0;
     //! Cancel changes and restore undo objects.
     virtual void CancelUndo() = 0;
-    //! Normally this is NOT needed but in special cases this can be useful.
-    //! This allows to group a set of Begin()/Accept() sequences to be undone in one operation.
-    virtual void SuperBeginUndo() = 0;
-    //! When a SuperBegin() used, this method is used to Accept.
-    //! This leaves the undo database in its modified state and registers the IUndoObjects with the undo system.
-    //! This will allow the user to undo the operation.
-    virtual void SuperAcceptUndo(const QString& name) = 0;
-    //! Cancel changes and restore undo objects.
-    virtual void SuperCancelUndo() = 0;
     //! Suspend undo recording.
     virtual void SuspendUndo() = 0;
     //! Resume undo recording.

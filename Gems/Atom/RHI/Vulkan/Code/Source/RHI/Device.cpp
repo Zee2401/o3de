@@ -153,15 +153,25 @@ namespace AZ
             {
                 const VkQueueFamilyProperties& familyProperties = m_queueFamilyProperties[familyIndex];
 
-                // There should be at least one queue family supporting both graphics and compute (as well as copying, but that might not be
-                // exposed)
+                VkQueueFlags effectiveFlags = familyProperties.queueFlags;
+                if (AZ::RHI::CheckBitsAny(effectiveFlags, static_cast<VkFlags>(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT)))
+                {
+                    // according to the Vulkan spec, if a queue supports graphics or compute, transfer bit is implied and does not
+                    // need to actually be set.  See https://registry.khronos.org/VulkanSC/specs/1.0-extensions/man/html/VkQueueFlagBits.html
+                    effectiveFlags |= VK_QUEUE_TRANSFER_BIT;
+                }
+
+                // There should be at least one queue family supporting both graphics and compute. Quoting the above registry link:
+                // > If an implementation exposes any queue family that supports graphics operations, at least one queue family of at least
+                // > one physical device exposed by the implementation must support both graphics and compute operations.
                 if ((graphicsFamilyIndex == -1) &&
-                    AZ::RHI::CheckBitsAll(familyProperties.queueFlags, static_cast<VkFlags>(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT)))
+                    AZ::RHI::CheckBitsAll(effectiveFlags, static_cast<VkFlags>(VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT)))
                 {
                     graphicsFamilyIndex = familyIndex;
                 }
 
-                if (AZ::RHI::CheckBitsAny(familyProperties.queueFlags, static_cast<VkFlags>(VK_QUEUE_COMPUTE_BIT)))
+                // if there is a compute queue that doesn't support graphics, we prefer it over one that supports both:
+                if (AZ::RHI::CheckBitsAny(effectiveFlags, static_cast<VkFlags>(VK_QUEUE_COMPUTE_BIT)))
                 {
                     if (computeFamilyIndex == -1)
                     {
@@ -171,15 +181,18 @@ namespace AZ
                     {
                         // We take the queue family that supports the least amount of features, but still supports compute. That way we
                         // likely get an async compute queue.
-                        if (AZ::RHI::CountBitsSet(familyProperties.queueFlags) <
-                            AZ::RHI::CountBitsSet(m_queueFamilyProperties[computeFamilyIndex].queueFlags))
+                        VkQueueFlags currentFlags = familyProperties.queueFlags;
+                        VkQueueFlags existingFlags = m_queueFamilyProperties[computeFamilyIndex].queueFlags;
+                        if (currentFlags < existingFlags)
                         {
                             computeFamilyIndex = familyIndex;
                         }
                     }
                 }
 
-                if (AZ::RHI::CheckBitsAny(familyProperties.queueFlags, static_cast<VkFlags>(VK_QUEUE_TRANSFER_BIT)))
+                // Look for a dedicated transfer queue, if one is availalble.  Same process as above, prefer queues that
+                // support less features, as they are more likely to be async.
+                if (AZ::RHI::CheckBitsAny(effectiveFlags, static_cast<VkFlags>(VK_QUEUE_TRANSFER_BIT)))
                 {
                     if (transferFamilyIndex == -1)
                     {
@@ -187,10 +200,9 @@ namespace AZ
                     }
                     else
                     {
-                        // We take the queue family that supports the least amount of features, but still supports copying. That way we
-                        // likely get an async copy queue.
-                        if (AZ::RHI::CountBitsSet(familyProperties.queueFlags) <
-                            AZ::RHI::CountBitsSet(m_queueFamilyProperties[transferFamilyIndex].queueFlags))
+                        VkQueueFlags currentFlags = familyProperties.queueFlags;
+                        VkQueueFlags existingFlags = m_queueFamilyProperties[transferFamilyIndex].queueFlags;
+                        if (currentFlags < existingFlags)
                         {
                             transferFamilyIndex = familyIndex;
                         }
@@ -564,7 +576,7 @@ namespace AZ
                 &deviceInfo,
                 VkSystemAllocator::Get(),
                 &m_nativeDevice);
-            AssertSuccess(vkResult);
+            VK_RESULT_ASSERT(vkResult);
             RETURN_RESULT_IF_UNSUCCESSFUL(ConvertResult(vkResult));
 
             LoaderContext::Descriptor loaderDescriptor;
@@ -718,9 +730,9 @@ namespace AZ
                 // This will not allocate or bind memory.
                 ImageCreateInfo createInfo = BuildImageCreateInfo(descriptor);
                 VkImage vkImage = VK_NULL_HANDLE;
-                VkResult vkResult =
+                [[maybe_unused]] VkResult vkResult =
                     GetContext().CreateImage(GetNativeDevice(), createInfo.GetCreateInfo(), VkSystemAllocator::Get(), &vkImage);
-                AssertSuccess(vkResult);
+                VK_RESULT_ASSERT(vkResult);
 
                 VkMemoryRequirements memoryRequirements = {};
                 GetContext().GetImageMemoryRequirements(GetNativeDevice(), vkImage, &memoryRequirements);
@@ -746,9 +758,9 @@ namespace AZ
                 // This will not allocate or bind memory.
                 BufferCreateInfo createInfo = BuildBufferCreateInfo(descriptor);
                 VkBuffer vkBuffer = VK_NULL_HANDLE;
-                VkResult vkResult =
+                [[maybe_unused]] VkResult vkResult =
                     GetContext().CreateBuffer(GetNativeDevice(), createInfo.GetCreateInfo(), VkSystemAllocator::Get(), &vkBuffer);
-                AssertSuccess(vkResult);
+                VK_RESULT_ASSERT(vkResult);
 
                 VkMemoryRequirements memoryRequirements = {};
                 GetContext().GetBufferMemoryRequirements(GetNativeDevice(), vkBuffer, &memoryRequirements);
@@ -1071,8 +1083,9 @@ namespace AZ
 
             const auto& physicalDevice = static_cast<const PhysicalDevice&>(GetPhysicalDevice());
             uint32_t surfaceFormatCount = 0;
-            AssertSuccess(GetContext().GetPhysicalDeviceSurfaceFormatsKHR(
-                physicalDevice.GetNativePhysicalDevice(), vkSurface, &surfaceFormatCount, nullptr));
+            [[maybe_unused]] VkResult vkResult = GetContext().GetPhysicalDeviceSurfaceFormatsKHR(
+                physicalDevice.GetNativePhysicalDevice(), vkSurface, &surfaceFormatCount, nullptr);
+            VK_RESULT_ASSERT(vkResult);
             if (surfaceFormatCount == 0)
             {
                 AZ_Assert(false, "Surface support no format.");
@@ -1080,8 +1093,9 @@ namespace AZ
             }
 
             AZStd::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
-            AssertSuccess(GetContext().GetPhysicalDeviceSurfaceFormatsKHR(
-                physicalDevice.GetNativePhysicalDevice(), vkSurface, &surfaceFormatCount, surfaceFormats.data()));
+            vkResult = GetContext().GetPhysicalDeviceSurfaceFormatsKHR(
+                physicalDevice.GetNativePhysicalDevice(), vkSurface, &surfaceFormatCount, surfaceFormats.data());
+            VK_RESULT_ASSERT(vkResult);
 
             bool colorSpaceExt = false;
             if (r_hdrOutput)
@@ -1716,7 +1730,7 @@ namespace AZ
             }
 
             VkResult errorCode = vmaCreateAllocator(&allocatorInfo, &m_vmaAllocator);
-            AssertSuccess(errorCode);
+            VK_RESULT_ASSERT(errorCode);
 
             return ConvertResult(errorCode);
         }
@@ -1889,14 +1903,15 @@ namespace AZ
             vkCreateInfo.usage = CalculateImageUsageFlags(descriptor);
 
             VkImageFormatProperties formatProps{};
-            AssertSuccess(GetContext().GetPhysicalDeviceImageFormatProperties(
+            [[maybe_unused]] VkResult vkResult = GetContext().GetPhysicalDeviceImageFormatProperties(
                 physicalDevice.GetNativePhysicalDevice(),
                 vkCreateInfo.format,
                 vkCreateInfo.imageType,
                 vkCreateInfo.tiling,
                 vkCreateInfo.usage,
                 vkCreateInfo.flags,
-                &formatProps));
+                &formatProps);
+            VK_RESULT_ASSERT(vkResult);
 
             AZ_Assert(descriptor.m_sharedQueueMask != RHI::HardwareQueueClassMask::None, "Invalid shared queue mask");
             createInfo.m_queueFamilyIndices = GetCommandQueueContext().GetQueueFamilyIndices(descriptor.m_sharedQueueMask);

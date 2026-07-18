@@ -14,30 +14,25 @@ if (TARGET 3rdParty::assimp)
     return()
 endif()
 
-# Variables inside a local function are scoped to the function body.
-# Putting all of this inside a function lets us basically ensure that any variables set by the 
+# Variables inside a block are scoped to the block body.
+# Putting all of this inside a block lets us basically ensure that any variables set by the
 # external 3rdParty CMake file do not have any effect on the outside world.
 # and allows us not to have to save and restore anything.
 
-function(GetAssimp)
+block()
     # Part 1:  Where do you get the library from?  Make sure to inform the user of the source of the library and any patches applied.
-    include(FetchContent)
-
-    set(ASSIMP_GIT_REPO "https://github.com/assimp/assimp.git")
-    set(ASSIMP_GIT_TAG "fb375dd8c0a032106a2122815fb18dffe0283721")
     set(ASSIMP_GIT_PATCH "${CMAKE_CURRENT_LIST_DIR}/tinyusd-include.patch")
 
-    FetchContent_Declare(
-            assimp
-            GIT_REPOSITORY ${ASSIMP_GIT_REPO}
-            GIT_TAG ${ASSIMP_GIT_TAG}
-            PATCH_COMMAND cmake -P "${LY_ROOT_FOLDER}/cmake/PatchIfNotAlreadyPatched.cmake" ${ASSIMP_GIT_PATCH}
-            GIT_SHALLOW
-            EXCLUDE_FROM_ALL # Prevent it from executing 'install' ops, it doesn't need to be included in installer
+    o3de_fetch_content(assimp
+        VERSION "v6.0.4"
+        LICENSE "Custom BSD-3-Clause"
+        URL "https://github.com/assimp/assimp/archive/e0b52347c6e52de2827ec957a9ebf00ce3c54f79.tar.gz"
+        URL_HASH "00e4bf0b9d9d8e9b346fa3dd859c3ce5f3438451822d5933c07f65a76fc04745"
+        GIT "https://github.com/assimp/assimp.git"
+        GIT_HASH "e0b52347c6e52de2827ec957a9ebf00ce3c54f79"
+        PATCH_COMMAND cmake -P "${LY_ROOT_FOLDER}/cmake/PatchIfNotAlreadyPatched.cmake" ${ASSIMP_GIT_PATCH}
+        EXCLUDE_FROM_ALL # Prevent it from executing 'install' ops, it doesn't need to be included in installer
     )
-
-    # please always be really clear about what third parties your gem uses.
-    message(STATUS "SDKWrapper Tool uses Assimp v6.0.2 (Custom BSD-3-Clause) ${ASSIMP_GIT_REPO}")
 
     # Part 2: Set the build settings and trigger the actual execution of the downloaded CMakeLists.txt file
 
@@ -51,14 +46,16 @@ function(GetAssimp)
     set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
     # The rest of these are all specific settings that come from Assimp's CMakeLists.txt files.
-    set(ASSIMP_BUILD_ZLIB OFF)  # Don't rebuild ZLIB. O3DE's comes with its own ZLIB 3rdParty package.
     set(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
-    set(ASSIMP_BUILD_USD_IMPORTER ON)
-    set(ASSIMP_WARNINGS_AS_ERRORS OFF)  # Not sure why this doesn't work. Warnings are still treated as error; needed to add warning disabled commandline parameters to PAL_assimp_<compiler>.cmake
     set(ASSIMP_BUILD_TESTS OFF)
-    set(ASSIMP_INSTALL OFF)  # Disable since we're using Assimp as a sub module
-    set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)  # Stop Assimp from adding 'd' to debug target outputs (mylibraryd.dll) https://github.com/assimp/assimp/blob/f63625256c4e6f18fca8e7dc857b47a02320e867/CMakeLists.txt#L411
+    set(ASSIMP_BUILD_USD_IMPORTER ON)
+    set(ASSIMP_BUILD_USE_CCACHE OFF)
+    set(ASSIMP_BUILD_ZLIB OFF)  # Don't rebuild ZLIB. O3DE's comes with its own ZLIB 3rdParty package.
     set(ASSIMP_HUNTER_ENABLED OFF)
+    set(ASSIMP_INJECT_DEBUG_POSTFIX OFF)  # Stop Assimp from adding 'd' to debug target outputs (mylibraryd.dll) https://github.com/assimp/assimp/blob/f63625256c4e6f18fca8e7dc857b47a02320e867/CMakeLists.txt#L411
+    set(ASSIMP_INSTALL OFF)  # Disable since we're using Assimp as a sub module
+    set(ASSIMP_WARNINGS_AS_ERRORS OFF)  # Not sure why this doesn't work. Warnings are still treated as error; needed to add warning disabled commandline parameters to PAL_assimp_<compiler>.cmake
+    set(TINYUSDZ_USE_CCACHE OFF)
 
     # Assimp requires ZLIB
     find_package(ZLIB REQUIRED)
@@ -111,12 +108,7 @@ function(GetAssimp)
     ly_install(FILES ${CMAKE_CURRENT_LIST_DIR}/Installer/Findassimp.cmake DESTINATION cmake/3rdParty)
 
     # signal that find_package(Assimp) has succeeded.
-    # we have to set it on the PARENT_SCOPE since we're in a function 
+    # we have to set it on the PARENT_SCOPE since we're in a block scope
     set(assimp_FOUND TRUE PARENT_SCOPE)
 
-endfunction()
-
-GetAssimp()
-
-# for extra safety, we'll remove the function from the global scope, so that it can't be called again.
-unset(GetAssimp)
+endblock()

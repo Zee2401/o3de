@@ -14,30 +14,22 @@ if (TARGET 3rdParty::RecastNavigation::Recast)
     return()
 endif()
 
-# Variables inside a local function are scoped to the function body.
-# Putting all of this inside a function lets us basically ensure that any variables set by the 
+# Variables inside a block are scoped to the block body.
+# Putting all of this inside a block lets us basically ensure that any variables set by the
 # external 3rdParty CMake file do not have any effect on the outside world.
 # and allows us not to have to save and restore anything.
 
-function(GetRecast)
+block()
     # Part 1:  Where do you get the library from?  Make sure to inform the user of the source of the library and any patches applied.
-    include(FetchContent)
-
-    set(RECAST_GIT_REPO "https://github.com/recastnavigation/recastnavigation.git")
-    set(RECAST_GIT_TAG 6dc1667f580357e8a2154c28b7867bea7e8ad3a7) # 5a870d4
-    set(RECAST_GIT_PATCH "${CMAKE_CURRENT_LIST_DIR}/recast-o3de.patch")
-
-    FetchContent_Declare(
-            RecastNavigation
-            GIT_REPOSITORY ${RECAST_GIT_REPO}
-            GIT_TAG ${RECAST_GIT_TAG} # main branch as of March 17, 2022
-            PATCH_COMMAND cmake -P "${LY_ROOT_FOLDER}/cmake/PatchIfNotAlreadyPatched.cmake" ${RECAST_GIT_PATCH}
-            GIT_SHALLOW TRUE
-            EXCLUDE_FROM_ALL # Prevent it from executing 'install' ops, we do our own install rules
+    o3de_fetch_content(RecastNavigation
+        VERSION "v1.6.0"
+        LICENSE "Zlib"
+        URL "https://github.com/recastnavigation/recastnavigation/archive/refs/tags/v1.6.0.tar.gz"
+        URL_HASH "d48ca0121962fa0639502c0f56c4e3ae72f98e55d88727225444f500775c0074"
+        GIT "https://github.com/recastnavigation/recastnavigation.git"
+        GIT_HASH "6dc1667f580357e8a2154c28b7867bea7e8ad3a7"
+        EXCLUDE_FROM_ALL
     )
-
-     # please always be really clear about what third parties your gem uses.
-    message(STATUS "RecastNavigation Gem uses ${RECAST_GIT_REPO} commit 5a870d4 (License: Zlib)")
 
     # Part 2: Set the build settings and trigger the actual execution of the downloaded CMakeLists.txt file
 
@@ -49,6 +41,7 @@ function(GetRecast)
     set(OLD_LOG_LEVEL ${CMAKE_MESSAGE_LOG_LEVEL}) # save the old CMAKE_MESSAGE_LOG_LEVEL
     set(CMAKE_MESSAGE_LOG_LEVEL ${O3DE_FETCHCONTENT_MESSAGE_LEVEL})
     set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+    set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 
     set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
     set(RECASTNAVIGATION_DEMO OFF)
@@ -103,26 +96,21 @@ function(GetRecast)
     FetchContent_GetProperties(RecastNavigation BINARY_DIR recastnavigation_binary_dir)
     
     # install header files
-    ly_install(DIRECTORY ${recastnavigation_source_dir}/Recast/include DESTINATION include/recastnavigation COMPONENT CORE)
-    ly_install(DIRECTORY ${recastnavigation_source_dir}/DebugUtils/include DESTINATION include/recastnavigation COMPONENT CORE)
-    ly_install(DIRECTORY ${recastnavigation_source_dir}/Detour/include DESTINATION include/recastnavigation COMPONENT CORE)
-    ly_install(DIRECTORY ${recastnavigation_source_dir}/DetourCrowd/include DESTINATION include/recastnavigation COMPONENT CORE)
-    ly_install(DIRECTORY ${recastnavigation_source_dir}/DetourTileCache/include DESTINATION include/recastnavigation COMPONENT CORE)
+    ly_install(DIRECTORY ${recastnavigation_source_dir}/Recast/Include DESTINATION Include/recastnavigation COMPONENT CORE)
+    ly_install(DIRECTORY ${recastnavigation_source_dir}/DebugUtils/Include DESTINATION Include/recastnavigation COMPONENT CORE)
+    ly_install(DIRECTORY ${recastnavigation_source_dir}/Detour/Include DESTINATION Include/recastnavigation COMPONENT CORE)
+    ly_install(DIRECTORY ${recastnavigation_source_dir}/DetourCrowd/Include DESTINATION Include/recastnavigation COMPONENT CORE)
+    ly_install(DIRECTORY ${recastnavigation_source_dir}/DetourTileCache/Include DESTINATION Include/recastnavigation COMPONENT CORE)
 
     # note that recast also generates a version.h file, which we could copy here, but the name "version.h" is way too easy
     # and generic to conflict with others, and it does not actually use "version.h" itself in any way.  if this becomes a problem
     # in the future, we can always copy it with a unique name, or add a subfolder for it to live in.
     
     # install license file.
-    ly_install(FILES ${recastnavigation_source_dir}/License.txt DESTINATION include/recastnavigation COMPONENT CORE)
+    ly_install(FILES ${recastnavigation_source_dir}/License.txt DESTINATION Include/recastnavigation COMPONENT CORE)
     
     # signal that find_package(Recast) has succeeded.
-    # we have to set it on the PARENT_SCOPE since we're in a function 
+    # we have to set it on the PARENT_SCOPE since we're in a block scope
     set(RecastNavigation_FOUND TRUE PARENT_SCOPE)
     set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS ${ORIGINAL_CMAKE_SUPPRESS_DEVELOPER_WARNINGS} CACHE BOOL "" FORCE)
-endfunction()
-
-GetRecast()
-
-# for extra safety, we'll remove the function from the global scope, so that it can't be called again.
-unset(GetRecast)
+endblock()
