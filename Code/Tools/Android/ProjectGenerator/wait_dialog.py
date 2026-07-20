@@ -42,6 +42,9 @@ class WaitDialog:
         button = tk.Button(self._dialog, text="Cancel", command=self._on_cancel_button)
         button.pack()
 
+        # Bind the Escape key to close the dialog
+        self._dialog.bind("<Escape>", lambda event: self._on_cancel_button())
+
     def _on_cancel_button(self):
         self.close()
         self._cancel_cb()
