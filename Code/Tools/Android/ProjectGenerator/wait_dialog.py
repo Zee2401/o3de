@@ -39,8 +39,14 @@ class WaitDialog:
         lbl = tk.Label(self._dialog, textvariable=self._progress_string_var)
         lbl.pack()
         # The Cancel button
-        button = tk.Button(self._dialog, text="Cancel", command=self._on_cancel_button)
+        button = tk.Button(self._dialog, text="Cancel", underline=0, command=self._on_cancel_button)
         button.pack()
+
+        # Keyboard accessibility and modal dismissal behavior
+        self._dialog.bind("<Escape>", lambda event: self._on_cancel_button())
+        self._dialog.bind("<Alt-c>", lambda event: self._on_cancel_button())
+        self._dialog.bind("<Alt-C>", lambda event: self._on_cancel_button())
+        self._dialog.protocol("WM_DELETE_WINDOW", self._on_cancel_button)
 
     def _on_cancel_button(self):
         self.close()
