@@ -51,8 +51,10 @@ class TkApp(tk.Tk):
         self._init_additional_build_settings_ui()
 
         # Add the project generation button.
-        btn = tk.Button(self, text="Generate Project", command=self.on_generate_project_button)
+        btn = tk.Button(self, text="Generate Project", underline=0, command=self.on_generate_project_button)
         btn.grid()
+        self.bind_all("<Alt-g>", lambda event: self.on_generate_project_button())
+        self.bind_all("<Alt-G>", lambda event: self.on_generate_project_button())
 
         self._init_report_ui()
 
@@ -71,11 +73,15 @@ class TkApp(tk.Tk):
                                                                           label_width=28,
                                                                           entry_read_only=True)
 
-        btn = tk.Button(apg_settings_frame, text="Load", command=self.on_load_settings_button)
+        btn = tk.Button(apg_settings_frame, text="Load", underline=0, command=self.on_load_settings_button)
         btn.grid(row=row_number, column=2, padx=2, sticky=tk.E)
+        self.bind_all("<Alt-l>", lambda event: self.on_load_settings_button())
+        self.bind_all("<Alt-L>", lambda event: self.on_load_settings_button())
 
-        btn = tk.Button(apg_settings_frame, text="Save", command=self.on_save_settings_button)
+        btn = tk.Button(apg_settings_frame, text="Save", underline=0, command=self.on_save_settings_button)
         btn.grid(row=row_number, column=3, padx=2, sticky=tk.E)
+        self.bind_all("<Alt-s>", lambda event: self.on_save_settings_button())
+        self.bind_all("<Alt-S>", lambda event: self.on_save_settings_button())
 
 
     def _init_keystore_settings_ui(self):
@@ -103,8 +109,10 @@ class TkApp(tk.Tk):
         btn = tk.Button(keystore_details_frame, text="...", command=self.on_select_keystore_file_button)
         btn.grid(row=row_number, column=3)
 
-        btn = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button)
+        btn = tk.Button(keystore_frame, text="Create Keystore", underline=0, command=self.on_create_keystore_button)
         btn.grid()
+        self.bind_all("<Alt-c>", lambda event: self.on_create_keystore_button())
+        self.bind_all("<Alt-C>", lambda event: self.on_create_keystore_button())
 
 
     def _init_keystore_distinguished_name_ui(self, parent_frame: tk.Frame, row:int):
