@@ -66,13 +66,16 @@
      </rect>
     </property>
     <property name="text">
-     <string>Text to Find:</string>
+     <string>&amp;Text to Find:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
+    </property>
+    <property name="buddy">
+     <cstring>txtFind</cstring>
     </property>
     <property name="LUAEditorFindDialogLabel" stdset="0">
      <bool>true</bool>
@@ -413,13 +416,16 @@
      </rect>
     </property>
     <property name="text">
-     <string>Replace With:</string>
+     <string>&amp;Replace With:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
+    </property>
+    <property name="buddy">
+     <cstring>txtReplaceWith</cstring>
     </property>
     <property name="LUAEditorFindDialogLabel" stdset="0">
      <bool>true</bool>

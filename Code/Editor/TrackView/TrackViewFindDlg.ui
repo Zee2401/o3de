@@ -22,13 +22,10 @@
             </rect>
           </property>
           <property name="text">
-            <string>&amp;Filter:</string>
+            <string>Enter filter:</string>
           </property>
           <property name="alignment">
             <set>Qt::AlignTop|Qt::AlignLeft</set>
-          </property>
-          <property name="buddy">
-            <cstring>FILTER</cstring>
           </property>
         </widget>
       </item>
