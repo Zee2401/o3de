@@ -23,6 +23,47 @@ from project_generator import ProjectGenerator
 
 DEFAULT_APG_CONFIG_FILE="apg_config.json"
 
+
+class _ToolTip:
+    """Lightweight hover tooltip built on standard tkinter."""
+    def __init__(self, master, delay_ms=600):
+        self._master = master
+        self._delay_ms = delay_ms
+        self._after_id = None
+        self._tip_window = None
+
+    def bind_widget(self, widget, balloonmsg=''):
+        widget.bind('<Enter>', lambda event: self._schedule(widget, balloonmsg), add='+')
+        widget.bind('<Leave>', lambda event: self._hide(), add='+')
+        widget.bind('<ButtonPress>', lambda event: self._hide(), add='+')
+
+    def _schedule(self, widget, message):
+        self._unschedule()
+        if message:
+            self._after_id = self._master.after(self._delay_ms, lambda: self._show(widget, message))
+
+    def _unschedule(self):
+        if self._after_id is not None:
+            self._master.after_cancel(self._after_id)
+            self._after_id = None
+
+    def _show(self, widget, message):
+        self._hide()
+        x = widget.winfo_rootx() + 20
+        y = widget.winfo_rooty() + widget.winfo_height() + 2
+        self._tip_window = tk.Toplevel(widget)
+        self._tip_window.wm_overrideredirect(True)
+        self._tip_window.wm_geometry(f'+{x}+{y}')
+        label = tk.Label(self._tip_window, text=message, relief='solid', borderwidth=1, bg='#FFFFE0', fg='#000000', padx=4, pady=2)
+        label.pack()
+
+    def _hide(self):
+        self._unschedule()
+        if self._tip_window is not None:
+            self._tip_window.destroy()
+            self._tip_window = None
+
+
 class TkApp(tk.Tk):
     """
     This is the main UI of the Android Project Generator, known as APG for short.
@@ -45,6 +86,8 @@ class TkApp(tk.Tk):
         self._config_file_path_var = tk.StringVar()
         self._config_file_path_var.set(config_file_path)
 
+        self._tooltip = _ToolTip(self)
+
         self._init_load_save_ui()
         self._init_keystore_settings_ui()
         self._init_sdk_settings_ui()
@@ -53,6 +96,7 @@ class TkApp(tk.Tk):
         # Add the project generation button.
         btn_generate = tk.Button(self, text="Generate Project", command=self.on_generate_project_button, underline=0)
         btn_generate.grid()
+        self._tooltip.bind_widget(btn_generate, "Generate the Android Studio project structure and gradle build files")
 
         self._init_report_ui()
 
@@ -83,9 +127,11 @@ class TkApp(tk.Tk):
 
         btn_load = tk.Button(apg_settings_frame, text="Load", command=self.on_load_settings_button, underline=0)
         btn_load.grid(row=row_number, column=2, padx=2, sticky=tk.E)
+        self._tooltip.bind_widget(btn_load, "Load generator configuration from a JSON file")
 
         btn_save = tk.Button(apg_settings_frame, text="Save", command=self.on_save_settings_button, underline=0)
         btn_save.grid(row=row_number, column=3, padx=2, sticky=tk.E)
+        self._tooltip.bind_widget(btn_save, "Save the current generator configuration to a JSON file")
 
 
     def _init_keystore_settings_ui(self):
@@ -112,9 +158,11 @@ class TkApp(tk.Tk):
         self._keystore_file_var, _, row_number =  self._add_label_entry(keystore_details_frame, "Keystore File", ks_data.keystore_file)
         btn = tk.Button(keystore_details_frame, text="...", command=self.on_select_keystore_file_button)
         btn.grid(row=row_number, column=3)
+        self._tooltip.bind_widget(btn, "Browse and select the Keystore file location")
 
         btn_create = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button, underline=0)
         btn_create.grid()
+        self._tooltip.bind_widget(btn_create, "Create a new Android application keystore with the specified settings")
 
 
     def _init_keystore_distinguished_name_ui(self, parent_frame: tk.Frame, row:int):
@@ -142,9 +190,11 @@ class TkApp(tk.Tk):
         self._android_sdk_path_var, _, row_number = self._add_label_entry(sdk_frame, "SDK Path", cf.android_sdk_path)
         sdk_path_btn = tk.Button(sdk_frame, text="...", command=self.on_select_sdk_path_button)
         sdk_path_btn.grid(row=row_number, column=2)
+        self._tooltip.bind_widget(sdk_path_btn, "Browse and select the Android SDK installation directory")
 
         # Add the meta quest project checkbox
-        self._android_quest_flag_var, _, row_number = self._add_checkbox(sdk_frame, "This is a Meta Quest project", cf.is_meta_quest_project)
+        self._android_quest_flag_var, check_btn, row_number = self._add_checkbox(sdk_frame, "This is a Meta Quest project", cf.is_meta_quest_project)
+        self._tooltip.bind_widget(check_btn, "Enable specific manifest configurations and build settings for Meta Quest VR devices")
 
     
     def _init_additional_build_settings_ui(self):
