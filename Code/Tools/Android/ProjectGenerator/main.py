@@ -51,10 +51,20 @@ class TkApp(tk.Tk):
         self._init_additional_build_settings_ui()
 
         # Add the project generation button.
-        btn = tk.Button(self, text="Generate Project", command=self.on_generate_project_button)
-        btn.grid()
+        btn_generate = tk.Button(self, text="Generate Project", command=self.on_generate_project_button, underline=0)
+        btn_generate.grid()
 
         self._init_report_ui()
+
+        # Keyboard mnemonics
+        self.bind("<Alt-l>", lambda event: self.on_load_settings_button())
+        self.bind("<Alt-L>", lambda event: self.on_load_settings_button())
+        self.bind("<Alt-s>", lambda event: self.on_save_settings_button())
+        self.bind("<Alt-S>", lambda event: self.on_save_settings_button())
+        self.bind("<Alt-c>", lambda event: self.on_create_keystore_button())
+        self.bind("<Alt-C>", lambda event: self.on_create_keystore_button())
+        self.bind("<Alt-g>", lambda event: self.on_generate_project_button())
+        self.bind("<Alt-G>", lambda event: self.on_generate_project_button())
 
 
     def _init_load_save_ui(self):
@@ -71,11 +81,11 @@ class TkApp(tk.Tk):
                                                                           label_width=28,
                                                                           entry_read_only=True)
 
-        btn = tk.Button(apg_settings_frame, text="Load", command=self.on_load_settings_button)
-        btn.grid(row=row_number, column=2, padx=2, sticky=tk.E)
+        btn_load = tk.Button(apg_settings_frame, text="Load", command=self.on_load_settings_button, underline=0)
+        btn_load.grid(row=row_number, column=2, padx=2, sticky=tk.E)
 
-        btn = tk.Button(apg_settings_frame, text="Save", command=self.on_save_settings_button)
-        btn.grid(row=row_number, column=3, padx=2, sticky=tk.E)
+        btn_save = tk.Button(apg_settings_frame, text="Save", command=self.on_save_settings_button, underline=0)
+        btn_save.grid(row=row_number, column=3, padx=2, sticky=tk.E)
 
 
     def _init_keystore_settings_ui(self):
@@ -103,8 +113,8 @@ class TkApp(tk.Tk):
         btn = tk.Button(keystore_details_frame, text="...", command=self.on_select_keystore_file_button)
         btn.grid(row=row_number, column=3)
 
-        btn = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button)
-        btn.grid()
+        btn_create = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button, underline=0)
+        btn_create.grid()
 
 
     def _init_keystore_distinguished_name_ui(self, parent_frame: tk.Frame, row:int):

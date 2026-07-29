@@ -1,0 +1,4 @@
+name: "O3DE CodeQL Config"
+
+paths-ignore:
+  - '**/*.ts'
