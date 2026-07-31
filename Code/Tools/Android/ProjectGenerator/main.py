@@ -23,6 +23,53 @@ from project_generator import ProjectGenerator
 
 DEFAULT_APG_CONFIG_FILE="apg_config.json"
 
+class _ToolTip:
+    """
+    A simple, robust hover tooltip for Tkinter widgets.
+    """
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tip_window = None
+        self.id = None
+        self.widget.bind("<Enter>", self.show_tip)
+        self.widget.bind("<Leave>", self.hide_tip)
+        self.widget.bind("<ButtonPress>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tip_window or not self.text:
+            return
+        # Display the tooltip after a tiny delay
+        def display():
+            if not self.widget.winfo_exists():
+                return
+            x = self.widget.winfo_rootx() + 25
+            y = self.widget.winfo_rooty() + 20
+            self.tip_window = tw = tk.Toplevel(self.widget)
+            tw.wm_overrideredirect(True)
+            tw.wm_geometry(f"+{x}+{y}")
+            label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                             background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                             font=("tahoma", "8", "normal"))
+            label.pack(ipadx=1)
+        self.id = self.widget.after(500, display)
+
+    def hide_tip(self, event=None):
+        if self.id:
+            try:
+                self.widget.after_cancel(self.id)
+            except Exception:
+                pass
+            self.id = None
+        tw = self.tip_window
+        self.tip_window = None
+        if tw:
+            try:
+                tw.destroy()
+            except Exception:
+                pass
+
+
 class TkApp(tk.Tk):
     """
     This is the main UI of the Android Project Generator, known as APG for short.
@@ -112,6 +159,7 @@ class TkApp(tk.Tk):
         self._keystore_file_var, _, row_number =  self._add_label_entry(keystore_details_frame, "Keystore File", ks_data.keystore_file)
         btn = tk.Button(keystore_details_frame, text="...", command=self.on_select_keystore_file_button)
         btn.grid(row=row_number, column=3)
+        _ToolTip(btn, "Select keystore file...")
 
         btn_create = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button, underline=0)
         btn_create.grid()
@@ -142,6 +190,7 @@ class TkApp(tk.Tk):
         self._android_sdk_path_var, _, row_number = self._add_label_entry(sdk_frame, "SDK Path", cf.android_sdk_path)
         sdk_path_btn = tk.Button(sdk_frame, text="...", command=self.on_select_sdk_path_button)
         sdk_path_btn.grid(row=row_number, column=2)
+        _ToolTip(sdk_path_btn, "Select SDK path...")
 
         # Add the meta quest project checkbox
         self._android_quest_flag_var, _, row_number = self._add_checkbox(sdk_frame, "This is a Meta Quest project", cf.is_meta_quest_project)
