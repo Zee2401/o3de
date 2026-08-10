@@ -10,6 +10,7 @@
 #include <ATLControlsResourceDialog.h>
 
 #include <AzCore/StringFunc/StringFunc.h>
+#include <AzQtComponents/Components/Widgets/LineEdit.h>
 
 #include <ACEEnums.h>
 #include <ATLControlsModel.h>
@@ -40,7 +41,9 @@ namespace AudioControls
 
         m_TextFilterLineEdit = new QLineEdit(this);
         m_TextFilterLineEdit->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
-        m_TextFilterLineEdit->setPlaceholderText(QApplication::translate("ATLControlsPanel", "Search", 0));
+        m_TextFilterLineEdit->setPlaceholderText(tr("Search..."));
+        m_TextFilterLineEdit->setClearButtonEnabled(true);
+        AzQtComponents::LineEdit::applySearchStyle(m_TextFilterLineEdit);
         connect(m_TextFilterLineEdit, &QLineEdit::textChanged, this, &ATLControlsDialog::SetTextFilter);
         connect(m_TextFilterLineEdit, &QLineEdit::returnPressed, this, &ATLControlsDialog::EnterPressed);
         pLayout->addWidget(m_TextFilterLineEdit, 0);
@@ -72,10 +75,14 @@ namespace AudioControls
         connect(pDialogButtons, SIGNAL(rejected()), this, SLOT(reject()));
         pLayout->addWidget(pDialogButtons, 0);
 
-        connect(m_pControlTree->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(UpdateSelectedControl()));
+        connect(
+            m_pControlTree->selectionModel(),
+            SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
+            this,
+            SLOT(UpdateSelectedControl()));
         ApplyFilter();
         UpdateSelectedControl();
-        m_pControlTree->setFocus();
+        m_TextFilterLineEdit->setFocus();
 
         m_pControlTree->installEventFilter(this);
         m_pControlTree->viewport()->installEventFilter(this);
@@ -344,7 +351,7 @@ namespace AudioControls
     void ATLControlsDialog::showEvent(QShowEvent* e)
     {
         QDialog::showEvent(e);
-        window()->resize(sizeHint()); 
+        window()->resize(sizeHint());
     }
 
     //-------------------------------------------------------------------------------------------//
