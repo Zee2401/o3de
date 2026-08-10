@@ -93,11 +93,23 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="placeholderText">
+         <string>Search...</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="accessibleName">
+         <string>Search</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="findPrevButton">
         <property name="text">
+         <string>Find Previous</string>
+        </property>
+        <property name="accessibleName">
          <string>Find Previous</string>
         </property>
        </widget>
@@ -107,12 +119,18 @@
         <property name="text">
          <string>Find Next</string>
         </property>
+        <property name="accessibleName">
+         <string>Find Next</string>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QToolButton" name="closeButton">
         <property name="text">
          <string/>
+        </property>
+        <property name="accessibleName">
+         <string>Close Find Bar</string>
         </property>
        </widget>
       </item>
@@ -163,6 +181,9 @@
       </property>
       <item>
        <widget class="QToolButton" name="button">
+        <property name="accessibleName">
+         <string>Console Type</string>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -197,6 +218,9 @@
         <property name="text">
          <string/>
         </property>
+        <property name="accessibleName">
+         <string>Find in Console</string>
+        </property>
        </widget>
       </item>
       <item>
@@ -211,6 +235,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="optionsButton">
+        <property name="accessibleName">
+         <string>Console Options</string>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>

@@ -265,7 +265,7 @@ namespace ScriptCanvasEditor
         m_listWidget = new Ui::EBusHandlerActionListWidget();
         
         m_listWidget->setupUi(listWidget);
-        
+
         actionWidget->setDefaultWidget(listWidget);
         
         addAction(actionWidget);
