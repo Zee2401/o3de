@@ -277,6 +277,9 @@ namespace ScriptCanvasEditor
         m_proxyModel = aznew EBusHandlerActionFilterProxyModel(this);
         m_proxyModel->setSourceModel(m_model);
 
+        m_listWidget->searchFilter->setClearButtonEnabled(true);
+        m_listWidget->searchFilter->setAccessibleName(tr("Search"));
+
         m_proxyModel->SetFilterSource(m_listWidget->searchFilter);
 
         m_listWidget->actionListView->setModel(m_proxyModel);
@@ -296,6 +299,7 @@ namespace ScriptCanvasEditor
     {
         m_listWidget->actionListView->selectionModel()->clearSelection();
         m_listWidget->searchFilter->setText("");
+        m_listWidget->searchFilter->setFocus();
     }
 
     void EBusHandlerActionMenu::ItemClicked(const QModelIndex& modelIndex)
