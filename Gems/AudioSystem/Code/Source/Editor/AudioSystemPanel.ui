@@ -36,6 +36,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_29">
      <item>
       <widget class="QLineEdit" name="m_pExternalListFilter">
+       <property name="accessibleName">
+        <string>Search</string>
+       </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>

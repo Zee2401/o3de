@@ -344,7 +344,7 @@ namespace AudioControls
     void ATLControlsDialog::showEvent(QShowEvent* e)
     {
         QDialog::showEvent(e);
-        window()->resize(sizeHint()); 
+        window()->resize(sizeHint());
     }
 
     //-------------------------------------------------------------------------------------------//
