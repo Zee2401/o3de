@@ -88,3 +88,51 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('main._ToolTip')
+    @patch('tkinter.LabelFrame')
+    @patch('tkinter.Label')
+    @patch('tkinter.Button')
+    @patch('tkinter.Entry')
+    @patch('tkinter.Checkbutton')
+    @patch('tkinter.Text')
+    @patch('tkinter.Scrollbar')
+    @patch('tkinter.BooleanVar')
+    @patch('tkinter.StringVar')
+    def test_tkapp_tooltips_instantiation(self, mock_strvar, mock_boolvar, mock_scroll, mock_text, mock_check, mock_entry, mock_btn, mock_lbl, mock_frame, mock_tooltip):
+        import tkinter as tk
+
+        class DummyTkRoot:
+            def __init__(self, *args, **kwargs):
+                self._last_child_ids = {}
+                self.children = {}
+                self._w = '.'
+                self.tk = MagicMock()
+            def winfo_pointerx(self): return 100
+            def winfo_pointery(self): return 100
+            def geometry(self, *a): pass
+            def title(self, *a): pass
+            def columnconfigure(self, *a, **kw): pass
+            def rowconfigure(self, *a, **kw): pass
+            def bind(self, *a, **kw): pass
+
+        from main import TkApp
+        from config_data import ConfigData
+
+        orig_bases = TkApp.__bases__
+        try:
+            TkApp.__bases__ = (DummyTkRoot,)
+            tk._default_root = DummyTkRoot()
+            config = ConfigData()
+            app = TkApp(config)
+
+            # Check tooltip calls
+            tooltip_texts = [call[0][1] for call in mock_tooltip.call_args_list]
+
+            self.assertTrue(any("Alt+L" in text for text in tooltip_texts))
+            self.assertTrue(any("Alt+S" in text for text in tooltip_texts))
+            self.assertTrue(any("Alt+C" in text for text in tooltip_texts))
+            self.assertTrue(any("Alt+G" in text for text in tooltip_texts))
+            self.assertTrue(any("Meta Quest" in text for text in tooltip_texts))
+        finally:
+            TkApp.__bases__ = orig_bases
