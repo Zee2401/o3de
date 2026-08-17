@@ -100,6 +100,7 @@ class TkApp(tk.Tk):
         # Add the project generation button.
         btn_generate = tk.Button(self, text="Generate Project", command=self.on_generate_project_button, underline=0)
         btn_generate.grid()
+        _ToolTip(btn_generate, "Generate the Android Project (Alt+G)")
 
         self._init_report_ui()
 
@@ -130,9 +131,11 @@ class TkApp(tk.Tk):
 
         btn_load = tk.Button(apg_settings_frame, text="Load", command=self.on_load_settings_button, underline=0)
         btn_load.grid(row=row_number, column=2, padx=2, sticky=tk.E)
+        _ToolTip(btn_load, "Load settings from a JSON file (Alt+L)")
 
         btn_save = tk.Button(apg_settings_frame, text="Save", command=self.on_save_settings_button, underline=0)
         btn_save.grid(row=row_number, column=3, padx=2, sticky=tk.E)
+        _ToolTip(btn_save, "Save settings to a JSON file (Alt+S)")
 
 
     def _init_keystore_settings_ui(self):
@@ -163,6 +166,7 @@ class TkApp(tk.Tk):
 
         btn_create = tk.Button(keystore_frame, text="Create Keystore", command=self.on_create_keystore_button, underline=0)
         btn_create.grid()
+        _ToolTip(btn_create, "Create a new Android Keystore (Alt+C)")
 
 
     def _init_keystore_distinguished_name_ui(self, parent_frame: tk.Frame, row:int):
