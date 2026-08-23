@@ -56,11 +56,21 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
-        button_add.grid(row=0, column=0, sticky=tk.E)
+        button_ok = tk.Button(button_frame, text="Ok", width=4, underline=0, command=self._on_ok)
+        button_ok.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
-        button_remove.grid(row=0, column=1, sticky=tk.E)
+        button_cancel = tk.Button(button_frame, text="Cancel", width=4, underline=0, command=self._on_cancel)
+        button_cancel.grid(row=0, column=1, sticky=tk.E)
+
+        # Keyboard accessibility shortcuts
+        root.bind('<Escape>', lambda event: self._on_cancel())
+        root.bind('<Alt-c>', lambda event: self._on_cancel())
+        root.bind('<Alt-C>', lambda event: self._on_cancel())
+        root.bind('<Alt-o>', lambda event: self._on_ok())
+        root.bind('<Alt-O>', lambda event: self._on_ok())
+
+        # Protocol binding for window decorations close action
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
 
         root.grid()
 
