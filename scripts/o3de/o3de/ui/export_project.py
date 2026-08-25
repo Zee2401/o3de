@@ -542,12 +542,19 @@ class MainWindow(tk.Tk):
         okay_cancel_frame = tk.Frame(parent)
         okay_cancel_frame.grid(padx=4, pady=4, sticky=tk.E)
 
-        button_okay = tk.Button(okay_cancel_frame, text="Save", width=8, command=self.on_ok)
+        button_okay = tk.Button(okay_cancel_frame, text="Save", width=8, underline=0, command=self.on_ok)
         button_okay.grid(column=0, sticky=tk.E)
         okay_row = button_okay.grid_info().get("row")
 
-        button_cancel = tk.Button(okay_cancel_frame, text="Cancel", width=8, command=self.on_cancel)
+        button_cancel = tk.Button(okay_cancel_frame, text="Cancel", width=8, underline=0, command=self.on_cancel)
         button_cancel.grid(row=okay_row, column=1, sticky=tk.E)
+
+        self.bind("<Alt-s>", lambda event: self.on_ok())
+        self.bind("<Alt-S>", lambda event: self.on_ok())
+        self.bind("<Alt-c>", lambda event: self.on_cancel())
+        self.bind("<Alt-C>", lambda event: self.on_cancel())
+        self.bind("<Escape>", lambda event: self.on_cancel())
+        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
 
     def on_ok(self):
         for key, item in self.config_key_entry_map.items():
