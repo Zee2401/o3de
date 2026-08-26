@@ -52,13 +52,25 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
+        button_add = tk.Button(button_frame, text="Add", width=7, underline=0, command=self._choose_file)
         button_add.grid(sticky=tk.N)
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
+        button_remove = tk.Button(button_frame, text="Remove", width=7, underline=0, command=self._remove_file)
         button_remove.grid(sticky=tk.N)
 
+        self.file_list_box.bind("<Delete>", lambda event: self._remove_file())
+
+        root.protocol("WM_DELETE_WINDOW", self._on_close)
+        root.bind("<Escape>", lambda event: self._on_close())
+        root.bind("<Alt-a>", lambda event: self._choose_file())
+        root.bind("<Alt-A>", lambda event: self._choose_file())
+        root.bind("<Alt-r>", lambda event: self._remove_file())
+        root.bind("<Alt-R>", lambda event: self._remove_file())
+
         root.grid()
+
+    def _on_close(self):
+        self.root.destroy()
 
     def _choose_file(self):
         filename = filedialog.askopenfilename(filetypes=self.file_filters)
