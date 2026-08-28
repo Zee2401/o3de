@@ -114,7 +114,14 @@ class MainWindow(tk.Tk):
         self.init_platform_tabs(self.main_frame)
 
         self.init_okay_cancel_buttons(self.main_frame)
-        
+
+        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
+        self.bind("<Escape>", lambda _event: self.on_cancel())
+        self.bind("<Alt-s>", lambda _event: self.on_ok())
+        self.bind("<Alt-S>", lambda _event: self.on_ok())
+        self.bind("<Alt-c>", lambda _event: self.on_cancel())
+        self.bind("<Alt-C>", lambda _event: self.on_cancel())
+
         self.eval('tk::PlaceWindow . center')
 
     def add_simple_text_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
@@ -542,12 +549,15 @@ class MainWindow(tk.Tk):
         okay_cancel_frame = tk.Frame(parent)
         okay_cancel_frame.grid(padx=4, pady=4, sticky=tk.E)
 
-        button_okay = tk.Button(okay_cancel_frame, text="Save", width=8, command=self.on_ok)
+        button_okay = tk.Button(okay_cancel_frame, text="Save", underline=0, width=8, command=self.on_ok)
         button_okay.grid(column=0, sticky=tk.E)
         okay_row = button_okay.grid_info().get("row")
 
-        button_cancel = tk.Button(okay_cancel_frame, text="Cancel", width=8, command=self.on_cancel)
+        button_cancel = tk.Button(okay_cancel_frame, text="Cancel", underline=0, width=8, command=self.on_cancel)
         button_cancel.grid(row=okay_row, column=1, sticky=tk.E)
+
+        self.tool_tip.bind_widget(button_okay, balloonmsg="Save export settings (Alt+S)")
+        self.tool_tip.bind_widget(button_cancel, balloonmsg="Cancel changes and close (Escape or Alt+C)")
 
     def on_ok(self):
         for key, item in self.config_key_entry_map.items():
