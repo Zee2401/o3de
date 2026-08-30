@@ -5,8 +5,22 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
+import sys
 import unittest
 from unittest.mock import MagicMock, patch
+
+# Mock tkinter in sys.modules to prevent loading native _tkinter Cocoa/Tcl C library on headless macOS runners
+mock_tk = MagicMock()
+mock_tk.END = "end"
+mock_tk.SOLID = "solid"
+mock_tk.NSEW = "nsew"
+mock_tk.N = "n"
+mock_tk.E = "e"
+
+sys.modules['tkinter'] = mock_tk
+sys.modules['tkinter.filedialog'] = MagicMock()
+
+from o3de.ui.multiple_entry import Dialog
 
 
 class DummyTk:
@@ -18,28 +32,25 @@ class DummyTk:
 
 
 class TestMultipleEntryDialog(unittest.TestCase):
-    @patch('tkinter.Toplevel')
-    @patch('tkinter.Text')
-    @patch('tkinter.Button')
-    @patch('tkinter.Frame')
-    def test_dialog_initialization_and_accessibility(self, mock_frame, mock_button, mock_text, mock_toplevel):
+    def setUp(self):
+        mock_tk.reset_mock()
+
+    def test_dialog_initialization_and_accessibility(self):
         mock_root = MagicMock()
-        mock_toplevel.return_value = mock_root
+        mock_tk.Toplevel.return_value = mock_root
 
         mock_text_inst = MagicMock()
-        mock_text.return_value = mock_text_inst
+        mock_tk.Text.return_value = mock_text_inst
 
         mock_button_inst = MagicMock()
-        mock_button.return_value = mock_button_inst
+        mock_tk.Button.return_value = mock_button_inst
 
         parent = DummyTk()
-
-        from o3de.ui.multiple_entry import Dialog
 
         dialog = Dialog(parent, input_value="foo; bar")
 
         # 1. Verify Toplevel setup
-        mock_toplevel.assert_called_once_with(parent)
+        mock_tk.Toplevel.assert_called_once_with(parent)
         mock_root.title.assert_called_once_with('Configure Files')
 
         # 2. Verify text entry initialization and focus
@@ -47,9 +58,9 @@ class TestMultipleEntryDialog(unittest.TestCase):
         mock_text_inst.focus_set.assert_called_once()
 
         # 3. Verify buttons have underline=0 mnemonics
-        self.assertEqual(mock_button.call_count, 2)
-        ok_kwargs = mock_button.call_args_list[0][1]
-        cancel_kwargs = mock_button.call_args_list[1][1]
+        self.assertEqual(mock_tk.Button.call_count, 2)
+        ok_kwargs = mock_tk.Button.call_args_list[0][1]
+        cancel_kwargs = mock_tk.Button.call_args_list[1][1]
 
         self.assertEqual(ok_kwargs.get('text'), "Ok")
         self.assertEqual(ok_kwargs.get('underline'), 0)
@@ -67,21 +78,15 @@ class TestMultipleEntryDialog(unittest.TestCase):
         # 5. Verify WM_DELETE_WINDOW window protocol registration
         mock_root.protocol.assert_called_once_with("WM_DELETE_WINDOW", dialog._on_cancel)
 
-    @patch('tkinter.Toplevel')
-    @patch('tkinter.Text')
-    @patch('tkinter.Button')
-    @patch('tkinter.Frame')
-    def test_on_ok_and_on_cancel(self, mock_frame, mock_button, mock_text, mock_toplevel):
+    def test_on_ok_and_on_cancel(self):
         mock_root = MagicMock()
-        mock_toplevel.return_value = mock_root
+        mock_tk.Toplevel.return_value = mock_root
 
         mock_text_inst = MagicMock()
         mock_text_inst.get.return_value = "item1\nitem2\n"
-        mock_text.return_value = mock_text_inst
+        mock_tk.Text.return_value = mock_text_inst
 
         parent = DummyTk()
-
-        from o3de.ui.multiple_entry import Dialog
 
         dialog = Dialog(parent, input_value="")
         dialog._on_ok()
