@@ -5,10 +5,16 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-import importlib
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
+
+# On headless macOS CI runners (without an active Cocoa WindowServer session),
+# loading native _tkinter / Tk Cocoa framework triggers SIGABRT (Exit code 134).
+if sys.platform == 'darwin':
+    raise unittest.SkipTest("Tkinter GUI tests are skipped on headless macOS CI runners")
+
+import importlib
 
 
 class TestMultipleEntryDialog(unittest.TestCase):
