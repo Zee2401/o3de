@@ -7,9 +7,11 @@
 
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
 
-IS_DARWIN = sys.platform == 'darwin'
+if sys.platform == 'darwin':
+    raise unittest.SkipTest("Skip Tkinter UI unit tests on macOS headless environments to avoid SIGABRT")
+
+from unittest.mock import MagicMock, patch
 
 
 class DummyTk:
@@ -26,7 +28,6 @@ class DummyTk:
         pass
 
 
-@unittest.skipIf(IS_DARWIN, "Skip Tkinter UI unit tests on macOS headless environments to avoid SIGABRT")
 class TestMultipleEntryUI(unittest.TestCase):
     def test_dialog_initialization_and_bindings(self):
         with patch('tkinter.Toplevel') as mock_toplevel, \
