@@ -9,7 +9,16 @@ import sys
 import pytest
 from unittest.mock import MagicMock, patch
 
-# Skip tests on Darwin / macOS to avoid Cocoa _tkinter initialization issues in headless environments
+# In macOS / Darwin CI runners, importing tkinter loads Cocoa _tkinter.so which crashes
+# with SIGABRT (exit code 134) when running in headless processes/jobs like AssetBuilder.
+# Prevent Cocoa initialization by mocking sys.modules['tkinter'] and related submodules at top-level.
+if sys.platform == 'darwin':
+    mock_tk = MagicMock()
+    sys.modules['tkinter'] = mock_tk
+    sys.modules['tkinter.filedialog'] = MagicMock()
+    sys.modules['tkinter.messagebox'] = MagicMock()
+    sys.modules['tkinter.ttk'] = MagicMock()
+
 pytestmark = pytest.mark.skipif(sys.platform == 'darwin', reason="Tkinter tests skipped on macOS headless runners")
 
 
