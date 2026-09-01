@@ -7,11 +7,17 @@
 
 import sys
 import unittest
-
-if sys.platform == 'darwin':
-    raise unittest.SkipTest("Skip Tkinter UI unit tests on macOS headless environments to avoid SIGABRT")
-
 from unittest.mock import MagicMock, patch
+
+IS_DARWIN = sys.platform == 'darwin'
+
+if IS_DARWIN:
+    # On macOS headless CI runners without a WindowServer (e.g. AssetBuilder background process),
+    # loading native Cocoa _tkinter.so triggers SIGABRT (exit code 134).
+    # Stubbing sys.modules['tkinter'] prevents Python from loading native Tcl/Tk C-extensions.
+    sys.modules['tkinter'] = MagicMock()
+    sys.modules['tkinter.filedialog'] = MagicMock()
+    sys.modules['tkinter.messagebox'] = MagicMock()
 
 
 class DummyTk:
@@ -28,6 +34,7 @@ class DummyTk:
         pass
 
 
+@unittest.skipIf(IS_DARWIN, "Skip Tkinter UI unit tests on macOS headless environments to avoid SIGABRT")
 class TestMultipleEntryUI(unittest.TestCase):
     def test_dialog_initialization_and_bindings(self):
         with patch('tkinter.Toplevel') as mock_toplevel, \
