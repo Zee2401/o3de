@@ -56,15 +56,22 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
+        button_add = tk.Button(button_frame, text="Ok", width=4, underline=0, command=self._on_ok)
         button_add.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
+        button_remove = tk.Button(button_frame, text="Cancel", width=4, underline=0, command=self._on_cancel)
         button_remove.grid(row=0, column=1, sticky=tk.E)
+
+        root.bind('<Alt-o>', lambda e: self._on_ok())
+        root.bind('<Alt-O>', lambda e: self._on_ok())
+        root.bind('<Alt-c>', lambda e: self._on_cancel())
+        root.bind('<Alt-C>', lambda e: self._on_cancel())
+        root.bind('<Escape>', lambda e: self._on_cancel())
+        root.protocol('WM_DELETE_WINDOW', self._on_cancel)
 
         root.grid()
 
-    def _on_ok(self):
+    def _on_ok(self, event=None):
         result_string = self._entry.get("1.0", tk.END)
         result_items = [rs.strip() for rs in result_string.split("\n")]
         sanitized_items = set()
@@ -74,7 +81,7 @@ class Dialog(object):
         self.input_value = ';'.join(sanitized_items)
         self.root.destroy()
 
-    def _on_cancel(self):
+    def _on_cancel(self, event=None):
         self.root.destroy()
 
     def get_result(self):
