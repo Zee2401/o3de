@@ -5,17 +5,10 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-import sys
-import os
 import unittest
 from unittest.mock import MagicMock, patch
-
-if sys.platform == 'darwin':
-    mock_tk = MagicMock()
-    sys.modules['tkinter'] = mock_tk
-    sys.modules['tkinter.filedialog'] = MagicMock()
-    sys.modules['tkinter.ttk'] = MagicMock()
-    sys.modules['tkinter.messagebox'] = MagicMock()
+import sys
+import os
 
 # Add current directory to path so main can be imported
 sys.path.insert(0, os.path.dirname(__file__))
@@ -50,7 +43,6 @@ class DummyWidget:
         return 100
 
 
-@unittest.skipIf(sys.platform == 'darwin', "Tkinter GUI tests skipped on macOS headless runner")
 class TestToolTip(unittest.TestCase):
     @patch('tkinter.Toplevel')
     @patch('tkinter.Label')
