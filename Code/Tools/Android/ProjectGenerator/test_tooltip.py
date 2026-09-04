@@ -10,6 +10,12 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Prevent SIGABRT crashes on macOS CI runners when importing native tkinter (_tkinter.so)
+if sys.platform == 'darwin':
+    sys.modules['tkinter'] = MagicMock()
+    sys.modules['tkinter.filedialog'] = MagicMock()
+    sys.modules['tkinter.messagebox'] = MagicMock()
+
 # Add current directory to path so main can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -43,6 +49,7 @@ class DummyWidget:
         return 100
 
 
+@unittest.skipIf(sys.platform == 'darwin', "Skip Tkinter GUI tests on macOS runners to prevent native _tkinter SIGABRT crashes")
 class TestToolTip(unittest.TestCase):
     @patch('tkinter.Toplevel')
     @patch('tkinter.Label')

@@ -10,6 +10,12 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Prevent SIGABRT crashes on macOS CI runners when importing native tkinter (_tkinter.so)
+if sys.platform == 'darwin':
+    sys.modules['tkinter'] = MagicMock()
+    sys.modules['tkinter.filedialog'] = MagicMock()
+    sys.modules['tkinter.messagebox'] = MagicMock()
+
 # Add scripts/o3de path so multiple_entry can be imported
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../scripts/o3de")))
 
@@ -21,6 +27,7 @@ class DummyTk:
     def winfo_rooty(self):
         return 100
 
+@unittest.skipIf(sys.platform == 'darwin', "Skip Tkinter GUI tests on macOS runners to prevent native _tkinter SIGABRT crashes")
 class TestMultipleEntryDialog(unittest.TestCase):
     @patch('tkinter.Toplevel')
     @patch('tkinter.Frame')
