@@ -56,11 +56,18 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
+        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok, underline=0)
         button_add.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
+        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel, underline=0)
         button_remove.grid(row=0, column=1, sticky=tk.E)
+
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
+        root.bind("<Escape>", lambda event: self._on_cancel())
+        root.bind("<Alt-o>", lambda event: self._on_ok())
+        root.bind("<Alt-O>", lambda event: self._on_ok())
+        root.bind("<Alt-c>", lambda event: self._on_cancel())
+        root.bind("<Alt-C>", lambda event: self._on_cancel())
 
         root.grid()
 
