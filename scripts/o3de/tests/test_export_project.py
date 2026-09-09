@@ -666,6 +666,7 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
                                                  paths=path_list)
     assert expected_path_list == result_path_list
 
+
     abs_path_list = []
     for check_file in check_files:
         abs_path_list.append(test_project_path / check_file)
@@ -674,3 +675,42 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
+def test_multiple_entry_dialog():
+    with patch("tkinter.Toplevel") as mock_toplevel, \
+         patch("tkinter.Frame") as mock_frame, \
+         patch("tkinter.Text") as mock_text, \
+         patch("tkinter.Button") as mock_button:
+
+        mock_parent = mock.MagicMock()
+        mock_parent.winfo_rootx.return_value = 100
+        mock_parent.winfo_rooty.return_value = 200
+
+        mock_top_inst = mock_toplevel.return_value
+        mock_text_inst = mock_text.return_value
+        mock_text_inst.get.return_value = "file1.txt\nfile2.txt\n"
+
+        from o3de.ui.multiple_entry import Dialog
+
+        dialog = Dialog(mock_parent, "item1;item2")
+
+        # Test initial value setup
+        assert dialog.input_value == "item1;item2"
+
+        # Verify window protocol and key bindings were set up
+        mock_top_inst.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_cancel)
+        bind_calls = [call[0][0] for call in mock_top_inst.bind.call_args_list]
+        assert "<Escape>" in bind_calls
+        assert "<Alt-o>" in bind_calls
+        assert "<Alt-O>" in bind_calls
+        assert "<Alt-c>" in bind_calls
+        assert "<Alt-C>" in bind_calls
+
+        # Test OK action
+        dialog._on_ok()
+        assert "file1.txt" in dialog.input_value
+        assert "file2.txt" in dialog.input_value
+        mock_top_inst.destroy.assert_called()
+
+        # Test Cancel action
+        dialog._on_cancel()
+        mock_top_inst.destroy.assert_called()
