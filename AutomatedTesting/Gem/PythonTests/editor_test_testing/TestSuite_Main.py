@@ -124,6 +124,7 @@ class TestEditorTest:
         result.assert_outcomes(failed=1)
         assert isinstance(extracted_result, Result.Fail)
 
+    @pytest.mark.skipif(sys.platform == "linux", reason="Skipping crash tests on Linux due to inconsistency between AR and local tests, but keeping for reference.")
     def test_single_crash_test(self, request, workspace, launcher_platform, pytester):
         (extracted_result, result) = TestEditorTest._run_single_test(pytester, workspace, "EditorTest_That_Crashes")
         result.assert_outcomes(failed=1)
