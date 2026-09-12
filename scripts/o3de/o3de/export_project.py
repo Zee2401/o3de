@@ -23,7 +23,7 @@ from o3de import command_utils, manifest, utils
 # Check if tkinter is installed or not
 tkinter_installed = True
 try:
-    from o3de.ui import export_project as export_project_ui
+    import tkinter
 except:
     tkinter_installed = False
 
@@ -399,6 +399,7 @@ def _run_export_script(args: argparse, passthru_args: list) -> int:
     
     if args.configure:
         if tkinter_installed:
+            from o3de.ui import export_project as export_project_ui
             export_config = get_export_project_config(args.project_path)
             project_info = manifest.get_project_json_data(project_path=args.project_path)
             is_o3de_sdk = project_info.get('engine') == 'o3de-sdk'
