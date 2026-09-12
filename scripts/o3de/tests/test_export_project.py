@@ -666,11 +666,87 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
                                                  paths=path_list)
     assert expected_path_list == result_path_list
 
-    abs_path_list = []
-    for check_file in check_files:
-        abs_path_list.append(test_project_path / check_file)
-    result_path_list = preprocess_seed_path_list(project_path=test_project_path,
-                                                 paths=path_list)
-    assert expected_path_list == result_path_list
+
+def test_multiple_entry_dialog_shortcuts():
+    from o3de.ui import multiple_entry
+    with patch('tkinter.Toplevel') as mock_toplevel_cls, \
+         patch('tkinter.Frame'), \
+         patch('tkinter.Text') as mock_text_cls, \
+         patch('tkinter.Button') as mock_button_cls:
+
+        mock_parent = mock.Mock()
+        mock_parent.winfo_rootx.return_value = 100
+        mock_parent.winfo_rooty.return_value = 100
+
+        mock_top = mock.Mock()
+        mock_toplevel_cls.return_value = mock_top
+
+        mock_text = mock.Mock()
+        mock_text.get.return_value = "item1\nitem2\n"
+        mock_text_cls.return_value = mock_text
+
+        dialog = multiple_entry.Dialog(parent=mock_parent, input_value="item1;item2")
+
+        button_calls = mock_button_cls.call_args_list
+        assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Ok' for call in button_calls)
+        assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Cancel' for call in button_calls)
+
+        bound_events = [call[0][0] for call in mock_top.bind.call_args_list]
+        assert '<Alt-o>' in bound_events
+        assert '<Alt-O>' in bound_events
+        assert '<Alt-c>' in bound_events
+        assert '<Alt-C>' in bound_events
+        assert '<Escape>' in bound_events
+
+        dialog._on_ok()
+        assert "item1" in dialog.input_value and "item2" in dialog.input_value
+        assert mock_top.destroy.called
+
+        dialog._on_cancel()
+        assert mock_top.destroy.call_count >= 2
+
+
+def test_multiple_file_picker_dialog_shortcuts():
+    from o3de.ui import multiple_file_picker
+    with patch('tkinter.Toplevel') as mock_toplevel_cls, \
+         patch('tkinter.Frame'), \
+         patch('tkinter.Listbox') as mock_listbox_cls, \
+         patch('tkinter.Button') as mock_button_cls, \
+         patch('tkinter.filedialog.askopenfilename', return_value="/path/to/file.txt"):
+
+        mock_parent = mock.Mock()
+        mock_parent.winfo_rootx.return_value = 100
+        mock_parent.winfo_rooty.return_value = 100
+
+        mock_top = mock.Mock()
+        mock_toplevel_cls.return_value = mock_top
+
+        mock_listbox = mock.Mock()
+        mock_listbox.curselection.return_value = [0]
+        mock_listbox.get.return_value = "/path/to/file.txt"
+        mock_listbox_cls.return_value = mock_listbox
+
+        dialog = multiple_file_picker.Dialog(parent=mock_parent, initial_list="")
+
+        button_calls = mock_button_cls.call_args_list
+        assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Add' for call in button_calls)
+        assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Remove' for call in button_calls)
+
+        bound_events = [call[0][0] for call in mock_top.bind.call_args_list]
+        assert '<Alt-a>' in bound_events
+        assert '<Alt-A>' in bound_events
+        assert '<Alt-r>' in bound_events
+        assert '<Alt-R>' in bound_events
+        assert '<Delete>' in bound_events
+        assert '<Escape>' in bound_events
+
+        dialog._choose_file()
+        assert "/path/to/file.txt" in dialog.items
+
+        dialog._remove_file()
+        assert "/path/to/file.txt" not in dialog.items
+
+        dialog._on_cancel()
+        assert mock_top.destroy.called
 
 
