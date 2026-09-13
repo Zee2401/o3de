@@ -666,31 +666,37 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
                                                  paths=path_list)
     assert expected_path_list == result_path_list
 
+    abs_path_list = []
+    for check_file in check_files:
+        abs_path_list.append(test_project_path / check_file)
+    result_path_list = preprocess_seed_path_list(project_path=test_project_path,
+                                                 paths=path_list)
+    assert expected_path_list == result_path_list
+
 
 def test_multiple_entry_dialog_shortcuts():
+    import sys
+    mock_tk = mock.MagicMock()
+    mock_filedialog = mock.MagicMock()
+
+    mock_top = mock.MagicMock()
+    mock_tk.Toplevel.return_value = mock_top
+
+    mock_text = mock.MagicMock()
+    mock_text.get.return_value = "item1\nitem2\n"
+    mock_tk.Text.return_value = mock_text
+
     mock_parent = mock.MagicMock()
-    mock_parent._last_child_ids = {}
-    mock_parent.children = {}
-    mock_parent._w = '.'
     mock_parent.winfo_rootx.return_value = 100
     mock_parent.winfo_rooty.return_value = 100
 
-    with patch('tkinter.Toplevel') as mock_toplevel_cls, \
-         patch('tkinter.Frame'), \
-         patch('tkinter.Text') as mock_text_cls, \
-         patch('tkinter.Button') as mock_button_cls:
-
-        mock_top = mock.Mock()
-        mock_toplevel_cls.return_value = mock_top
-
-        mock_text = mock.Mock()
-        mock_text.get.return_value = "item1\nitem2\n"
-        mock_text_cls.return_value = mock_text
-
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
+        sys.modules.pop('o3de.ui.multiple_entry', None)
         from o3de.ui import multiple_entry
+
         dialog = multiple_entry.Dialog(parent=mock_parent, input_value="item1;item2")
 
-        button_calls = mock_button_cls.call_args_list
+        button_calls = mock_tk.Button.call_args_list
         assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Ok' for call in button_calls)
         assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Cancel' for call in button_calls)
 
@@ -710,31 +716,31 @@ def test_multiple_entry_dialog_shortcuts():
 
 
 def test_multiple_file_picker_dialog_shortcuts():
+    import sys
+    mock_tk = mock.MagicMock()
+    mock_filedialog = mock.MagicMock()
+    mock_filedialog.askopenfilename.return_value = "/path/to/file.txt"
+    mock_tk.filedialog.askopenfilename.return_value = "/path/to/file.txt"
+
+    mock_top = mock.MagicMock()
+    mock_tk.Toplevel.return_value = mock_top
+
+    mock_listbox = mock.MagicMock()
+    mock_listbox.curselection.return_value = [0]
+    mock_listbox.get.return_value = "/path/to/file.txt"
+    mock_tk.Listbox.return_value = mock_listbox
+
     mock_parent = mock.MagicMock()
-    mock_parent._last_child_ids = {}
-    mock_parent.children = {}
-    mock_parent._w = '.'
     mock_parent.winfo_rootx.return_value = 100
     mock_parent.winfo_rooty.return_value = 100
 
-    with patch('tkinter.Toplevel') as mock_toplevel_cls, \
-         patch('tkinter.Frame'), \
-         patch('tkinter.Listbox') as mock_listbox_cls, \
-         patch('tkinter.Button') as mock_button_cls, \
-         patch('tkinter.filedialog.askopenfilename', return_value="/path/to/file.txt"):
-
-        mock_top = mock.Mock()
-        mock_toplevel_cls.return_value = mock_top
-
-        mock_listbox = mock.Mock()
-        mock_listbox.curselection.return_value = [0]
-        mock_listbox.get.return_value = "/path/to/file.txt"
-        mock_listbox_cls.return_value = mock_listbox
-
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
+        sys.modules.pop('o3de.ui.multiple_file_picker', None)
         from o3de.ui import multiple_file_picker
+
         dialog = multiple_file_picker.Dialog(parent=mock_parent, initial_list="")
 
-        button_calls = mock_button_cls.call_args_list
+        button_calls = mock_tk.Button.call_args_list
         assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Add' for call in button_calls)
         assert any(call.kwargs.get('underline') == 0 and call.kwargs.get('text') == 'Remove' for call in button_calls)
 
@@ -754,5 +760,3 @@ def test_multiple_file_picker_dialog_shortcuts():
 
         dialog._on_cancel()
         assert mock_top.destroy.called
-
-
