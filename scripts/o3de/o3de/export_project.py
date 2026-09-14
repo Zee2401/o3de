@@ -20,13 +20,6 @@ import subprocess
 
 from o3de import command_utils, manifest, utils
 
-# Check if tkinter is installed or not
-tkinter_installed = True
-try:
-    import tkinter
-except:
-    tkinter_installed = False
-
 from typing import List
 from enum import IntEnum
 
@@ -398,20 +391,18 @@ def _run_export_script(args: argparse, passthru_args: list) -> int:
         export_script = args.export_script
     
     if args.configure:
-        if tkinter_installed:
-            try:
-                from o3de.ui import export_project as export_project_ui
-            except Exception as e:
-                print(f"Unable to open the configure window: {e}")
-                return 1
-            export_config = get_export_project_config(args.project_path)
-            project_info = manifest.get_project_json_data(project_path=args.project_path)
-            is_o3de_sdk = project_info.get('engine') == 'o3de-sdk'
-            export_project_ui.MainWindow(export_config, is_o3de_sdk).configure_settings()
-            return 0
-        else:
-            print("Unable to open the configure window. Required package 'tk' is not installed on this system.")
+        try:
+            import tkinter
+            from o3de.ui import export_project as export_project_ui
+        except Exception as e:
+            print(f"Unable to open the configure window. Required package 'tk' is not installed on this system: {e}")
             return 1
+
+        export_config = get_export_project_config(args.project_path)
+        project_info = manifest.get_project_json_data(project_path=args.project_path)
+        is_o3de_sdk = project_info.get('engine') == 'o3de-sdk'
+        export_project_ui.MainWindow(export_config, is_o3de_sdk).configure_settings()
+        return 0
     
     return _export_script(export_script, args.project_path, passthru_args)
 
