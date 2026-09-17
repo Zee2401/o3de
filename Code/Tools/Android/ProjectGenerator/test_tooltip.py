@@ -88,3 +88,29 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.Label')
+    @patch('tkinter.Entry')
+    @patch('tkinter.StringVar')
+    def test_add_label_entry_click_focus(self, mock_string_var, mock_entry_cls, mock_label_cls):
+        from main import TkApp
+        mock_label = MagicMock()
+        mock_entry = MagicMock()
+        mock_label_cls.return_value = mock_label
+        mock_entry_cls.return_value = mock_entry
+        mock_entry.__getitem__.side_effect = lambda key: 'normal' if key == 'state' else None
+
+        parent_frame = MagicMock()
+
+        # Call _add_label_entry directly via unbound TkApp method
+        TkApp._add_label_entry(None, parent_frame, "Test Label", "Default Value")
+
+        # Verify <Button-1> binding on label
+        self.assertTrue(mock_label.bind.called)
+        bind_args = mock_label.bind.call_args
+        self.assertEqual(bind_args[0][0], "<Button-1>")
+        callback = bind_args[0][1]
+
+        # Trigger callback and verify focus_set is called
+        callback(None)
+        mock_entry.focus_set.assert_called_once()
