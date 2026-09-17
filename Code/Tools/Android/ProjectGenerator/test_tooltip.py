@@ -5,10 +5,44 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-import unittest
-from unittest.mock import MagicMock, patch
 import sys
 import os
+from unittest.mock import MagicMock, patch
+
+# Mock sys.modules['tkinter'] to prevent loading native _tkinter.so (AppKit/Cocoa) on headless macOS/iOS CI runners
+class DummyTkRoot:
+    def __init__(self, *args, **kwargs):
+        self._last_child_ids = None
+        self.children = {}
+        self._w = '.'
+        self.tk = MagicMock()
+    def winfo_pointerx(self): return 0
+    def winfo_pointery(self): return 0
+    def geometry(self, geom): pass
+    def title(self, title): pass
+    def rowconfigure(self, index, **kwargs): pass
+    def columnconfigure(self, index, **kwargs): pass
+    def bind(self, event, cb): pass
+
+mock_tk = MagicMock()
+mock_tk.Tk = DummyTkRoot
+mock_tk.DISABLED = 'disabled'
+mock_tk.NORMAL = 'normal'
+mock_tk.W = 'w'
+mock_tk.E = 'e'
+mock_tk.EW = 'ew'
+mock_tk.NSEW = 'nsew'
+mock_tk.LEFT = 'left'
+mock_tk.SOLID = 'solid'
+mock_tk.WORD = 'word'
+mock_tk.SUNKEN = 'sunken'
+mock_tk.VERTICAL = 'vertical'
+
+sys.modules['tkinter'] = mock_tk
+sys.modules['tkinter.messagebox'] = MagicMock()
+sys.modules['tkinter.filedialog'] = MagicMock()
+
+import unittest
 
 # Add current directory to path so main can be imported
 sys.path.insert(0, os.path.dirname(__file__))
