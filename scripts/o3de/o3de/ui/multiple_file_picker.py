@@ -52,11 +52,19 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
+        button_add = tk.Button(button_frame, text="Add", width=6, underline=0, command=self._choose_file)
         button_add.grid(sticky=tk.N)
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
+        button_remove = tk.Button(button_frame, text="Remove", width=6, underline=0, command=self._remove_file)
         button_remove.grid(sticky=tk.N)
+
+        root.bind("<Alt-a>", lambda e: self._choose_file())
+        root.bind("<Alt-A>", lambda e: self._choose_file())
+        root.bind("<Alt-r>", lambda e: self._remove_file())
+        root.bind("<Alt-R>", lambda e: self._remove_file())
+        root.bind("<Delete>", lambda e: self._remove_file())
+        root.bind("<Escape>", lambda e: root.destroy())
+        root.protocol("WM_DELETE_WINDOW", root.destroy)
 
         root.grid()
 
