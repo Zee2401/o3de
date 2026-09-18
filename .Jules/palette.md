@@ -9,3 +9,7 @@
 ## 2026-07-17 - Robust Keyboard Dismissal and Cancelation for Modal Dialogs in Tkinter
 **Learning:** For desktop utilities built with Tkinter, relying entirely on on-screen cancel buttons can result in orphaned background processes if a user closes the modal dialog via window manager decorations (clicking 'X' or pressing Alt+F4). Mapping keyboard escape/accelerator bindings and utilizing the `WM_DELETE_WINDOW` window protocol to trigger the official cancel callback guarantees graceful termination.
 **Action:** Always bind `<Escape>` and accelerator shortcuts (e.g., `<Alt-c>`) to the cancel handler in modal dialogs, and explicitly map the `WM_DELETE_WINDOW` protocol to prevent orphaned threads/processes.
+
+## 2026-07-18 - Label-to-Input Focus Binding in Tkinter Forms
+**Learning:** In Tkinter form utilities (`tk.Label` paired with `tk.Entry`), clicking text labels by default does not set focus to the target input field. Binding `<Button-1>` on the `tk.Label` to invoke `entry.focus_set()` (when enabled) significantly improves click target size and form input usability.
+**Action:** When building or enhancing Tkinter form field helpers (`_add_label_entry`), bind `<Button-1>` on the label widget to set focus to its associated entry widget.
