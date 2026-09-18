@@ -122,3 +122,95 @@ class TestWaitDialog(unittest.TestCase):
         # 7. Verify on_tick cycles progress correctly
         dialog.on_tick(0.25)
         mock_stringvar_inst.set.assert_called_with("*")
+
+
+class DummyWidget:
+    def __init__(self):
+        self.bindings = {}
+        self.after_id = None
+        self.after_func = None
+        self._exists = True
+
+    def bind(self, event, callback):
+        self.bindings[event] = callback
+
+    def after(self, ms, func):
+        self.after_id = "after_id_123"
+        self.after_func = func
+        return self.after_id
+
+    def after_cancel(self, after_id):
+        if self.after_id == after_id:
+            self.after_id = None
+            self.after_func = None
+
+    def winfo_exists(self):
+        return self._exists
+
+    def winfo_rootx(self):
+        return 100
+
+    def winfo_rooty(self):
+        return 100
+
+
+class TestToolTip(unittest.TestCase):
+    @patch('tkinter.Toplevel')
+    @patch('tkinter.Label')
+    def test_tooltip_creation_and_lifecycle(self, mock_label, mock_toplevel):
+        mock_tip_window = MagicMock()
+        mock_toplevel.return_value = mock_tip_window
+
+        mock_label_inst = MagicMock()
+        mock_label.return_value = mock_label_inst
+
+        from main import _ToolTip
+
+        widget = DummyWidget()
+        tooltip = _ToolTip(widget, "Test ToolTip text")
+
+        self.assertIn("<Enter>", widget.bindings)
+        self.assertIn("<Leave>", widget.bindings)
+        self.assertIn("<ButtonPress>", widget.bindings)
+
+        widget.bindings["<Enter>"](None)
+        self.assertIsNotNone(widget.after_id)
+        self.assertIsNotNone(widget.after_func)
+
+        widget.after_func()
+
+        mock_toplevel.assert_called_once_with(widget)
+        mock_tip_window.wm_overrideredirect.assert_called_once_with(True)
+        mock_tip_window.wm_geometry.assert_called_once()
+
+        mock_label.assert_called_once()
+        self.assertEqual(mock_label.call_args[1].get("text"), "Test ToolTip text")
+        mock_label_inst.pack.assert_called_once()
+
+        widget.bindings["<Leave>"](None)
+        mock_tip_window.destroy.assert_called_once()
+        self.assertIsNone(tooltip.tip_window)
+        self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.Label')
+    @patch('tkinter.Entry')
+    @patch('tkinter.StringVar')
+    def test_add_label_entry_click_focus(self, mock_string_var, mock_entry_cls, mock_label_cls):
+        from main import TkApp
+        mock_label = MagicMock()
+        mock_entry = MagicMock()
+        mock_label_cls.return_value = mock_label
+        mock_entry_cls.return_value = mock_entry
+        mock_entry.__getitem__.side_effect = lambda key: 'normal' if key == 'state' else None
+
+        parent_frame = MagicMock()
+
+        TkApp._add_label_entry(None, parent_frame, "Test Label", "Default Value")
+
+        self.assertTrue(mock_label.bind.called)
+        bind_args = mock_label.bind.call_args
+        self.assertEqual(bind_args[0][0], "<Button-1>")
+        callback = bind_args[0][1]
+
+        callback(None)
+        mock_entry.focus_set.assert_called_once()
