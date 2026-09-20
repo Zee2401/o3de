@@ -6,16 +6,15 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
-
 class Dialog(object):
     """
     Dialog to handle the selection of names
     """
 
     def __init__(self, parent, input_value):
+        global tk, filedialog
+        import tkinter as tk
+        from tkinter import filedialog
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
