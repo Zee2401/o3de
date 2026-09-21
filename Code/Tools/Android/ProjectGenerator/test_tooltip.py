@@ -88,3 +88,33 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.Label')
+    @patch('tkinter.Entry')
+    @patch('tkinter.StringVar')
+    def test_add_label_entry_show_and_focus_binding(self, mock_stringvar, mock_entry_cls, mock_label_cls):
+        mock_label_inst = MagicMock()
+        mock_label_cls.return_value = mock_label_inst
+        mock_label_inst.grid_info.return_value = {"row": 0}
+
+        mock_entry_inst = MagicMock()
+        mock_entry_cls.return_value = mock_entry_inst
+        mock_entry_inst.cget.return_value = "normal"
+
+        from main import TkApp
+
+        parent_frame = MagicMock()
+        string_var, entry, row = TkApp._add_label_entry(None, parent_frame, "Password", "secret", show="*")
+
+        # 1. Verify Entry was called with show="*"
+        mock_entry_cls.assert_called_once()
+        self.assertEqual(mock_entry_cls.call_args[1].get("show"), "*")
+
+        # 2. Verify Label was bound to <Button-1>
+        mock_label_inst.bind.assert_called_once()
+        self.assertEqual(mock_label_inst.bind.call_args[0][0], "<Button-1>")
+
+        # 3. Trigger the callback and verify entry focus_set was invoked
+        callback = mock_label_inst.bind.call_args[0][1]
+        callback(None)
+        mock_entry_inst.focus_set.assert_called_once()
