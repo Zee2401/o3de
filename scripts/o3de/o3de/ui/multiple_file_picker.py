@@ -65,8 +65,8 @@ class Dialog(object):
         root.bind("<Alt-A>", lambda e: self._choose_file())
         root.bind("<Alt-r>", lambda e: self._remove_file())
         root.bind("<Alt-R>", lambda e: self._remove_file())
-        root.bind("<Escape>", lambda e: self.root.destroy())
-        root.protocol("WM_DELETE_WINDOW", self.root.destroy)
+        root.bind("<Escape>", lambda e: root.destroy())
+        root.protocol("WM_DELETE_WINDOW", root.destroy)
 
         root.grid()
 
