@@ -668,17 +668,19 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
 
 
 def test_multiple_file_picker_dialog():
-    import o3de.ui.multiple_file_picker as mfp
-
+    import sys
     mock_tk = mock.MagicMock()
     mock_filedialog = mock.MagicMock()
 
-    with patch.object(mfp, 'tk', mock_tk), patch.object(mfp, 'filedialog', mock_filedialog):
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
+        sys.modules.pop('o3de.ui.multiple_file_picker', None)
+        import o3de.ui.multiple_file_picker as mfp
+
         parent = mock.Mock()
         parent.winfo_rootx.return_value = 100
         parent.winfo_rooty.return_value = 100
 
-        mock_filedialog.askopenfilename.return_value = "/path/to/file.seed"
+        mfp.filedialog.askopenfilename.return_value = "/path/to/file.seed"
 
         dialog = mfp.Dialog(parent=parent, initial_list="/file1.seed;/file2.seed")
 
@@ -687,7 +689,7 @@ def test_multiple_file_picker_dialog():
         assert "/path/to/file.seed" in dialog.items
 
         # Test empty filename cancel
-        mock_filedialog.askopenfilename.return_value = ""
+        mfp.filedialog.askopenfilename.return_value = ""
         dialog._choose_file()
         assert "" not in dialog.items
 
@@ -697,4 +699,5 @@ def test_multiple_file_picker_dialog():
         dialog._remove_file()
         assert "/file1.seed" not in dialog.items
 
+    sys.modules.pop('o3de.ui.multiple_file_picker', None)
 
