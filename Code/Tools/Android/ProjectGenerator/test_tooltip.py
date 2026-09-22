@@ -70,14 +70,12 @@ class TestToolTip(unittest.TestCase):
     @patch('tkinter.Toplevel')
     @patch('tkinter.Label')
     def test_tooltip_creation_and_lifecycle(self, mock_label, mock_toplevel):
-        # Set up mock instances
         mock_tip_window = MagicMock()
         mock_toplevel.return_value = mock_tip_window
 
         mock_label_inst = MagicMock()
         mock_label.return_value = mock_label_inst
 
-        # Import _ToolTip
         from main import _ToolTip
 
         widget = DummyWidget()

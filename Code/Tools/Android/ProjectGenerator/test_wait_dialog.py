@@ -41,21 +41,20 @@ class DummyTk:
         pass
 
 class TestWaitDialog(unittest.TestCase):
-    @patch('tkinter.Toplevel')
-    @patch('tkinter.Label')
-    @patch('tkinter.Button')
-    @patch('tkinter.StringVar')
-    def test_wait_dialog_initialization_and_bindings(self, mock_stringvar, mock_button, mock_label, mock_toplevel):
+    def setUp(self):
+        mock_tk.reset_mock()
+
+    def test_wait_dialog_initialization_and_bindings(self):
         # Set up mock instances
         mock_dialog_inst = MagicMock()
-        mock_toplevel.return_value = mock_dialog_inst
+        mock_tk.Toplevel.return_value = mock_dialog_inst
 
         mock_button_inst = MagicMock()
-        mock_button.return_value = mock_button_inst
+        mock_tk.Button.return_value = mock_button_inst
 
         mock_stringvar_inst = MagicMock()
         mock_stringvar_inst.get.return_value = ""
-        mock_stringvar.return_value = mock_stringvar_inst
+        mock_tk.StringVar.return_value = mock_stringvar_inst
 
         # Callback for cancel
         cancel_called = False
@@ -72,15 +71,15 @@ class TestWaitDialog(unittest.TestCase):
         dialog = WaitDialog(parent, "Please wait...", dummy_cancel_cb)
 
         # 1. Verify Toplevel dialog was created with parent
-        mock_toplevel.assert_called_once_with(parent)
+        mock_tk.Toplevel.assert_called_once_with(parent)
 
         # 2. Verify window setup
         mock_dialog_inst.title.assert_called_once_with("Operation In Progress...")
         mock_dialog_inst.grab_set.assert_called_once()
 
         # 3. Verify Button was created with underline=0 and correct text
-        mock_button.assert_called_once()
-        kwargs = mock_button.call_args[1]
+        mock_tk.Button.assert_called_once()
+        kwargs = mock_tk.Button.call_args[1]
         self.assertEqual(kwargs.get('text'), "Cancel")
         self.assertEqual(kwargs.get('underline'), 0)
 
