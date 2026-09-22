@@ -88,3 +88,46 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.Entry')
+    @patch('tkinter.Label')
+    @patch('tkinter.StringVar')
+    def test_add_label_entry_masking_and_focus_binding(self, mock_string_var, mock_label_cls, mock_entry_cls):
+        mock_label = MagicMock()
+        mock_label.grid_info.return_value = {"row": 2}
+        mock_label_cls.return_value = mock_label
+
+        mock_entry = MagicMock()
+        mock_entry_cls.return_value = mock_entry
+
+        mock_parent = MagicMock()
+
+        # Import TkApp from main
+        from main import TkApp
+
+        # Instantiate TkApp without executing super().__init__
+        app = object.__new__(TkApp)
+
+        # Call _add_label_entry with password masking (show="*")
+        string_var, entry, row = app._add_label_entry(
+            parent_frame=mock_parent,
+            lbl_name="Password Field",
+            default_value="secret",
+            entry_colspan=3,
+            label_width=20,
+            entry_read_only=False,
+            show="*"
+        )
+
+        # 1. Verify Entry was initialized with show="*"
+        mock_entry_cls.assert_called_once()
+        self.assertEqual(mock_entry_cls.call_args[1].get("show"), "*")
+
+        # 2. Verify Label was bound to <Button-1> for click focus
+        mock_label.bind.assert_called_once()
+        event_name, callback = mock_label.bind.call_args[0]
+        self.assertEqual(event_name, "<Button-1>")
+
+        # 3. Simulate clicking label and verify focus_set was called on Entry
+        callback(None)
+        mock_entry.focus_set.assert_called_once()

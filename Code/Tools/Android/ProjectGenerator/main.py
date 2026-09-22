@@ -154,8 +154,8 @@ class TkApp(tk.Tk):
         self._keystore_validity_days_var = self._add_label_entry(keystore_details_frame, "Validity Days", ks_data.validity_days, entry_colspan=3, label_width=28)[0]
         self._keystore_key_size_var = self._add_label_entry(keystore_details_frame, "Key Size", ks_data.key_size, entry_colspan=3)[0]
         self._keystore_app_key_alias_var = self._add_label_entry(keystore_details_frame, "App Key Alias", ks_data.key_alias, entry_colspan=3)[0]
-        self._keystore_app_key_password_var = self._add_label_entry(keystore_details_frame, "App Key Password", ks_data.key_password, entry_colspan=3)[0]
-        self._keystore_keystore_password_var = self._add_label_entry(keystore_details_frame, "Keystore Password", ks_data.keystore_password, entry_colspan=3)[0]
+        self._keystore_app_key_password_var = self._add_label_entry(keystore_details_frame, "App Key Password", ks_data.key_password, entry_colspan=3, show="*")[0]
+        self._keystore_keystore_password_var = self._add_label_entry(keystore_details_frame, "Keystore Password", ks_data.keystore_password, entry_colspan=3, show="*")[0]
         self._keystore_file_var, _, row_number =  self._add_label_entry(keystore_details_frame, "Keystore File", ks_data.keystore_file)
         btn = tk.Button(keystore_details_frame, text="...", command=self.on_select_keystore_file_button)
         btn.grid(row=row_number, column=3)
@@ -207,7 +207,7 @@ class TkApp(tk.Tk):
 
 
 
-    def _add_label_entry(self, parent_frame: tk.Frame, lbl_name: str, default_value: str = "", entry_colspan=1, label_width=None, entry_read_only=False) -> tuple[tk.StringVar, tk.Entry, int]:
+    def _add_label_entry(self, parent_frame: tk.Frame, lbl_name: str, default_value: str = "", entry_colspan=1, label_width=None, entry_read_only=False, show="") -> tuple[tk.StringVar, tk.Entry, int]:
         """
         Returns the tuple (string_var, entry, row_frame),
         where  @string_var is the TK StringVar bound to the Entry widget,
@@ -218,8 +218,15 @@ class TkApp(tk.Tk):
         lbl.grid(column=0, padx=5, pady=2, sticky=tk.W)
         row = lbl.grid_info().get("row")
 
-        entry = tk.Entry(parent_frame, justify='right',state=tk.DISABLED if entry_read_only else tk.NORMAL)
+        entry_kwargs = {"justify": "right", "state": tk.DISABLED if entry_read_only else tk.NORMAL}
+        if show:
+            entry_kwargs["show"] = show
+
+        entry = tk.Entry(parent_frame, **entry_kwargs)
         entry.grid(row=row, column=1, padx=5, pady=2, sticky=tk.EW, columnspan=entry_colspan)
+
+        if not entry_read_only:
+            lbl.bind("<Button-1>", lambda event, widget=entry: widget.focus_set())
 
         string_var = tk.StringVar()
         string_var.set(default_value)
