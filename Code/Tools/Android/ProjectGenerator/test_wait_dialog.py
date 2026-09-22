@@ -10,6 +10,19 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Mock tkinter modules prior to importing wait_dialog to prevent loading native Cocoa _tkinter.so on headless macOS runners
+mock_tk = MagicMock()
+class DummyTkRoot:
+    def __init__(self, *args, **kwargs):
+        pass
+mock_tk.Tk = DummyTkRoot
+mock_tk.DISABLED = "disabled"
+mock_tk.NORMAL = "normal"
+
+sys.modules['tkinter'] = mock_tk
+sys.modules['tkinter.messagebox'] = MagicMock()
+sys.modules['tkinter.filedialog'] = MagicMock()
+
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
