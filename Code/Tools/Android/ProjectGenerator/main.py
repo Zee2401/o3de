@@ -10,9 +10,14 @@ import argparse
 import copy
 import time
 
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import filedialog
+try:
+    import tkinter as tk
+    from tkinter import messagebox
+    from tkinter import filedialog
+except Exception:
+    tk = None
+    messagebox = None
+    filedialog = None
 
 from config_data import ConfigData
 from keystore_settings import KeystoreSettings
