@@ -10,6 +10,30 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Prevent native Cocoa/AppKit _tkinter.so load on headless macOS CI runners during pytest collection
+class DummyTkRoot:
+    def __init__(self, *args, **kwargs):
+        pass
+
+mock_tk = MagicMock()
+mock_tk.Tk = DummyTkRoot
+mock_tk.DISABLED = 'disabled'
+mock_tk.NORMAL = 'normal'
+mock_tk.SOLID = 'solid'
+mock_tk.LEFT = 'left'
+mock_tk.W = 'w'
+mock_tk.E = 'e'
+mock_tk.EW = 'ew'
+mock_tk.NSEW = 'nsew'
+mock_tk.WORD = 'word'
+mock_tk.SUNKEN = 'sunken'
+mock_tk.VERTICAL = 'vertical'
+mock_tk.END = 'end'
+
+sys.modules['tkinter'] = mock_tk
+sys.modules['tkinter.filedialog'] = MagicMock()
+sys.modules['tkinter.messagebox'] = MagicMock()
+
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
