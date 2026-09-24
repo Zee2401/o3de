@@ -674,3 +674,39 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
+def test_multiple_entry_dialog_keyboard_and_wm_bindings():
+    mock_root = mock.MagicMock()
+    mock_entry = mock.MagicMock()
+    mock_entry.get.return_value = "val1\nval2\n"
+
+    mock_tk = mock.MagicMock()
+    mock_tk.Toplevel.return_value = mock_root
+    mock_tk.Text.return_value = mock_entry
+    mock_tk.END = "end"
+    mock_tk.SOLID = "solid"
+    mock_tk.NSEW = "nsew"
+    mock_tk.E = "e"
+
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock.MagicMock()}):
+        import sys
+        if 'o3de.ui.multiple_entry' in sys.modules:
+            del sys.modules['o3de.ui.multiple_entry']
+
+        from o3de.ui import multiple_entry
+
+        dialog = multiple_entry.Dialog(parent=mock_root, input_value="val1;val2")
+
+        # Verify WM_DELETE_WINDOW protocol and key bindings were setup
+        mock_root.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_cancel)
+        bound_events = [call_args[0][0] for call_args in mock_root.bind.call_args_list]
+        for expected_event in ["<Escape>", "<Alt-o>", "<Alt-O>", "<Alt-c>", "<Alt-C>"]:
+            assert expected_event in bound_events
+
+        # Test _on_ok updates input_value and destroys root
+        dialog._on_ok()
+        assert "val1" in dialog.input_value and "val2" in dialog.input_value
+        mock_root.destroy.assert_called()
+
+        mock_root.destroy.reset_mock()
+        dialog._on_cancel()
+        mock_root.destroy.assert_called()
