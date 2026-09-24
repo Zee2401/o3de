@@ -675,16 +675,24 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
 
 
 def test_multiple_entry_dialog_keyboard_and_wm_bindings():
-    from o3de.ui import multiple_entry
-
     mock_root = mock.MagicMock()
     mock_entry = mock.MagicMock()
     mock_entry.get.return_value = "val1\nval2\n"
 
-    with patch("tkinter.Toplevel", return_value=mock_root), \
-         patch("tkinter.Text", return_value=mock_entry), \
-         patch("tkinter.Frame"), \
-         patch("tkinter.Button"):
+    mock_tk = mock.MagicMock()
+    mock_tk.Toplevel.return_value = mock_root
+    mock_tk.Text.return_value = mock_entry
+    mock_tk.END = "end"
+    mock_tk.SOLID = "solid"
+    mock_tk.NSEW = "nsew"
+    mock_tk.E = "e"
+
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock.MagicMock()}):
+        import sys
+        if 'o3de.ui.multiple_entry' in sys.modules:
+            del sys.modules['o3de.ui.multiple_entry']
+
+        from o3de.ui import multiple_entry
 
         dialog = multiple_entry.Dialog(parent=mock_root, input_value="val1;val2")
 
