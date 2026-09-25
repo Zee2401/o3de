@@ -7,6 +7,7 @@
 #
 
 import json
+import sys
 import pytest
 import pathlib
 import unittest.mock as mock
@@ -674,38 +675,43 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
+@pytest.mark.skipif(sys.platform == "darwin", reason="Tkinter loads Cocoa native _tkinter.so causing SIGABRT on headless macOS/iOS runners")
 def test_multiple_file_picker_dialog():
     """Test the multiple file picker dialog logic, list modifications, and event bindings."""
+    mock_tk = mock.MagicMock()
+    mock_filedialog = mock.MagicMock()
+
     class DummyParent:
         def __init__(self):
             self.tk = mock.MagicMock()
         def winfo_rootx(self): return 100
         def winfo_rooty(self): return 100
 
-    with patch('o3de.ui.multiple_file_picker.tk.Toplevel') as mock_toplevel, \
-         patch('o3de.ui.multiple_file_picker.tk.Frame'), \
-         patch('o3de.ui.multiple_file_picker.tk.Listbox') as mock_listbox_cls, \
-         patch('o3de.ui.multiple_file_picker.tk.Button'), \
-         patch('o3de.ui.multiple_file_picker.filedialog') as mock_filedialog:
+    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
+        with patch('o3de.ui.multiple_file_picker.tk.Toplevel') as mock_toplevel, \
+             patch('o3de.ui.multiple_file_picker.tk.Frame'), \
+             patch('o3de.ui.multiple_file_picker.tk.Listbox') as mock_listbox_cls, \
+             patch('o3de.ui.multiple_file_picker.tk.Button'), \
+             patch('o3de.ui.multiple_file_picker.filedialog') as mock_filedialog_obj:
 
-        from o3de.ui import multiple_file_picker
+            from o3de.ui import multiple_file_picker
 
-        parent = DummyParent()
-        mock_listbox = mock.MagicMock()
-        mock_listbox_cls.return_value = mock_listbox
+            parent = DummyParent()
+            mock_listbox = mock.MagicMock()
+            mock_listbox_cls.return_value = mock_listbox
 
-        dialog = multiple_file_picker.Dialog(parent=parent, initial_list="path/file1.txt;path/file2.txt")
+            dialog = multiple_file_picker.Dialog(parent=parent, initial_list="path/file1.txt;path/file2.txt")
 
-        assert "path/file1.txt" in dialog.items
-        assert "path/file2.txt" in dialog.items
+            assert "path/file1.txt" in dialog.items
+            assert "path/file2.txt" in dialog.items
 
-        # Test adding a file
-        mock_filedialog.askopenfilename.return_value = "path/file3.txt"
-        dialog._choose_file()
-        assert "path/file3.txt" in dialog.items
+            # Test adding a file
+            mock_filedialog_obj.askopenfilename.return_value = "path/file3.txt"
+            dialog._choose_file()
+            assert "path/file3.txt" in dialog.items
 
-        # Test removing a file
-        mock_listbox.curselection.return_value = (0,)
-        mock_listbox.get.return_value = "path/file3.txt"
-        dialog._remove_file()
-        assert "path/file3.txt" not in dialog.items
+            # Test removing a file
+            mock_listbox.curselection.return_value = (0,)
+            mock_listbox.get.return_value = "path/file3.txt"
+            dialog._remove_file()
+            assert "path/file3.txt" not in dialog.items
