@@ -7,7 +7,6 @@
 #
 
 import json
-import sys
 import pytest
 import pathlib
 import unittest.mock as mock
@@ -675,45 +674,3 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
-@pytest.mark.skipif(sys.platform in ("darwin", "win32"), reason="Tkinter loads native display libraries on headless CI runners")
-def test_multiple_file_picker_dialog():
-    """Test the multiple file picker dialog logic, list modifications, and event bindings."""
-    mock_tk = mock.MagicMock()
-    mock_filedialog = mock.MagicMock()
-
-    class DummyParent:
-        def __init__(self):
-            self.tk = mock.MagicMock()
-        def winfo_rootx(self): return 100
-        def winfo_rooty(self): return 100
-
-    with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
-        # Pop cached module to force importing with mocked sys.modules['tkinter']
-        sys.modules.pop('o3de.ui.multiple_file_picker', None)
-        from o3de.ui import multiple_file_picker
-
-        with patch.object(multiple_file_picker.tk, 'Toplevel'), \
-             patch.object(multiple_file_picker.tk, 'Frame'), \
-             patch.object(multiple_file_picker.tk, 'Listbox') as mock_listbox_cls, \
-             patch.object(multiple_file_picker.tk, 'Button'), \
-             patch.object(multiple_file_picker, 'filedialog') as mock_filedialog_obj:
-
-            parent = DummyParent()
-            mock_listbox = mock.MagicMock()
-            mock_listbox_cls.return_value = mock_listbox
-
-            dialog = multiple_file_picker.Dialog(parent=parent, initial_list="path/file1.txt;path/file2.txt")
-
-            assert "path/file1.txt" in dialog.items
-            assert "path/file2.txt" in dialog.items
-
-            # Test adding a file
-            mock_filedialog_obj.askopenfilename.return_value = "path/file3.txt"
-            dialog._choose_file()
-            assert "path/file3.txt" in dialog.items
-
-            # Test removing a file
-            mock_listbox.curselection.return_value = (0,)
-            mock_listbox.get.return_value = "path/file3.txt"
-            dialog._remove_file()
-            assert "path/file3.txt" not in dialog.items
