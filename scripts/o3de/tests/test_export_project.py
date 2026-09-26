@@ -675,7 +675,7 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
-@pytest.mark.skipif(sys.platform == "darwin", reason="Tkinter loads Cocoa native _tkinter.so causing SIGABRT on headless macOS/iOS runners")
+@pytest.mark.skipif(sys.platform in ("darwin", "win32"), reason="Tkinter loads native display libraries on headless CI runners")
 def test_multiple_file_picker_dialog():
     """Test the multiple file picker dialog logic, list modifications, and event bindings."""
     mock_tk = mock.MagicMock()
@@ -688,13 +688,15 @@ def test_multiple_file_picker_dialog():
         def winfo_rooty(self): return 100
 
     with patch.dict('sys.modules', {'tkinter': mock_tk, 'tkinter.filedialog': mock_filedialog}):
-        with patch('o3de.ui.multiple_file_picker.tk.Toplevel') as mock_toplevel, \
-             patch('o3de.ui.multiple_file_picker.tk.Frame'), \
-             patch('o3de.ui.multiple_file_picker.tk.Listbox') as mock_listbox_cls, \
-             patch('o3de.ui.multiple_file_picker.tk.Button'), \
-             patch('o3de.ui.multiple_file_picker.filedialog') as mock_filedialog_obj:
+        # Pop cached module to force importing with mocked sys.modules['tkinter']
+        sys.modules.pop('o3de.ui.multiple_file_picker', None)
+        from o3de.ui import multiple_file_picker
 
-            from o3de.ui import multiple_file_picker
+        with patch.object(multiple_file_picker.tk, 'Toplevel'), \
+             patch.object(multiple_file_picker.tk, 'Frame'), \
+             patch.object(multiple_file_picker.tk, 'Listbox') as mock_listbox_cls, \
+             patch.object(multiple_file_picker.tk, 'Button'), \
+             patch.object(multiple_file_picker, 'filedialog') as mock_filedialog_obj:
 
             parent = DummyParent()
             mock_listbox = mock.MagicMock()
