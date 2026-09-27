@@ -674,3 +674,80 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
     assert expected_path_list == result_path_list
 
 
+def test_export_project_ui_bindings():
+    """Test that MainWindow configures keyboard shortcuts, mnemonics, and protocols."""
+    import sys
+
+    class DummyWidget:
+        def __init__(self, *args, **kwargs):
+            pass
+        def grid(self, *args, **kwargs): pass
+        def pack(self, *args, **kwargs): pass
+        def bind(self, *args, **kwargs): pass
+        def columnconfigure(self, *args, **kwargs): pass
+        def rowconfigure(self, *args, **kwargs): pass
+        def grid_info(self, *args, **kwargs): return {'row': 0}
+
+    class DummyTkRoot(DummyWidget):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.bindings = {}
+            self.protocols = {}
+        def title(self, *args, **kwargs): pass
+        def geometry(self, *args, **kwargs): pass
+        def eval(self, *args, **kwargs): pass
+        def bind(self, sequence=None, func=None, add=None):
+            self.bindings[sequence] = func
+        def protocol(self, name=None, func=None):
+            self.protocols[name] = func
+
+    mock_tk = mock.MagicMock()
+    mock_tk.Tk = DummyTkRoot
+    mock_tk.Frame = DummyWidget
+    mock_tk.LabelFrame = DummyWidget
+    mock_tk.Label = DummyWidget
+    mock_tk.Entry = DummyWidget
+    mock_tk.Button = DummyWidget
+    mock_tk.Checkbutton = DummyWidget
+    mock_tk.OptionMenu = DummyWidget
+    mock_tk.StringVar = mock.MagicMock
+    mock_tk.IntVar = mock.MagicMock
+    mock_tk.BooleanVar = mock.MagicMock
+    mock_tk.NSEW = 'nsew'
+    mock_tk.EW = 'ew'
+    mock_tk.W = 'w'
+    mock_tk.E = 'e'
+    mock_tk.DISABLED = 'disabled'
+    mock_tk.NORMAL = 'normal'
+
+    mock_ttk = mock.MagicMock()
+    mock_ttk.Frame = DummyWidget
+
+    with patch.dict(sys.modules, {'tkinter': mock_tk, 'tkinter.ttk': mock_ttk, 'tkinter.filedialog': mock.MagicMock(), 'tkinter.messagebox': mock.MagicMock()}):
+        if 'o3de.ui.export_project' in sys.modules:
+            del sys.modules['o3de.ui.export_project']
+        import o3de.ui.export_project as export_ui
+        with patch.object(export_ui, 'tk', mock_tk), patch.object(export_ui, 'ttk', mock_ttk):
+            mock_config = mock.MagicMock()
+            mock_config.is_global = False
+            mock_config.project_name = "TestProj"
+            mock_config.get_value.return_value = ""
+            mock_setting = mock.MagicMock()
+            mock_setting.description = "Test description"
+            mock_setting.is_boolean = False
+            mock_config.get_settings_description.return_value = mock_setting
+
+            orig_bases = export_ui.MainWindow.__bases__
+            try:
+                export_ui.MainWindow.__bases__ = (DummyTkRoot,)
+                win = export_ui.MainWindow(export_config=mock_config, is_sdk=False)
+
+                assert '<Alt-s>' in win.bindings
+                assert '<Alt-S>' in win.bindings
+                assert '<Alt-c>' in win.bindings
+                assert '<Alt-C>' in win.bindings
+                assert '<Escape>' in win.bindings
+                assert 'WM_DELETE_WINDOW' in win.protocols
+                assert win.protocols['WM_DELETE_WINDOW'] == win.on_cancel
+            finally:
+                export_ui.MainWindow.__bases__ = orig_bases
