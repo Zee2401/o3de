@@ -678,8 +678,6 @@ def test_export_project_ui_bindings():
     """Test that MainWindow configures keyboard shortcuts, mnemonics, and protocols."""
     import sys
 
-    import tkinter as real_tk
-
     class DummyWidget:
         def __init__(self, *args, **kwargs):
             pass
@@ -693,13 +691,8 @@ def test_export_project_ui_bindings():
     class DummyTkRoot(DummyWidget):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            self._last_child_ids = {}
-            self.children = {}
-            self._w = '.'
-            self.tk = mock.MagicMock()
             self.bindings = {}
             self.protocols = {}
-            real_tk._default_root = self
         def title(self, *args, **kwargs): pass
         def geometry(self, *args, **kwargs): pass
         def eval(self, *args, **kwargs): pass
@@ -707,8 +700,6 @@ def test_export_project_ui_bindings():
             self.bindings[sequence] = func
         def protocol(self, name=None, func=None):
             self.protocols[name] = func
-        def _root(self):
-            return self
 
     mock_tk = mock.MagicMock()
     mock_tk.Tk = DummyTkRoot
@@ -733,28 +724,30 @@ def test_export_project_ui_bindings():
     mock_ttk.Frame = DummyWidget
 
     with patch.dict(sys.modules, {'tkinter': mock_tk, 'tkinter.ttk': mock_ttk, 'tkinter.filedialog': mock.MagicMock(), 'tkinter.messagebox': mock.MagicMock()}):
+        if 'o3de.ui.export_project' in sys.modules:
+            del sys.modules['o3de.ui.export_project']
         import o3de.ui.export_project as export_ui
+        with patch.object(export_ui, 'tk', mock_tk), patch.object(export_ui, 'ttk', mock_ttk):
+            mock_config = mock.MagicMock()
+            mock_config.is_global = False
+            mock_config.project_name = "TestProj"
+            mock_config.get_value.return_value = ""
+            mock_setting = mock.MagicMock()
+            mock_setting.description = "Test description"
+            mock_setting.is_boolean = False
+            mock_config.get_settings_description.return_value = mock_setting
 
-        mock_config = mock.MagicMock()
-        mock_config.is_global = False
-        mock_config.project_name = "TestProj"
-        mock_config.get_value.return_value = ""
-        mock_setting = mock.MagicMock()
-        mock_setting.description = "Test description"
-        mock_setting.is_boolean = False
-        mock_config.get_settings_description.return_value = mock_setting
+            orig_bases = export_ui.MainWindow.__bases__
+            try:
+                export_ui.MainWindow.__bases__ = (DummyTkRoot,)
+                win = export_ui.MainWindow(export_config=mock_config, is_sdk=False)
 
-        orig_bases = export_ui.MainWindow.__bases__
-        try:
-            export_ui.MainWindow.__bases__ = (DummyTkRoot,)
-            win = export_ui.MainWindow(export_config=mock_config, is_sdk=False)
-
-            assert '<Alt-s>' in win.bindings
-            assert '<Alt-S>' in win.bindings
-            assert '<Alt-c>' in win.bindings
-            assert '<Alt-C>' in win.bindings
-            assert '<Escape>' in win.bindings
-            assert 'WM_DELETE_WINDOW' in win.protocols
-            assert win.protocols['WM_DELETE_WINDOW'] == win.on_cancel
-        finally:
-            export_ui.MainWindow.__bases__ = orig_bases
+                assert '<Alt-s>' in win.bindings
+                assert '<Alt-S>' in win.bindings
+                assert '<Alt-c>' in win.bindings
+                assert '<Alt-C>' in win.bindings
+                assert '<Escape>' in win.bindings
+                assert 'WM_DELETE_WINDOW' in win.protocols
+                assert win.protocols['WM_DELETE_WINDOW'] == win.on_cancel
+            finally:
+                export_ui.MainWindow.__bases__ = orig_bases
