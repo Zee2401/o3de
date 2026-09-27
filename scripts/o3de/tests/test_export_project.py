@@ -680,8 +680,19 @@ def test_export_project_ui_bindings():
 
     import tkinter as real_tk
 
-    class DummyTkRoot:
+    class DummyWidget:
         def __init__(self, *args, **kwargs):
+            pass
+        def grid(self, *args, **kwargs): pass
+        def pack(self, *args, **kwargs): pass
+        def bind(self, *args, **kwargs): pass
+        def columnconfigure(self, *args, **kwargs): pass
+        def rowconfigure(self, *args, **kwargs): pass
+        def grid_info(self, *args, **kwargs): return {'row': 0}
+
+    class DummyTkRoot(DummyWidget):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
             self._last_child_ids = {}
             self.children = {}
             self._w = '.'
@@ -691,7 +702,6 @@ def test_export_project_ui_bindings():
             real_tk._default_root = self
         def title(self, *args, **kwargs): pass
         def geometry(self, *args, **kwargs): pass
-        def columnconfigure(self, *args, **kwargs): pass
         def eval(self, *args, **kwargs): pass
         def bind(self, sequence=None, func=None, add=None):
             self.bindings[sequence] = func
@@ -702,13 +712,13 @@ def test_export_project_ui_bindings():
 
     mock_tk = mock.MagicMock()
     mock_tk.Tk = DummyTkRoot
-    mock_tk.Frame = mock.MagicMock
-    mock_tk.LabelFrame = mock.MagicMock
-    mock_tk.Label = mock.MagicMock
-    mock_tk.Entry = mock.MagicMock
-    mock_tk.Button = mock.MagicMock
-    mock_tk.Checkbutton = mock.MagicMock
-    mock_tk.OptionMenu = mock.MagicMock
+    mock_tk.Frame = DummyWidget
+    mock_tk.LabelFrame = DummyWidget
+    mock_tk.Label = DummyWidget
+    mock_tk.Entry = DummyWidget
+    mock_tk.Button = DummyWidget
+    mock_tk.Checkbutton = DummyWidget
+    mock_tk.OptionMenu = DummyWidget
     mock_tk.StringVar = mock.MagicMock
     mock_tk.IntVar = mock.MagicMock
     mock_tk.BooleanVar = mock.MagicMock
@@ -720,6 +730,7 @@ def test_export_project_ui_bindings():
     mock_tk.NORMAL = 'normal'
 
     mock_ttk = mock.MagicMock()
+    mock_ttk.Frame = DummyWidget
 
     with patch.dict(sys.modules, {'tkinter': mock_tk, 'tkinter.ttk': mock_ttk, 'tkinter.filedialog': mock.MagicMock(), 'tkinter.messagebox': mock.MagicMock()}):
         import o3de.ui.export_project as export_ui
