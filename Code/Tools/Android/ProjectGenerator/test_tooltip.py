@@ -88,3 +88,40 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.StringVar')
+    @patch('tkinter.Entry')
+    @patch('tkinter.Label')
+    def test_add_label_entry_options_and_focus_binding(self, mock_label_cls, mock_entry_cls, mock_stringvar_cls):
+        from main import TkApp
+
+        mock_parent = MagicMock()
+        mock_label = MagicMock()
+        mock_label.grid_info.return_value = {"row": 2}
+        mock_label_cls.return_value = mock_label
+
+        mock_entry = MagicMock()
+        mock_entry_cls.return_value = mock_entry
+
+        app = object.__new__(TkApp)
+
+        string_var, entry, row = app._add_label_entry(
+            mock_parent, "Test Label", default_value="secret", show="*"
+        )
+
+        # Verify Label creation
+        mock_label_cls.assert_called_once()
+        self.assertEqual(mock_label_cls.call_args[1].get("text"), "Test Label")
+
+        # Verify Entry creation with show="*" option
+        mock_entry_cls.assert_called_once()
+        self.assertEqual(mock_entry_cls.call_args[1].get("show"), "*")
+
+        # Verify label click binding for focus set
+        mock_label.bind.assert_called_once()
+        self.assertEqual(mock_label.bind.call_args[0][0], "<Button-1>")
+
+        # Simulate click on label
+        click_cb = mock_label.bind.call_args[0][1]
+        click_cb(None)
+        mock_entry.focus_set.assert_called_once()
