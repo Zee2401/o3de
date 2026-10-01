@@ -10,6 +10,9 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Prevent loading native _tkinter.so C-extension on headless CI runners (e.g. macOS/iOS)
+sys.modules['_tkinter'] = MagicMock()
+
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
