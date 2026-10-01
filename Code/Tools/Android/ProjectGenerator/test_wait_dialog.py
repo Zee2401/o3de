@@ -20,6 +20,7 @@ class DummyTkRoot:
 
 if 'tkinter' not in sys.modules or not isinstance(sys.modules['tkinter'], MagicMock):
     mock_tk = MagicMock()
+    mock_tk.__path__ = []
     mock_tk.Tk = DummyTkRoot
     mock_tk.DISABLED = 'disabled'
     mock_tk.NORMAL = 'normal'
@@ -34,9 +35,15 @@ if 'tkinter' not in sys.modules or not isinstance(sys.modules['tkinter'], MagicM
     mock_tk.LEFT = 'left'
     mock_tk.RIGHT = 'right'
     mock_tk.END = 'end'
+
+    mock_mb = MagicMock()
+    mock_fd = MagicMock()
+    mock_tk.messagebox = mock_mb
+    mock_tk.filedialog = mock_fd
+
     sys.modules['tkinter'] = mock_tk
-    sys.modules['tkinter.messagebox'] = MagicMock()
-    sys.modules['tkinter.filedialog'] = MagicMock()
+    sys.modules['tkinter.messagebox'] = mock_mb
+    sys.modules['tkinter.filedialog'] = mock_fd
 
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
