@@ -55,6 +55,7 @@ if 'tkinter' not in sys.modules or not isinstance(sys.modules['tkinter'], MagicM
     mock_tk.messagebox = mock_mb
     mock_tk.filedialog = mock_fd
 
+    sys.modules['_tkinter'] = MagicMock()
     sys.modules['tkinter'] = mock_tk
     sys.modules['tkinter.messagebox'] = mock_mb
     sys.modules['tkinter.filedialog'] = mock_fd
