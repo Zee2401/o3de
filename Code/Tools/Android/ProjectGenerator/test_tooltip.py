@@ -88,3 +88,33 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    @patch('tkinter.Button')
+    def test_password_toggle_button(self, mock_button_cls):
+        from main import TkApp
+
+        mock_entry = MagicMock()
+        mock_entry.cget.return_value = "*"
+
+        mock_btn_inst = MagicMock()
+        mock_button_cls.return_value = mock_btn_inst
+
+        app = MagicMock(spec=TkApp)
+        parent_frame = MagicMock()
+
+        btn = TkApp._add_password_toggle_button(app, parent_frame, mock_entry, row=1, column=3)
+
+        # Retrieve the toggle_visibility command passed to Button constructor
+        cmd = mock_button_cls.call_args[1].get('command')
+        self.assertIsNotNone(cmd)
+
+        # Initial state is masked ("*"), so clicking command reveals password ("") and changes button text to "Hide"
+        cmd()
+        mock_entry.config.assert_called_with(show="")
+        mock_btn_inst.config.assert_called_with(text="Hide")
+
+        # Set mock_entry.cget to return "" (unmasked)
+        mock_entry.cget.return_value = ""
+        cmd()
+        mock_entry.config.assert_called_with(show="*")
+        mock_btn_inst.config.assert_called_with(text="Show")
