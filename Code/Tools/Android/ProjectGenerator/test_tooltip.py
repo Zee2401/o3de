@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
-# Prevent loading native _tkinter.so / Cocoa AppKit on headless CI runners (macOS/iOS)
+# Prevent loading native _tkinter.so C-extension on headless CI runners (e.g. macOS/iOS)
 sys.modules['_tkinter'] = MagicMock()
 
 import tkinter as tk
@@ -104,10 +104,9 @@ class TestToolTip(unittest.TestCase):
         mock_btn_inst = MagicMock()
         mock_button_cls.return_value = mock_btn_inst
 
-        app = MagicMock(spec=TkApp)
         parent_frame = MagicMock()
 
-        btn = TkApp._add_password_toggle_button(app, parent_frame, mock_entry, row=1, column=3)
+        btn = TkApp._add_password_toggle_button(None, parent_frame, mock_entry, row=1, column=3)
 
         # Retrieve the toggle_visibility command passed to Button constructor
         cmd = mock_button_cls.call_args[1].get('command')

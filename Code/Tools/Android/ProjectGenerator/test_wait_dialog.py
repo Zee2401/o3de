@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
-# Prevent loading native _tkinter.so / Cocoa AppKit on headless CI runners (macOS/iOS)
+# Prevent loading native _tkinter.so C-extension on headless CI runners (e.g. macOS/iOS)
 sys.modules['_tkinter'] = MagicMock()
 
 import tkinter as tk
