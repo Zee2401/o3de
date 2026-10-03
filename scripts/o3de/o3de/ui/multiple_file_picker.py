@@ -6,16 +6,13 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
-
 class Dialog(object):
     """
     Dialog to handle the selection of multiple files
     """
 
     def __init__(self, parent, file_filters=None, initial_list=""):
+        import tkinter as tk
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
@@ -71,6 +68,7 @@ class Dialog(object):
         root.grid()
 
     def _choose_file(self):
+        from tkinter import filedialog
         filename = filedialog.askopenfilename(filetypes=self.file_filters)
         if filename and filename not in self.items:
             self.items.add(filename)
