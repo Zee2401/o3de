@@ -10,6 +10,20 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Mock _tkinter and tkinter in sys.modules at top-level before @patch decorators run
+# to prevent loading native Cocoa _tkinter.so during pytest collection on macOS/iOS runners
+if 'tkinter' not in sys.modules or not isinstance(sys.modules['tkinter'], MagicMock):
+    mock_tk = MagicMock()
+    mock_tk.__path__ = []
+    mock_mb = MagicMock()
+    mock_fd = MagicMock()
+    mock_tk.messagebox = mock_mb
+    mock_tk.filedialog = mock_fd
+    sys.modules['tkinter'] = mock_tk
+    sys.modules['tkinter.messagebox'] = mock_mb
+    sys.modules['tkinter.filedialog'] = mock_fd
+    sys.modules['_tkinter'] = MagicMock()
+
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
