@@ -5,9 +5,6 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
-
 import os
 import pathlib
 import platform
@@ -50,6 +47,8 @@ class _ToolTip:
             self._after_id = None
 
     def _show(self, widget, message):
+        import tkinter as tk
+        from tkinter import ttk
         self._hide()
         x = widget.winfo_rootx() + 20
         y = widget.winfo_rooty() + widget.winfo_height() + 2
@@ -66,7 +65,7 @@ class _ToolTip:
             self._tip_window = None
 
 
-class MainWindow(tk.Tk):
+class MainWindow(object):
     """
     Main Widget to manage the settings for Project Export based on an export config
     """
@@ -78,18 +77,20 @@ class MainWindow(tk.Tk):
         :param export_config:   The export_config that is relevant to the project (or global setting)
         :param is_sdk:          Flag indicating if the engine is an SDK engine (vs source-build)
         """
-        super().__init__()
+        import tkinter as tk
 
-        self.title("Project Export Settings")
+        self.root = root = tk.Tk()
+
+        root.title("Project Export Settings")
 
         self.export_config = export_config
 
         self.is_sdk = is_sdk
 
         if self.export_config.is_global:
-            self.title("Project Export Settings (Global)")
+            root.title("Project Export Settings (Global)")
         else:
-            self.title(f"Project Export Settings ({self.export_config.project_name})")
+            root.title(f"Project Export Settings ({self.export_config.project_name})")
 
         self.config_key_entry_map = {}
 
@@ -97,9 +98,9 @@ class MainWindow(tk.Tk):
         self.min_entry_width = 40
         self.field_padding = 2
 
-        self.columnconfigure(0, weight=1)
+        root.columnconfigure(0, weight=1)
 
-        self.main_frame = tk.Frame(self)
+        self.main_frame = tk.Frame(root)
         self.main_frame.columnconfigure(0, weight=1)
         self.main_frame.grid(sticky=tk.NSEW)
         self.tool_tip = _ToolTip(self.main_frame)
@@ -115,9 +116,12 @@ class MainWindow(tk.Tk):
 
         self.init_okay_cancel_buttons(self.main_frame)
         
-        self.eval('tk::PlaceWindow . center')
+        root.eval('tk::PlaceWindow . center')
 
-    def add_simple_text_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
+    def __getattr__(self, name):
+        return getattr(self.root, name)
+
+    def add_simple_text_entry(self, parent, config_key: str, label_text: str,
                               entry_read_only: bool = False) -> None:
         """
         Add a simple text entry (label and an edit box) to the parent frame widget
@@ -129,6 +133,8 @@ class MainWindow(tk.Tk):
         """
 
         assert config_key not in self.config_key_entry_map.keys(), f'Duplicate config key {config_key}'
+
+        import tkinter as tk
 
         default_value = self.export_config.get_value(config_key, '')
         settings = self.export_config.get_settings_description(config_key)
@@ -149,7 +155,7 @@ class MainWindow(tk.Tk):
 
         self.config_key_entry_map[config_key] = (label_text, default_value, entry_var, settings, entry)
 
-    def add_dropdown_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
+    def add_dropdown_entry(self, parent, config_key: str, label_text: str,
                            choices: list[str]) -> None:
         """
         Add a labeled drop-down entry list to the parent frame widget
@@ -161,6 +167,8 @@ class MainWindow(tk.Tk):
         """
 
         assert config_key not in self.config_key_entry_map.keys(), f'Duplicate config key {config_key}'
+
+        import tkinter as tk
 
         default_value = self.export_config.get_value(config_key)
         settings = self.export_config.get_settings_description(config_key)
@@ -185,7 +193,7 @@ class MainWindow(tk.Tk):
 
         self.config_key_entry_map[config_key] = (label_text,default_value, entry_var, settings, entry)
 
-    def add_labeled_checkbox(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
+    def add_labeled_checkbox(self, parent, config_key: str, label_text: str,
                              row_number: int = None, column_number: int = None) -> None:
         """
         Add a check box to the parent frame widget
@@ -199,6 +207,8 @@ class MainWindow(tk.Tk):
 
         assert config_key not in self.config_key_entry_map.keys(), f'Duplicate config key {config_key}'
 
+        import tkinter as tk
+
         default_value = 1 if self.export_config.get_value(config_key).lower() == 'true' else 0
         settings = self.export_config.get_settings_description(config_key)
         tooltip_description = settings.description
@@ -210,7 +220,7 @@ class MainWindow(tk.Tk):
 
         self.config_key_entry_map[config_key] = (label_text, default_value, check_button_var, settings, button)
 
-    def add_multi_file_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
+    def add_multi_file_entry(self, parent, config_key: str, label_text: str,
                              multifile_file_select: bool = False, entry_read_only: bool = False, file_filters=None) -> None:
         """
         Add a labeled text box that represents a list of multiple files
@@ -224,6 +234,8 @@ class MainWindow(tk.Tk):
         """
 
         assert config_key not in self.config_key_entry_map.keys(), f'Duplicate config key {config_key}'
+
+        import tkinter as tk
 
         default_value = self.export_config.get_value(config_key, '')
         settings = self.export_config.get_settings_description(config_key)
@@ -257,7 +269,7 @@ class MainWindow(tk.Tk):
 
         self.config_key_entry_map[config_key] = (label_text, default_value, entry_var, settings, entry)
 
-    def add_multi_text_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
+    def add_multi_text_entry(self, parent, config_key: str, label_text: str,
                              entry_read_only: bool = False):
         """
         Add a labeled text box that represents a list of multiple values
@@ -269,6 +281,8 @@ class MainWindow(tk.Tk):
         """
 
         assert config_key not in self.config_key_entry_map.keys(), f'Duplicate config key {config_key}'
+
+        import tkinter as tk
 
         default_value = self.export_config.get_value(config_key, '')
         settings = self.export_config.get_settings_description(config_key)
@@ -297,7 +311,7 @@ class MainWindow(tk.Tk):
         self.config_key_entry_map[config_key] = (label_text, default_value, entry_var, settings, entry)
 
     @staticmethod
-    def open_multi_file_dialog(parent, str_var: tk.StringVar, file_filters):
+    def open_multi_file_dialog(parent, str_var, file_filters):
         """
         Open the custom dialog to select multiple files
 
@@ -310,13 +324,14 @@ class MainWindow(tk.Tk):
         str_var.set(result)
 
     @staticmethod
-    def open_single_file_dialog(parent, str_var: tk.StringVar, file_filters, starting_dir):
+    def open_single_file_dialog(parent, str_var, file_filters, starting_dir):
+        from tkinter import filedialog
         result = filedialog.askopenfilename(filetypes=file_filters, initialdir=starting_dir)
         filename_only = os.path.basename(result)
         str_var.set(filename_only)
 
     @staticmethod
-    def open_multi_text_dialog(parent, str_var: tk.StringVar):
+    def open_multi_text_dialog(parent, str_var):
         """
         Open the custom dialog to manage multiple text entries
 
@@ -333,6 +348,7 @@ class MainWindow(tk.Tk):
 
         :param parent:  The parent widget grid container
         """
+        import tkinter as tk
         general_settings_frame = tk.LabelFrame(parent, text="Archive Settings")
         general_settings_frame.columnconfigure(0, weight=0)
         general_settings_frame.columnconfigure(1, weight=1)
@@ -362,6 +378,7 @@ class MainWindow(tk.Tk):
 
         :param parent:  The parent widget grid container
         """
+        import tkinter as tk
         tool_chain_build_options_frame = tk.LabelFrame(parent, text="Toolchain Build Options")
         tool_chain_build_options_frame.columnconfigure(0, weight=0)
         tool_chain_build_options_frame.columnconfigure(1, weight=1)
@@ -388,6 +405,7 @@ class MainWindow(tk.Tk):
 
         :param parent:  The parent widget grid container
         """
+        import tkinter as tk
         project_build_options_frame = tk.LabelFrame(parent, text="Project Build Options")
         project_build_options_frame.columnconfigure(0, weight=0)
         project_build_options_frame.columnconfigure(1, weight=1)
@@ -408,6 +426,7 @@ class MainWindow(tk.Tk):
 
         :param parent:  The parent widget grid container
         """
+        import tkinter as tk
         project_asset_bundling_options_frame = tk.LabelFrame(parent, text="Asset/Bundling Options")
         project_asset_bundling_options_frame.columnconfigure(0, weight=0)
         project_asset_bundling_options_frame.columnconfigure(1, weight=1)
@@ -450,6 +469,8 @@ class MainWindow(tk.Tk):
                                    label_text='Asset Bundling Path',
                                    config_key='asset.bundling.path')
     def init_pc_tab(self, parent):
+        import tkinter as tk
+        from tkinter import ttk
         pc_tab = ttk.Frame(parent)
         pc_build_options_frame = tk.LabelFrame(pc_tab, text="Build Options")
         pc_build_options_frame.grid(sticky='nsew')
@@ -504,6 +525,8 @@ class MainWindow(tk.Tk):
         parent.add(pc_tab, text=platform.system())
     
     def init_android_tab(self, parent):
+        import tkinter as tk
+        from tkinter import ttk
         android_tab = ttk.Frame(parent)
         android_build_options_frame = tk.LabelFrame(android_tab, text="Build Options")
         android_build_options_frame.grid(sticky='nsew')
@@ -523,6 +546,8 @@ class MainWindow(tk.Tk):
         parent.add(android_tab, text='Android')
 
     def init_platform_tabs(self, parent):
+        import tkinter as tk
+        from tkinter import ttk
         platform_tabs = ttk.Notebook(parent)
         platform_tabs.grid_rowconfigure(0, weight=1) # this needed to be added
         platform_tabs.grid_columnconfigure(0, weight=1) # as did this
@@ -539,6 +564,7 @@ class MainWindow(tk.Tk):
 
         :param parent:  The parent widget grid container
         """
+        import tkinter as tk
         okay_cancel_frame = tk.Frame(parent)
         okay_cancel_frame.grid(padx=4, pady=4, sticky=tk.E)
 
@@ -550,6 +576,8 @@ class MainWindow(tk.Tk):
         button_cancel.grid(row=okay_row, column=1, sticky=tk.E)
 
     def on_ok(self):
+        import tkinter as tk
+        from tkinter import messagebox
         for key, item in self.config_key_entry_map.items():
 
             label_text = item[0]
