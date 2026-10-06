@@ -6,9 +6,6 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
 
 class Dialog(object):
     """
@@ -16,10 +13,11 @@ class Dialog(object):
     """
 
     def __init__(self, parent, input_value):
+        import tkinter as tk
 
         root = self.root = tk.Toplevel(parent)
-        root.title('Configure Files')
-        root.resizable(True,True)
+        root.title('Configure Entries')
+        root.resizable(True, True)
 
         px = parent.winfo_rootx()
         py = parent.winfo_rooty()
@@ -39,7 +37,7 @@ class Dialog(object):
             items = [ti.strip() for ti in input_value.split(";")]
             sanitized_items = []
             for item in items:
-                if item is not None and len(item.strip())>0:
+                if item is not None and len(item.strip()) > 0:
                     sanitized_items.append(item)
 
             text_entries = "\n".join(sanitized_items)
@@ -47,7 +45,7 @@ class Dialog(object):
             text_entries = ""
 
         self._entry = tk.Text(self._main_frame, )
-        self._entry.insert(tk.END,text_entries)
+        self._entry.insert(tk.END, text_entries)
         self._entry.grid(sticky=tk.NSEW)
 
         button_frame = tk.Frame(self._main_frame, borderwidth=0)
@@ -56,15 +54,24 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
-        button_add.grid(row=0, column=0, sticky=tk.E)
+        button_ok = tk.Button(button_frame, text="Ok", width=4, underline=0, command=self._on_ok)
+        button_ok.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
-        button_remove.grid(row=0, column=1, sticky=tk.E)
+        button_cancel = tk.Button(button_frame, text="Cancel", width=4, underline=0, command=self._on_cancel)
+        button_cancel.grid(row=0, column=1, sticky=tk.E)
+
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
+        root.bind("<Escape>", lambda event: self._on_cancel())
+        root.bind("<Alt-o>", lambda event: self._on_ok())
+        root.bind("<Alt-O>", lambda event: self._on_ok())
+        root.bind("<Alt-c>", lambda event: self._on_cancel())
+        root.bind("<Alt-C>", lambda event: self._on_cancel())
 
         root.grid()
 
     def _on_ok(self):
+        import tkinter as tk
+
         result_string = self._entry.get("1.0", tk.END)
         result_items = [rs.strip() for rs in result_string.split("\n")]
         sanitized_items = set()
