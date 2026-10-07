@@ -114,7 +114,7 @@ class MainWindow(tk.Tk):
         self.init_platform_tabs(self.main_frame)
 
         self.init_okay_cancel_buttons(self.main_frame)
-        
+
         self.eval('tk::PlaceWindow . center')
 
     def add_simple_text_entry(self, parent: tk.Frame or tk.LabelFrame, config_key: str, label_text: str,
@@ -401,7 +401,7 @@ class MainWindow(tk.Tk):
                                 label_text='Project Build Configuration',
                                 config_key='project.build.config',
                                 choices=build_config_choices)
-        
+
     def init_asset_bundling_options(self, parent):
         """
         Initialize + Configure the Asset/Bundling Options
@@ -413,7 +413,7 @@ class MainWindow(tk.Tk):
         project_asset_bundling_options_frame.columnconfigure(1, weight=1)
         project_asset_bundling_options_frame.grid(padx=4, sticky=tk.EW)
 
-        
+
         self.add_labeled_checkbox(parent=project_asset_bundling_options_frame,
                                   label_text='Build Assets',
                                   config_key='option.build.assets',
@@ -441,7 +441,7 @@ class MainWindow(tk.Tk):
         self.add_multi_text_entry(parent=project_asset_bundling_options_frame,
                                   label_text="Level Names",
                                   config_key='default.level.names')
-        
+
         self.add_simple_text_entry(parent=project_asset_bundling_options_frame,
                                    label_text='Max Size',
                                    config_key='max.size')
@@ -477,32 +477,32 @@ class MainWindow(tk.Tk):
                                   config_key='option.build.headless.server.launcher',
                                   row_number=1,
                                   column_number=1)
-        
-        # For pre-built SDKs builds, the monolithic build are determined by whether or not the 
+
+        # For pre-built SDKs builds, the monolithic build are determined by whether or not the
         # build configuration is profile (false) or release (true), so only display the option
         # for source builds
         if not self.is_sdk:
             self.add_labeled_checkbox(parent=pc_build_options_frame,
                                       label_text="Build Monolithic",
                                       config_key='option.build.monolithic')
-        
+
         self.add_labeled_checkbox(parent=pc_build_options_frame,
                                   label_text='Allow Asset Processor Registry Overrides',
                                   config_key='option.allow.registry.overrides')
-        
+
         self.add_simple_text_entry(parent=pc_build_options_frame,
                                    label_text=f'{os_name} Launcher Build Path',
                                    config_key='default.launcher.build.path')
-        
+
         # iOS is only available on Mac (Darwin)
         if platform.system() == 'Darwin':
             self.add_simple_text_entry(parent=pc_build_options_frame,
                                        label_text='iOS Build Path',
                                        config_key='default.ios.build.path')
-            
+
         self.init_archive_settings_frame(pc_tab)
         parent.add(pc_tab, text=platform.system())
-    
+
     def init_android_tab(self, parent):
         android_tab = ttk.Frame(parent)
         android_build_options_frame = tk.LabelFrame(android_tab, text="Build Options")
@@ -510,7 +510,7 @@ class MainWindow(tk.Tk):
         self.add_labeled_checkbox(parent=android_build_options_frame,
                                   label_text='Deploy to Android Device',
                                   config_key='option.android.deploy')
-        
+
         asset_mode_choices = ['LOOSE', 'PAK']
         self.add_dropdown_entry(parent=android_build_options_frame,
                                 label_text='Asset Mode Configuration',
