@@ -21,14 +21,11 @@ import subprocess
 from o3de import command_utils, manifest, utils
 
 # Check if tkinter is installed or not
-def _is_tkinter_installed() -> bool:
-    try:
-        import importlib.util
-        return importlib.util.find_spec("tkinter") is not None
-    except Exception:
-        return False
-
-tkinter_installed = _is_tkinter_installed()
+tkinter_installed = True
+try:
+    from o3de.ui import export_project as export_project_ui
+except:
+    tkinter_installed = False
 
 from typing import List
 from enum import IntEnum
@@ -402,7 +399,6 @@ def _run_export_script(args: argparse, passthru_args: list) -> int:
     
     if args.configure:
         if tkinter_installed:
-            from o3de.ui import export_project as export_project_ui
             export_config = get_export_project_config(args.project_path)
             project_info = manifest.get_project_json_data(project_path=args.project_path)
             is_o3de_sdk = project_info.get('engine') == 'o3de-sdk'

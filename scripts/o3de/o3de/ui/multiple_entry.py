@@ -7,13 +7,19 @@
 #
 
 
+def _init_tkinter():
+    global tk
+    if 'tk' not in globals():
+        import tkinter as tk
+
+
 class Dialog(object):
     """
     Dialog to handle the selection of names
     """
 
     def __init__(self, parent, input_value):
-        import tkinter as tk
+        _init_tkinter()
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
@@ -71,7 +77,6 @@ class Dialog(object):
         root.grid()
 
     def _on_ok(self, event=None):
-        import tkinter as tk
         result_string = self._entry.get("1.0", tk.END)
         result_items = [rs.strip() for rs in result_string.split("\n")]
         sanitized_items = set()
