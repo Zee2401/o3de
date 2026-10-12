@@ -6,9 +6,6 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
 
 class Dialog(object):
     """
@@ -16,10 +13,12 @@ class Dialog(object):
     """
 
     def __init__(self, parent, file_filters=None, initial_list=""):
+        import tkinter as tk
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
-        root.resizable(True,True)
+        root.resizable(True, True)
+        root.protocol("WM_DELETE_WINDOW", self._on_close)
 
         px = parent.winfo_rootx()
         py = parent.winfo_rooty()
@@ -35,6 +34,7 @@ class Dialog(object):
 
         self.file_list_box = tk.Listbox(self._main_frame, selectmode=tk.SINGLE)
         self.file_list_box.grid(sticky=tk.NSEW)
+        self.file_list_box.bind('<Delete>', lambda event: self._remove_file())
 
         if initial_list:
             self.items = set([ti.strip() for ti in initial_list.split(";")])
@@ -52,30 +52,41 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
-        button_add.grid(sticky=tk.N)
+        button_add = tk.Button(button_frame, text="Add...", width=8, underline=0, command=self._choose_file)
+        button_add.grid(sticky=tk.N, pady=2)
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
-        button_remove.grid(sticky=tk.N)
+        button_remove = tk.Button(button_frame, text="Remove", width=8, underline=0, command=self._remove_file)
+        button_remove.grid(sticky=tk.N, pady=2)
+
+        root.bind('<Alt-a>', lambda event: self._choose_file())
+        root.bind('<Alt-A>', lambda event: self._choose_file())
+        root.bind('<Alt-r>', lambda event: self._remove_file())
+        root.bind('<Alt-R>', lambda event: self._remove_file())
+        root.bind('<Escape>', lambda event: self._on_close())
 
         root.grid()
 
     def _choose_file(self):
+        from tkinter import filedialog
         filename = filedialog.askopenfilename(filetypes=self.file_filters)
-        if filename not in self.items:
+        if filename and filename not in self.items:
             self.items.add(filename)
-            self.file_list_box.insert(0,filename)
+            self.file_list_box.insert(0, filename)
 
     def _remove_file(self):
         selected_list = self.file_list_box.curselection()
-        for selected in selected_list:
+        for selected in reversed(selected_list):
             selected_item = self.file_list_box.get(selected)
-            self.items.remove(selected_item)
+            if selected_item in self.items:
+                self.items.remove(selected_item)
             self.file_list_box.delete(selected)
+
+    def _on_close(self):
+        self.root.destroy()
 
     def get_result(self):
         self.root.grab_set()
         self.root.wait_window()
-        cleaned_items = [item for item in self.items if len(item)>0]
+        cleaned_items = [item for item in self.items if len(item) > 0]
         result_string = ";".join(cleaned_items)
         return result_string
