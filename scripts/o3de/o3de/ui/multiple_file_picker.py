@@ -6,9 +6,6 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
 
 class Dialog(object):
     """
@@ -16,6 +13,7 @@ class Dialog(object):
     """
 
     def __init__(self, parent, file_filters=None, initial_list=""):
+        import tkinter as tk
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
@@ -52,26 +50,40 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
+        button_add = tk.Button(button_frame, text="+ Add", width=8, command=self._choose_file, underline=2)
         button_add.grid(sticky=tk.N)
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
+        button_remove = tk.Button(button_frame, text="- Remove", width=8, command=self._remove_file, underline=2)
         button_remove.grid(sticky=tk.N)
+
+        # Keyboard shortcuts and window protocols
+        root.bind("<Alt-a>", lambda e: self._choose_file())
+        root.bind("<Alt-A>", lambda e: self._choose_file())
+        root.bind("<Alt-r>", lambda e: self._remove_file())
+        root.bind("<Alt-R>", lambda e: self._remove_file())
+        root.bind("<Escape>", lambda e: self._on_close())
+        self.file_list_box.bind("<Delete>", lambda e: self._remove_file())
+        self.file_list_box.bind("<BackSpace>", lambda e: self._remove_file())
+        root.protocol("WM_DELETE_WINDOW", self._on_close)
 
         root.grid()
 
     def _choose_file(self):
+        from tkinter import filedialog
         filename = filedialog.askopenfilename(filetypes=self.file_filters)
-        if filename not in self.items:
+        if filename and filename not in self.items:
             self.items.add(filename)
-            self.file_list_box.insert(0,filename)
+            self.file_list_box.insert(0, filename)
 
-    def _remove_file(self):
+    def _remove_file(self, event=None):
         selected_list = self.file_list_box.curselection()
-        for selected in selected_list:
+        for selected in reversed(selected_list):
             selected_item = self.file_list_box.get(selected)
             self.items.remove(selected_item)
             self.file_list_box.delete(selected)
+
+    def _on_close(self):
+        self.root.destroy()
 
     def get_result(self):
         self.root.grab_set()
