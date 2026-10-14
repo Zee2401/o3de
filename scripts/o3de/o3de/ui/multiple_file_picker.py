@@ -58,6 +58,14 @@ class Dialog(object):
         button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
         button_remove.grid(sticky=tk.N)
 
+        root.bind("<Escape>", lambda event: self.root.destroy())
+        root.bind("<Delete>", lambda event: self._remove_file())
+        root.bind("<Alt-a>", lambda event: self._choose_file())
+        root.bind("<Alt-A>", lambda event: self._choose_file())
+        root.bind("<Alt-r>", lambda event: self._remove_file())
+        root.bind("<Alt-R>", lambda event: self._remove_file())
+        root.protocol("WM_DELETE_WINDOW", lambda: self.root.destroy())
+
         root.grid()
 
     def _choose_file(self):
@@ -68,7 +76,7 @@ class Dialog(object):
 
     def _remove_file(self):
         selected_list = self.file_list_box.curselection()
-        for selected in selected_list:
+        for selected in reversed(selected_list):
             selected_item = self.file_list_box.get(selected)
             self.items.remove(selected_item)
             self.file_list_box.delete(selected)
