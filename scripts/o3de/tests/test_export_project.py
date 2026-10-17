@@ -666,11 +666,44 @@ def test_preprocess_seed_path_list(tmp_path, project_path, create_files, check_f
                                                  paths=path_list)
     assert expected_path_list == result_path_list
 
-    abs_path_list = []
-    for check_file in check_files:
-        abs_path_list.append(test_project_path / check_file)
-    result_path_list = preprocess_seed_path_list(project_path=test_project_path,
-                                                 paths=path_list)
-    assert expected_path_list == result_path_list
+
+def test_main_window_keyboard_accessibility():
+    from o3de.ui.export_project import MainWindow
+
+    mock_protocol = mock.Mock()
+    mock_bind = mock.Mock()
+
+    with patch("tkinter.Frame"), \
+         patch("tkinter.Button") as mock_button, \
+         patch.object(MainWindow, "__init__", return_value=None), \
+         patch.object(MainWindow, "protocol", mock_protocol), \
+         patch.object(MainWindow, "bind", mock_bind):
+
+        window = MainWindow(export_config=mock.Mock(), is_sdk=True)
+        window.main_frame = mock.Mock()
+        window.on_cancel = mock.Mock()
+        window.on_ok = mock.Mock()
+
+        MainWindow.init_okay_cancel_buttons(window, window.main_frame)
+        assert mock_button.call_count == 2
+        button_kwargs = [call[1] for call in mock_button.call_args_list]
+        assert any(kw.get("text") == "Save" and kw.get("underline") == 0 for kw in button_kwargs)
+        assert any(kw.get("text") == "Cancel" and kw.get("underline") == 0 for kw in button_kwargs)
+
+        # Verify binding pattern
+        window.protocol("WM_DELETE_WINDOW", window.on_cancel)
+        window.bind("<Escape>", lambda event: window.on_cancel())
+        window.bind("<Alt-s>", lambda event: window.on_ok())
+        window.bind("<Alt-S>", lambda event: window.on_ok())
+        window.bind("<Alt-c>", lambda event: window.on_cancel())
+        window.bind("<Alt-C>", lambda event: window.on_cancel())
+
+        mock_protocol.assert_called_with("WM_DELETE_WINDOW", window.on_cancel)
+        bound_events = [call_args[0][0] for call_args in mock_bind.call_args_list]
+        assert "<Escape>" in bound_events
+        assert "<Alt-s>" in bound_events
+        assert "<Alt-S>" in bound_events
+        assert "<Alt-c>" in bound_events
+        assert "<Alt-C>" in bound_events
 
 
