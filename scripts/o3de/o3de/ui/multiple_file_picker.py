@@ -58,6 +58,15 @@ class Dialog(object):
         button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
         button_remove.grid(sticky=tk.N)
 
+        # Keyboard shortcuts and protocols for dismissal / file management
+        root.bind("<Escape>", lambda event: self.root.destroy())
+        root.bind("<Delete>", lambda event: self._remove_file())
+        root.bind("<Alt-a>", lambda event: self._choose_file())
+        root.bind("<Alt-A>", lambda event: self._choose_file())
+        root.bind("<Alt-r>", lambda event: self._remove_file())
+        root.bind("<Alt-R>", lambda event: self._remove_file())
+        root.protocol("WM_DELETE_WINDOW", self.root.destroy)
+
         root.grid()
 
     def _choose_file(self):
