@@ -9,3 +9,7 @@
 ## 2026-07-17 - Robust Keyboard Dismissal and Cancelation for Modal Dialogs in Tkinter
 **Learning:** For desktop utilities built with Tkinter, relying entirely on on-screen cancel buttons can result in orphaned background processes if a user closes the modal dialog via window manager decorations (clicking 'X' or pressing Alt+F4). Mapping keyboard escape/accelerator bindings and utilizing the `WM_DELETE_WINDOW` window protocol to trigger the official cancel callback guarantees graceful termination.
 **Action:** Always bind `<Escape>` and accelerator shortcuts (e.g., `<Alt-c>`) to the cancel handler in modal dialogs, and explicitly map the `WM_DELETE_WINDOW` protocol to prevent orphaned threads/processes.
+
+## 2026-09-28 - Lazy Tkinter Imports for Headless CLI Modules
+**Learning:** Top-level imports of Tkinter UI modules in CLI scripts (like `scripts/o3de/o3de/export_project.py`) cause native Cocoa `_tkinter.so` initialization on macOS/iOS CI runners during headless asset building, resulting in `SIGABRT` crashes (exit code 134).
+**Action:** Import Tkinter and UI modules lazily inside command handlers (e.g., when `--configure` flag is active) so CLI execution in headless CI environments never initializes Tkinter.
