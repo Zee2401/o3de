@@ -52,11 +52,11 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
-        button_add.grid(sticky=tk.N)
+        button_add = tk.Button(button_frame, text="Add...", width=8, command=self._choose_file)
+        button_add.grid(padx=4, pady=2, sticky=tk.N)
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
-        button_remove.grid(sticky=tk.N)
+        button_remove = tk.Button(button_frame, text="Remove", width=8, command=self._remove_file)
+        button_remove.grid(padx=4, pady=2, sticky=tk.N)
 
         root.grid()
 
