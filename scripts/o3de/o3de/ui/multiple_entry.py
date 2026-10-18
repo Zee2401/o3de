@@ -6,16 +6,15 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
-
 class Dialog(object):
     """
     Dialog to handle the selection of names
     """
 
     def __init__(self, parent, input_value):
+        global tk, filedialog
+        import tkinter as tk
+        from tkinter import filedialog
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
@@ -56,11 +55,18 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
+        button_add = tk.Button(button_frame, text="OK", width=4, underline=0, command=self._on_ok)
         button_add.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
+        button_remove = tk.Button(button_frame, text="Cancel", width=6, underline=0, command=self._on_cancel)
         button_remove.grid(row=0, column=1, sticky=tk.E)
+
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
+        root.bind("<Escape>", lambda event: self._on_cancel())
+        root.bind("<Alt-o>", lambda event: self._on_ok())
+        root.bind("<Alt-O>", lambda event: self._on_ok())
+        root.bind("<Alt-c>", lambda event: self._on_cancel())
+        root.bind("<Alt-C>", lambda event: self._on_cancel())
 
         root.grid()
 
