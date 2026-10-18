@@ -88,3 +88,17 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    def test_tooltip_action_buttons(self):
+        from main import _ToolTip
+        button_tips = {
+            "Load": "Load settings from JSON file (Alt-L)",
+            "Save": "Save settings to JSON file (Alt-S)",
+            "Create Keystore": "Create Android Keystore (Alt-C)",
+            "Generate Project": "Generate Android Project (Alt-G)",
+        }
+        for name, tip_text in button_tips.items():
+            widget = DummyWidget()
+            tooltip = _ToolTip(widget, tip_text)
+            self.assertEqual(tooltip.text, tip_text)
+            self.assertIn("<Enter>", widget.bindings)
