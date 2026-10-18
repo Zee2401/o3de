@@ -35,6 +35,8 @@ class Dialog(object):
 
         self.file_list_box = tk.Listbox(self._main_frame, selectmode=tk.SINGLE)
         self.file_list_box.grid(sticky=tk.NSEW)
+        self.file_list_box.bind("<Delete>", lambda event: self._remove_file())
+        self.file_list_box.bind("<BackSpace>", lambda event: self._remove_file())
 
         if initial_list:
             self.items = set([ti.strip() for ti in initial_list.split(";")])
@@ -52,21 +54,29 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid(row=0, column=1)
 
-        button_add = tk.Button(button_frame, text="+", width=4, command=self._choose_file)
-        button_add.grid(sticky=tk.N)
+        button_add = tk.Button(button_frame, text="+ Add", underline=2, width=8, command=self._choose_file)
+        button_add.grid(sticky=tk.N, pady=(0, 2))
 
-        button_remove = tk.Button(button_frame, text="-", width=4, command=self._remove_file)
+        button_remove = tk.Button(button_frame, text="- Remove", underline=2, width=8, command=self._remove_file)
         button_remove.grid(sticky=tk.N)
 
-        root.grid()
+        root.bind("<Escape>", lambda event: root.destroy())
+        root.protocol("WM_DELETE_WINDOW", root.destroy)
+        root.bind("<Alt-a>", lambda event: self._choose_file())
+        root.bind("<Alt-A>", lambda event: self._choose_file())
+        root.bind("<Alt-r>", lambda event: self._remove_file())
+        root.bind("<Alt-R>", lambda event: self._remove_file())
 
-    def _choose_file(self):
+        root.grid()
+        self.file_list_box.focus_set()
+
+    def _choose_file(self, event=None):
         filename = filedialog.askopenfilename(filetypes=self.file_filters)
-        if filename not in self.items:
+        if filename and filename not in self.items:
             self.items.add(filename)
             self.file_list_box.insert(0,filename)
 
-    def _remove_file(self):
+    def _remove_file(self, event=None):
         selected_list = self.file_list_box.curselection()
         for selected in selected_list:
             selected_item = self.file_list_box.get(selected)
