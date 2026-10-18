@@ -24,6 +24,9 @@
           <property name="text">
             <string>Enter filter:</string>
           </property>
+          <property name="buddy">
+            <cstring>FILTER</cstring>
+          </property>
           <property name="alignment">
             <set>Qt::AlignTop|Qt::AlignLeft</set>
           </property>
@@ -38,6 +41,9 @@
               <width>291</width>
               <height>19</height>
             </rect>
+          </property>
+          <property name="accessibleName">
+            <string>Filter</string>
           </property>
           <property name="alignment">
             <set>Qt::AlignLeft|Qt::AlignVCenter</set>
