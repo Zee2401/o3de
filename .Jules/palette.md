@@ -9,3 +9,7 @@
 ## 2026-07-17 - Robust Keyboard Dismissal and Cancelation for Modal Dialogs in Tkinter
 **Learning:** For desktop utilities built with Tkinter, relying entirely on on-screen cancel buttons can result in orphaned background processes if a user closes the modal dialog via window manager decorations (clicking 'X' or pressing Alt+F4). Mapping keyboard escape/accelerator bindings and utilizing the `WM_DELETE_WINDOW` window protocol to trigger the official cancel callback guarantees graceful termination.
 **Action:** Always bind `<Escape>` and accelerator shortcuts (e.g., `<Alt-c>`) to the cancel handler in modal dialogs, and explicitly map the `WM_DELETE_WINDOW` protocol to prevent orphaned threads/processes.
+
+## 2026-07-18 - Read-Only Log View Pattern for Multi-Process Operations in Tkinter
+**Learning:** Text widgets designed to show live compilation or generation output (e.g., Operations Report in desktop generators) should be configured as read-only (`state=tk.DISABLED`) by default. This prevents accidental keyboard modifications or visual cursor confusion, but requires programmatically toggling the state to `tk.NORMAL` temporarily during content updates or clears.
+**Action:** Always initialize read-only text widgets with `state=tk.DISABLED`, and wrap all dynamic insertions and deletions in `widget.configure(state=tk.NORMAL)` and `widget.configure(state=tk.DISABLED)` blocks.
