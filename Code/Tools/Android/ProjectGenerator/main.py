@@ -112,6 +112,8 @@ class TkApp(tk.Tk):
         self.bind("<Alt-C>", lambda event: self.on_create_keystore_button())
         self.bind("<Alt-g>", lambda event: self.on_generate_project_button())
         self.bind("<Alt-G>", lambda event: self.on_generate_project_button())
+        self.bind("<Alt-r>", lambda event: self.on_clear_log_button())
+        self.bind("<Alt-R>", lambda event: self.on_clear_log_button())
 
 
     def _init_load_save_ui(self):
@@ -257,12 +259,17 @@ class TkApp(tk.Tk):
         last_row = operations_report_frame.grid_info().get("row")
         self.rowconfigure(last_row, weight=1)
 
-        self._report_text_widget = tk.Text(operations_report_frame, wrap=tk.WORD, borderwidth=2, relief=tk.SUNKEN)
+        self._report_text_widget = tk.Text(operations_report_frame, wrap=tk.WORD, borderwidth=2, relief=tk.SUNKEN, state=tk.DISABLED)
         self._report_scrollbar_widget = tk.Scrollbar(operations_report_frame, orient=tk.VERTICAL, command=self._report_text_widget.yview)
         # Configure the Text widget and the Scrollbar widget.
         self._report_text_widget.configure(yscrollcommand=self._report_scrollbar_widget.set)
         self._report_text_widget.grid(sticky=tk.NSEW)
         self._report_scrollbar_widget.grid(row=0, column=1,sticky=tk.NSEW)
+
+        # Clear Log button with keyboard accelerator (Alt-R, 'r' underlined, i.e., index 4 of "Clear Log" is 'r')
+        btn_clear = tk.Button(operations_report_frame, text="Clear Log", command=self.on_clear_log_button, underline=4)
+        btn_clear.grid(row=1, column=0, columnspan=2, pady=5)
+        _ToolTip(btn_clear, "Clear all operations report logs (Alt-R)")
 
 
     def _get_time_now_str(self) -> str:
@@ -276,14 +283,24 @@ class TkApp(tk.Tk):
         return f"{no_millis_str}.{fractional_secs}"
 
 
+    def on_clear_log_button(self):
+        """
+        Clears all report content from the operations report log.
+        """
+        self._report_text_widget.configure(state=tk.NORMAL)
+        self._report_text_widget.delete("1.0", tk.END)
+        self._report_text_widget.configure(state=tk.DISABLED)
+
     def _append_log_message(self, msg: str):
         """
         Append the msg with a timestamp to the report widget, and automatically scrolls to
         the bottom of the report.
         """
         timestamp_str = self._get_time_now_str()
+        self._report_text_widget.configure(state=tk.NORMAL)
         self._report_text_widget.insert(tk.END, f">>{timestamp_str}>>\n{msg}\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
         self._report_text_widget.see(tk.END) #scroll to the end.
+        self._report_text_widget.configure(state=tk.DISABLED)
 
 
     def create_keystore_settings_from_widgets(self) -> KeystoreSettings:
