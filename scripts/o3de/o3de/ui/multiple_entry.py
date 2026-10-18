@@ -6,16 +6,13 @@
 #
 #
 
-import tkinter as tk
-from tkinter import filedialog
-
-
 class Dialog(object):
     """
     Dialog to handle the selection of names
     """
 
     def __init__(self, parent, input_value):
+        import tkinter as tk
 
         root = self.root = tk.Toplevel(parent)
         root.title('Configure Files')
@@ -56,15 +53,24 @@ class Dialog(object):
         button_frame.rowconfigure(1, weight=0)
         button_frame.grid()
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
+        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok, underline=0)
         button_add.grid(row=0, column=0, sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
+        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel, underline=0)
         button_remove.grid(row=0, column=1, sticky=tk.E)
+
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
+        root.bind("<Escape>", self._on_cancel)
+        root.bind("<Alt-o>", self._on_ok)
+        root.bind("<Alt-O>", self._on_ok)
+        root.bind("<Alt-c>", self._on_cancel)
+        root.bind("<Alt-C>", self._on_cancel)
+        root.bind("<Control-Return>", self._on_ok)
 
         root.grid()
 
-    def _on_ok(self):
+    def _on_ok(self, event=None):
+        import tkinter as tk
         result_string = self._entry.get("1.0", tk.END)
         result_items = [rs.strip() for rs in result_string.split("\n")]
         sanitized_items = set()
@@ -74,7 +80,7 @@ class Dialog(object):
         self.input_value = ';'.join(sanitized_items)
         self.root.destroy()
 
-    def _on_cancel(self):
+    def _on_cancel(self, event=None):
         self.root.destroy()
 
     def get_result(self):
