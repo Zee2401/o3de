@@ -5,7 +5,10 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 #
 
-import tkinter as tk
+try:
+    import tkinter as tk
+except Exception:
+    tk = None
 
 class WaitDialog:
     """
