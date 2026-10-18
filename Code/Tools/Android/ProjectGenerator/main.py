@@ -224,6 +224,7 @@ class TkApp(tk.Tk):
         string_var = tk.StringVar()
         string_var.set(default_value)
         entry["textvariable"] = string_var
+        lbl.bind("<Button-1>", lambda event: entry.focus_set() if entry['state'] != tk.DISABLED else None)
         return string_var, entry, row
 
 
