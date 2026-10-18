@@ -39,6 +39,9 @@ CTrackViewFindDlg::CTrackViewFindDlg(const char* title, QWidget* pParent /*=null
     ui->FILTER->setClearButtonEnabled(true);
     AzQtComponents::LineEdit::applySearchStyle(ui->FILTER);
 
+    ui->STATIC->setBuddy(ui->FILTER);
+    ui->FILTER->setAccessibleName(tr("Filter"));
+
     connect(ui->OK, &QPushButton::clicked, this, &CTrackViewFindDlg::OnOK);
     connect(ui->CANCEL, &QPushButton::clicked, this, &CTrackViewFindDlg::OnCancel);
     connect(ui->FILTER, &QLineEdit::textEdited, this, &CTrackViewFindDlg::OnFilterChange);
