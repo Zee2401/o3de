@@ -88,3 +88,16 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    def test_tooltip_multiple_widgets(self):
+        from main import _ToolTip
+        button = DummyWidget()
+        checkbox = DummyWidget()
+
+        tip_btn = _ToolTip(button, "Load settings from a JSON file (Alt+L)")
+        tip_cb = _ToolTip(checkbox, "Enable build settings optimized for Meta Quest VR devices")
+
+        self.assertEqual(tip_btn.text, "Load settings from a JSON file (Alt+L)")
+        self.assertEqual(tip_cb.text, "Enable build settings optimized for Meta Quest VR devices")
+        self.assertIn("<Enter>", button.bindings)
+        self.assertIn("<Enter>", checkbox.bindings)
