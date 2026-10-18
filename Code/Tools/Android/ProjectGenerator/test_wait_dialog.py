@@ -10,6 +10,42 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Create dummy Tkinter mock in sys.modules to prevent loading native _tkinter.so (Cocoa AppKit) on headless macOS CI runners
+class DummyTkRoot:
+    def __init__(self, *args, **kwargs):
+        self._last_child_ids = {}
+        self.children = {}
+        self._w = '.'
+        self.tk = MagicMock()
+
+if 'tkinter' not in sys.modules or not isinstance(sys.modules['tkinter'], MagicMock):
+    mock_tk = MagicMock()
+    mock_tk.__path__ = []
+    mock_tk.Tk = DummyTkRoot
+    mock_tk.DISABLED = 'disabled'
+    mock_tk.NORMAL = 'normal'
+    mock_tk.W = 'w'
+    mock_tk.E = 'e'
+    mock_tk.EW = 'ew'
+    mock_tk.NSEW = 'nsew'
+    mock_tk.SOLID = 'solid'
+    mock_tk.SUNKEN = 'sunken'
+    mock_tk.WORD = 'word'
+    mock_tk.VERTICAL = 'vertical'
+    mock_tk.LEFT = 'left'
+    mock_tk.RIGHT = 'right'
+    mock_tk.END = 'end'
+
+    mock_mb = MagicMock()
+    mock_fd = MagicMock()
+    mock_tk.messagebox = mock_mb
+    mock_tk.filedialog = mock_fd
+
+    sys.modules['_tkinter'] = MagicMock()
+    sys.modules['tkinter'] = mock_tk
+    sys.modules['tkinter.messagebox'] = mock_mb
+    sys.modules['tkinter.filedialog'] = mock_fd
+
 # Add current directory to path so wait_dialog can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
