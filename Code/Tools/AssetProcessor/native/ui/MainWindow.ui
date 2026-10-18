@@ -985,10 +985,20 @@
                   <property name="text">
                    <string>Add Host Name</string>
                   </property>
+                  <property name="buddy">
+                   <cstring>allowedListAddHostNameLineEdit</cstring>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="allowedListAddHostNameLineEdit"/>
+                 <widget class="QLineEdit" name="allowedListAddHostNameLineEdit">
+                  <property name="placeholderText">
+                   <string>Hostname</string>
+                  </property>
+                  <property name="clearButtonEnabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QToolButton" name="allowedListAddHostNameToolButton">
@@ -1028,10 +1038,20 @@
                   <property name="text">
                    <string>Add IP Address</string>
                   </property>
+                  <property name="buddy">
+                   <cstring>allowedListAddIPLineEdit</cstring>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="allowedListAddIPLineEdit"/>
+                 <widget class="QLineEdit" name="allowedListAddIPLineEdit">
+                  <property name="placeholderText">
+                   <string>IP Address</string>
+                  </property>
+                  <property name="clearButtonEnabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QToolButton" name="allowedListAddIPToolButton">
@@ -2326,6 +2346,12 @@
                <property name="toolTip">
                 <string>Set the remote folder location for the shared cache</string>
                </property>
+               <property name="placeholderText">
+                <string>Remote folder path</string>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item row="9" column="4">
@@ -2403,6 +2429,9 @@
                <property name="text">
                 <string>Step 2: Select a remote folder</string>
                </property>
+               <property name="buddy">
+                <cstring>serverAddressLineEdit</cstring>
+               </property>
               </widget>
              </item>
              <item row="6" column="0">
@@ -2440,10 +2469,16 @@
                <property name="text">
                 <string>Step 1: Set shared cache mode</string>
                </property>
+               <property name="buddy">
+                <cstring>serverCacheModeOptions</cstring>
+               </property>
               </widget>
              </item>
              <item row="5" column="4">
               <widget class="QToolButton" name="serverAddressToolButton">
+               <property name="toolTip">
+                <string>Select a remote folder</string>
+               </property>
                <property name="text">
                 <string>Choose a remote folder.</string>
                </property>
@@ -2475,6 +2510,9 @@
              </item>
              <item row="0" column="4">
               <widget class="QPushButton" name="sharedCacheSupport">
+               <property name="toolTip">
+                <string>Learn more about shared cache</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
