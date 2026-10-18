@@ -7,7 +7,6 @@
 #
 
 import tkinter as tk
-from tkinter import filedialog
 
 
 class Dialog(object):
@@ -46,21 +45,33 @@ class Dialog(object):
         else:
             text_entries = ""
 
-        self._entry = tk.Text(self._main_frame, )
-        self._entry.insert(tk.END,text_entries)
-        self._entry.grid(sticky=tk.NSEW)
+        self._entry = tk.Text(self._main_frame)
+        self._scrollbar = tk.Scrollbar(self._main_frame, orient=tk.VERTICAL, command=self._entry.yview)
+        self._entry.configure(yscrollcommand=self._scrollbar.set)
+
+        self._entry.insert(tk.END, text_entries)
+        self._entry.grid(row=0, column=0, sticky=tk.NSEW)
+        self._scrollbar.grid(row=0, column=1, sticky=tk.NS)
 
         button_frame = tk.Frame(self._main_frame, borderwidth=0)
         button_frame.columnconfigure(0, weight=0)
         button_frame.rowconfigure(0, weight=0)
         button_frame.rowconfigure(1, weight=0)
-        button_frame.grid()
+        button_frame.grid(row=1, column=0, columnspan=2, sticky=tk.E, pady=(8, 0))
 
-        button_add = tk.Button(button_frame, text="Ok", width=4, command=self._on_ok)
-        button_add.grid(row=0, column=0, sticky=tk.E)
+        button_add = tk.Button(button_frame, text="Ok", width=8, underline=0, command=self._on_ok)
+        button_add.grid(row=0, column=0, padx=(0, 4), sticky=tk.E)
 
-        button_remove = tk.Button(button_frame, text="Cancel", width=4, command=self._on_cancel)
+        button_remove = tk.Button(button_frame, text="Cancel", width=8, underline=0, command=self._on_cancel)
         button_remove.grid(row=0, column=1, sticky=tk.E)
+
+        # Window protocols and keyboard accelerators
+        root.protocol("WM_DELETE_WINDOW", self._on_cancel)
+        root.bind("<Escape>", lambda event: self._on_cancel())
+        root.bind("<Alt-o>", lambda event: self._on_ok())
+        root.bind("<Alt-O>", lambda event: self._on_ok())
+        root.bind("<Alt-c>", lambda event: self._on_cancel())
+        root.bind("<Alt-C>", lambda event: self._on_cancel())
 
         root.grid()
 
