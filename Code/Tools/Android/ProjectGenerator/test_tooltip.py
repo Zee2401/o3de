@@ -10,6 +10,30 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
+# Prevent native Cocoa/AppKit _tkinter.so load on headless macOS CI runners during pytest collection
+class DummyTkRoot:
+    def __init__(self, *args, **kwargs):
+        pass
+
+mock_tk = MagicMock()
+mock_tk.Tk = DummyTkRoot
+mock_tk.DISABLED = 'disabled'
+mock_tk.NORMAL = 'normal'
+mock_tk.SOLID = 'solid'
+mock_tk.LEFT = 'left'
+mock_tk.W = 'w'
+mock_tk.E = 'e'
+mock_tk.EW = 'ew'
+mock_tk.NSEW = 'nsew'
+mock_tk.WORD = 'word'
+mock_tk.SUNKEN = 'sunken'
+mock_tk.VERTICAL = 'vertical'
+mock_tk.END = 'end'
+
+sys.modules['tkinter'] = mock_tk
+sys.modules['tkinter.filedialog'] = MagicMock()
+sys.modules['tkinter.messagebox'] = MagicMock()
+
 # Add current directory to path so main can be imported
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -88,3 +112,41 @@ class TestToolTip(unittest.TestCase):
         mock_tip_window.destroy.assert_called_once()
         self.assertIsNone(tooltip.tip_window)
         self.assertIsNone(tooltip.id)
+
+    def test_add_label_entry_masking_and_focus_binding(self):
+        mock_label = MagicMock()
+        mock_label.grid_info.return_value = {"row": 2}
+
+        mock_entry = MagicMock()
+
+        mock_parent = MagicMock()
+
+        import main
+        main.tk.Label = MagicMock(return_value=mock_label)
+        main.tk.Entry = MagicMock(return_value=mock_entry)
+        main.tk.StringVar = MagicMock()
+
+        app = object.__new__(main.TkApp)
+
+        string_var, entry, row = app._add_label_entry(
+            parent_frame=mock_parent,
+            lbl_name="Password Field",
+            default_value="secret",
+            entry_colspan=3,
+            label_width=20,
+            entry_read_only=False,
+            show="*"
+        )
+
+        # 1. Verify Entry was initialized with show="*"
+        main.tk.Entry.assert_called_once()
+        self.assertEqual(main.tk.Entry.call_args[1].get("show"), "*")
+
+        # 2. Verify Label was bound to <Button-1> for click focus
+        mock_label.bind.assert_called_once()
+        event_name, callback = mock_label.bind.call_args[0]
+        self.assertEqual(event_name, "<Button-1>")
+
+        # 3. Simulate clicking label and verify focus_set was called on Entry
+        callback(None)
+        mock_entry.focus_set.assert_called_once()
