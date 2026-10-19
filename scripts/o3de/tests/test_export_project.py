@@ -707,3 +707,30 @@ def test_main_window_keyboard_accessibility():
         assert "<Alt-C>" in bound_events
 
 
+def test_multiple_entry_dialog_keyboard_accessibility():
+    from o3de.ui import multiple_entry
+
+    mock_parent = mock.Mock()
+    mock_parent.winfo_rootx.return_value = 100
+    mock_parent.winfo_rooty.return_value = 100
+
+    mock_toplevel = mock.Mock()
+
+    with patch("tkinter.Toplevel", return_value=mock_toplevel), \
+         patch("tkinter.Frame"), \
+         patch("tkinter.Text"), \
+         patch("tkinter.Button") as mock_button:
+
+        dialog = multiple_entry.Dialog(parent=mock_parent, input_value="item1;item2")
+
+        button_kwargs = [call[1] for call in mock_button.call_args_list]
+        assert any(kw.get("text") == "OK" and kw.get("underline") == 0 and kw.get("width") == 8 for kw in button_kwargs)
+        assert any(kw.get("text") == "Cancel" and kw.get("underline") == 0 and kw.get("width") == 8 for kw in button_kwargs)
+
+        mock_toplevel.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_cancel)
+        bound_events = [call[0][0] for call in mock_toplevel.bind.call_args_list]
+        assert "<Escape>" in bound_events
+        assert "<Alt-o>" in bound_events
+        assert "<Alt-O>" in bound_events
+        assert "<Alt-c>" in bound_events
+        assert "<Alt-C>" in bound_events
