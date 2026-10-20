@@ -734,3 +734,33 @@ def test_multiple_entry_dialog_keyboard_accessibility():
         assert "<Alt-O>" in bound_events
         assert "<Alt-c>" in bound_events
         assert "<Alt-C>" in bound_events
+
+
+def test_multiple_file_picker_dialog_keyboard_accessibility():
+    from o3de.ui import multiple_file_picker
+
+    mock_parent = mock.Mock()
+    mock_parent.winfo_rootx.return_value = 100
+    mock_parent.winfo_rooty.return_value = 100
+
+    mock_toplevel = mock.Mock()
+
+    with patch("tkinter.Toplevel", return_value=mock_toplevel), \
+         patch("tkinter.Frame"), \
+         patch("tkinter.Listbox"), \
+         patch("tkinter.Button") as mock_button:
+
+        dialog = multiple_file_picker.Dialog(parent=mock_parent, initial_list="file1.txt;file2.txt")
+
+        button_kwargs = [call[1] for call in mock_button.call_args_list]
+        assert any(kw.get("text") == "Add File" and kw.get("underline") == 0 and kw.get("width") == 12 for kw in button_kwargs)
+        assert any(kw.get("text") == "Remove File" and kw.get("underline") == 0 and kw.get("width") == 12 for kw in button_kwargs)
+
+        mock_toplevel.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_close)
+        bound_events = [call[0][0] for call in mock_toplevel.bind.call_args_list]
+        assert "<Escape>" in bound_events
+        assert "<Alt-a>" in bound_events
+        assert "<Alt-A>" in bound_events
+        assert "<Alt-r>" in bound_events
+        assert "<Alt-R>" in bound_events
+        assert "<Delete>" in bound_events
