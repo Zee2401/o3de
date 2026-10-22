@@ -221,6 +221,9 @@ class TkApp(tk.Tk):
         entry = tk.Entry(parent_frame, justify='right',state=tk.DISABLED if entry_read_only else tk.NORMAL)
         entry.grid(row=row, column=1, padx=5, pady=2, sticky=tk.EW, columnspan=entry_colspan)
 
+        if not entry_read_only:
+            lbl.bind("<Button-1>", lambda event, widget=entry: widget.focus_set())
+
         string_var = tk.StringVar()
         string_var.set(default_value)
         entry["textvariable"] = string_var

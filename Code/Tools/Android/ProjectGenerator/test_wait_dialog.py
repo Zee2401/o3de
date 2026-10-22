@@ -88,3 +88,31 @@ class TestWaitDialog(unittest.TestCase):
         # 7. Verify on_tick cycles progress correctly
         dialog.on_tick(0.25)
         mock_stringvar_inst.set.assert_called_with("*")
+
+    @patch('tkinter.Label')
+    @patch('tkinter.Entry')
+    @patch('tkinter.StringVar')
+    def test_label_click_focuses_entry(self, mock_stringvar, mock_entry, mock_label):
+        mock_label_inst = MagicMock()
+        mock_label.return_value = mock_label_inst
+
+        mock_entry_inst = MagicMock()
+        mock_entry.return_value = mock_entry_inst
+
+        from main import TkApp, ConfigData
+
+        # Instantiate dummy parent frame
+        parent_frame = MagicMock()
+
+        # Call _add_label_entry directly on TkApp prototype or mock instance
+        app = MagicMock(spec=TkApp)
+        string_var, entry, row = TkApp._add_label_entry(app, parent_frame, "Test Label", "Default", entry_read_only=False)
+
+        # Verify <Button-1> was bound on label
+        mock_label_inst.bind.assert_called_once()
+        event_name, callback = mock_label_inst.bind.call_args[0]
+        self.assertEqual(event_name, "<Button-1>")
+
+        # Trigger callback and verify entry focus_set was called
+        callback(MagicMock())
+        mock_entry_inst.focus_set.assert_called_once()
