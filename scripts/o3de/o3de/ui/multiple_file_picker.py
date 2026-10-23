@@ -10,6 +10,59 @@ import tkinter as tk
 from tkinter import filedialog
 
 
+class _ToolTip:
+    """Lightweight hover tooltip for Tkinter widgets."""
+
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tip_window = None
+        self.id = None
+        self.widget.bind("<Enter>", self.show_tip)
+        self.widget.bind("<Leave>", self.hide_tip)
+        self.widget.bind("<ButtonPress>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tip_window or not self.text:
+            return
+
+        def display():
+            if not self.widget.winfo_exists():
+                return
+            x = self.widget.winfo_rootx() + 25
+            y = self.widget.winfo_rooty() + 20
+            self.tip_window = tw = tk.Toplevel(self.widget)
+            tw.wm_overrideredirect(True)
+            tw.wm_geometry(f"+{x}+{y}")
+            label = tk.Label(
+                tw,
+                text=self.text,
+                justify=tk.LEFT,
+                background="#ffffe0",
+                relief=tk.SOLID,
+                borderwidth=1,
+                font=("tahoma", "8", "normal"),
+            )
+            label.pack(ipadx=1)
+
+        self.id = self.widget.after(500, display)
+
+    def hide_tip(self, event=None):
+        if self.id:
+            try:
+                self.widget.after_cancel(self.id)
+            except Exception:
+                pass
+            self.id = None
+        tw = self.tip_window
+        self.tip_window = None
+        if tw:
+            try:
+                tw.destroy()
+            except Exception:
+                pass
+
+
 class Dialog(object):
     """
     Dialog to handle the selection of multiple files
@@ -54,9 +107,11 @@ class Dialog(object):
 
         button_add = tk.Button(button_frame, text="Add File", width=12, underline=0, command=self._choose_file)
         button_add.grid(sticky=tk.N, pady=2)
+        _ToolTip(button_add, "Add a file to list (Alt+A)")
 
         button_remove = tk.Button(button_frame, text="Remove File", width=12, underline=0, command=self._remove_file)
         button_remove.grid(sticky=tk.N, pady=2)
+        _ToolTip(button_remove, "Remove selected file from list (Alt+R / Delete)")
 
         root.protocol("WM_DELETE_WINDOW", self._on_close)
         root.bind("<Escape>", lambda event: self._on_close())
