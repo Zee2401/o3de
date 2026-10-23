@@ -10,6 +10,59 @@ import tkinter as tk
 from tkinter import filedialog
 
 
+class _ToolTip:
+    """Lightweight hover tooltip for Tkinter widgets."""
+
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tip_window = None
+        self.id = None
+        self.widget.bind("<Enter>", self.show_tip)
+        self.widget.bind("<Leave>", self.hide_tip)
+        self.widget.bind("<ButtonPress>", self.hide_tip)
+
+    def show_tip(self, event=None):
+        if self.tip_window or not self.text:
+            return
+
+        def display():
+            if not self.widget.winfo_exists():
+                return
+            x = self.widget.winfo_rootx() + 25
+            y = self.widget.winfo_rooty() + 20
+            self.tip_window = tw = tk.Toplevel(self.widget)
+            tw.wm_overrideredirect(True)
+            tw.wm_geometry(f"+{x}+{y}")
+            label = tk.Label(
+                tw,
+                text=self.text,
+                justify=tk.LEFT,
+                background="#ffffe0",
+                relief=tk.SOLID,
+                borderwidth=1,
+                font=("tahoma", "8", "normal"),
+            )
+            label.pack(ipadx=1)
+
+        self.id = self.widget.after(500, display)
+
+    def hide_tip(self, event=None):
+        if self.id:
+            try:
+                self.widget.after_cancel(self.id)
+            except Exception:
+                pass
+            self.id = None
+        tw = self.tip_window
+        self.tip_window = None
+        if tw:
+            try:
+                tw.destroy()
+            except Exception:
+                pass
+
+
 class Dialog(object):
     """
     Dialog to handle the selection of names
@@ -58,9 +111,11 @@ class Dialog(object):
 
         button_ok = tk.Button(button_frame, text="OK", width=8, underline=0, command=self._on_ok)
         button_ok.grid(row=0, column=0, sticky=tk.E)
+        _ToolTip(button_ok, "Save configured entries (Alt+O)")
 
         button_cancel = tk.Button(button_frame, text="Cancel", width=8, underline=0, command=self._on_cancel)
         button_cancel.grid(row=0, column=1, sticky=tk.E)
+        _ToolTip(button_cancel, "Cancel and close dialog (Alt+C / Escape)")
 
         root.protocol("WM_DELETE_WINDOW", self._on_cancel)
         root.bind("<Escape>", lambda event: self._on_cancel())

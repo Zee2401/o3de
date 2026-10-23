@@ -719,13 +719,18 @@ def test_multiple_entry_dialog_keyboard_accessibility():
     with patch("tkinter.Toplevel", return_value=mock_toplevel), \
          patch("tkinter.Frame"), \
          patch("tkinter.Text"), \
-         patch("tkinter.Button") as mock_button:
+         patch("tkinter.Button") as mock_button, \
+         patch("o3de.ui.multiple_entry._ToolTip") as mock_tooltip:
 
         dialog = multiple_entry.Dialog(parent=mock_parent, input_value="item1;item2")
 
         button_kwargs = [call[1] for call in mock_button.call_args_list]
         assert any(kw.get("text") == "OK" and kw.get("underline") == 0 and kw.get("width") == 8 for kw in button_kwargs)
         assert any(kw.get("text") == "Cancel" and kw.get("underline") == 0 and kw.get("width") == 8 for kw in button_kwargs)
+
+        tooltip_texts = [call[0][1] for call in mock_tooltip.call_args_list]
+        assert "Save configured entries (Alt+O)" in tooltip_texts
+        assert "Cancel and close dialog (Alt+C / Escape)" in tooltip_texts
 
         mock_toplevel.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_cancel)
         bound_events = [call[0][0] for call in mock_toplevel.bind.call_args_list]
@@ -748,13 +753,18 @@ def test_multiple_file_picker_dialog_keyboard_accessibility():
     with patch("tkinter.Toplevel", return_value=mock_toplevel), \
          patch("tkinter.Frame"), \
          patch("tkinter.Listbox"), \
-         patch("tkinter.Button") as mock_button:
+         patch("tkinter.Button") as mock_button, \
+         patch("o3de.ui.multiple_file_picker._ToolTip") as mock_tooltip:
 
         dialog = multiple_file_picker.Dialog(parent=mock_parent, initial_list="file1.txt;file2.txt")
 
         button_kwargs = [call[1] for call in mock_button.call_args_list]
         assert any(kw.get("text") == "Add File" and kw.get("underline") == 0 and kw.get("width") == 12 for kw in button_kwargs)
         assert any(kw.get("text") == "Remove File" and kw.get("underline") == 0 and kw.get("width") == 12 for kw in button_kwargs)
+
+        tooltip_texts = [call[0][1] for call in mock_tooltip.call_args_list]
+        assert "Add a file to list (Alt+A)" in tooltip_texts
+        assert "Remove selected file from list (Alt+R / Delete)" in tooltip_texts
 
         mock_toplevel.protocol.assert_called_with("WM_DELETE_WINDOW", dialog._on_close)
         bound_events = [call[0][0] for call in mock_toplevel.bind.call_args_list]
