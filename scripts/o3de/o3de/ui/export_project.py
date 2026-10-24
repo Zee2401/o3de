@@ -551,10 +551,14 @@ class MainWindow(tk.Tk):
 
         button_okay = tk.Button(okay_cancel_frame, text="Save", underline=0, width=8, command=self.on_ok)
         button_okay.grid(column=0, sticky=tk.E)
+        if hasattr(self, 'tool_tip') and self.tool_tip:
+            self.tool_tip.bind_widget(button_okay, balloonmsg="Save export configuration (Alt+S)")
         okay_row = button_okay.grid_info().get("row")
 
         button_cancel = tk.Button(okay_cancel_frame, text="Cancel", underline=0, width=8, command=self.on_cancel)
         button_cancel.grid(row=okay_row, column=1, sticky=tk.E)
+        if hasattr(self, 'tool_tip') and self.tool_tip:
+            self.tool_tip.bind_widget(button_cancel, balloonmsg="Cancel and close (Alt+C or Esc)")
 
     def on_ok(self):
         for key, item in self.config_key_entry_map.items():
