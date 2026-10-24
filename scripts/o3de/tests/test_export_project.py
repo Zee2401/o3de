@@ -681,6 +681,7 @@ def test_main_window_keyboard_accessibility():
 
         window = MainWindow(export_config=mock.Mock(), is_sdk=True)
         window.main_frame = mock.Mock()
+        window.tool_tip = mock.Mock()
         window.on_cancel = mock.Mock()
         window.on_ok = mock.Mock()
 
@@ -689,6 +690,7 @@ def test_main_window_keyboard_accessibility():
         button_kwargs = [call[1] for call in mock_button.call_args_list]
         assert any(kw.get("text") == "Save" and kw.get("underline") == 0 for kw in button_kwargs)
         assert any(kw.get("text") == "Cancel" and kw.get("underline") == 0 for kw in button_kwargs)
+        assert window.tool_tip.bind_widget.call_count == 2
 
         # Verify binding pattern
         window.protocol("WM_DELETE_WINDOW", window.on_cancel)
