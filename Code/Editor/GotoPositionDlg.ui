@@ -41,7 +41,10 @@
      <item row="0" column="0" colspan="7">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Enter position here:</string>
+        <string>&amp;Enter position here:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_posEdit</cstring>
        </property>
       </widget>
      </item>
@@ -55,28 +58,40 @@
      <item row="5" column="0">
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Z:</string>
+        <string>&amp;Z:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_dymZ</cstring>
        </property>
       </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Y:</string>
+        <string>&amp;Y:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_dymY</cstring>
        </property>
       </widget>
      </item>
      <item row="3" column="3">
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Pitch:</string>
+        <string>&amp;Pitch:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_dymAnglePitch</cstring>
        </property>
       </widget>
      </item>
      <item row="4" column="3">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>Yaw:</string>
+        <string>&amp;Yaw:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_dymAngleYaw</cstring>
        </property>
       </widget>
      </item>
@@ -102,7 +117,10 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>X:</string>
+        <string>&amp;X:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_dymX</cstring>
        </property>
       </widget>
      </item>
@@ -113,6 +131,12 @@
       <widget class="QLineEdit" name="m_posEdit">
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="placeholderText">
+        <string>X, Y, Z (e.g. 0, 0, 0)</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -139,14 +163,14 @@
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
-        <string>Go To</string>
+        <string>&amp;Go To</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_2">
        <property name="text">
-        <string>Cancel</string>
+        <string>&amp;Cancel</string>
        </property>
       </widget>
      </item>
