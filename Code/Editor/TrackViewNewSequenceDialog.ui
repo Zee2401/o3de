@@ -32,10 +32,13 @@
    <item>
     <widget class="QLabel" name="STATIC">
      <property name="text">
-      <string>New sequence name:</string>
+      <string>&amp;New sequence name:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="buddy">
+      <cstring>NAME</cstring>
      </property>
     </widget>
    </item>
@@ -46,6 +49,15 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="toolTip">
+      <string>Name of the sequence to create</string>
+     </property>
+     <property name="placeholderText">
+      <string>Enter sequence name...</string>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
