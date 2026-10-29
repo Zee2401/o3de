@@ -13,6 +13,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QListWidget" name="listTemplates">
+     <property name="toolTip">
+      <string>Select a level template</string>
+     </property>
      <property name="movement">
       <enum>QListView::Static</enum>
      </property>
@@ -38,8 +41,11 @@
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="LEVEL_ROOT_LABEL">
+        <property name="toolTip">
+         <string>Select root folder location</string>
+        </property>
         <property name="text">
-         <string>Root</string>
+         <string>&amp;Root</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -54,8 +60,11 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="STATIC2">
+        <property name="toolTip">
+         <string>Enter the name for the new level</string>
+        </property>
         <property name="text">
-         <string>Name</string>
+         <string>&amp;Name</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -67,8 +76,17 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="LEVEL">
+        <property name="toolTip">
+         <string>Enter the name for the new level</string>
+        </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+        <property name="placeholderText">
+         <string>Enter level name...</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -80,8 +98,11 @@
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Select the destination folder for the new level</string>
+        </property>
         <property name="text">
-         <string>Location</string>
+         <string>&amp;Location</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -93,6 +114,9 @@
       </item>
       <item row="2" column="1">
        <widget class="AzQtComponents::BrowseEdit" name="LEVEL_FOLDERS" native="true">
+        <property name="toolTip">
+         <string>Select the destination folder for the new level</string>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
