@@ -22,10 +22,13 @@
             </rect>
           </property>
           <property name="text">
-            <string>Enter filter:</string>
+            <string>&amp;Enter filter:</string>
           </property>
           <property name="alignment">
             <set>Qt::AlignTop|Qt::AlignLeft</set>
+          </property>
+          <property name="buddy">
+            <cstring>FILTER</cstring>
           </property>
         </widget>
       </item>
@@ -41,6 +44,9 @@
           </property>
           <property name="alignment">
             <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="toolTip">
+            <string>Enter text to filter track view nodes</string>
           </property>
         </widget>
       </item>
@@ -75,7 +81,10 @@
                 </rect>
               </property>
               <property name="text">
-                <string>Close</string>
+                <string>&amp;Close</string>
+              </property>
+              <property name="toolTip">
+                <string>Close this dialog</string>
               </property>
             </widget>
          </item>
@@ -90,7 +99,10 @@
               </rect>
             </property>
             <property name="text">
-              <string>Find</string>
+              <string>&amp;Find</string>
+            </property>
+            <property name="toolTip">
+              <string>Jump to the selected node in Track View</string>
             </property>
           </widget>
          </item>
