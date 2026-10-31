@@ -19,7 +19,10 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Select Bake FPS</string>
+        <string>&amp;Select Bake FPS:</string>
+       </property>
+       <property name="buddy">
+        <cstring>m_fpsCombo</cstring>
        </property>
       </widget>
      </item>
@@ -30,6 +33,9 @@
        </property>
        <property name="insertPolicy">
         <enum>QComboBox::NoInsert</enum>
+       </property>
+       <property name="toolTip">
+        <string>Select or enter frame rate for baking animation keys (Alt+S)</string>
        </property>
       </widget>
      </item>
@@ -51,14 +57,20 @@
    <item>
     <widget class="QCheckBox" name="m_exportOnlyPrimaryCameraCheckBox">
      <property name="text">
-      <string>Export Only Primary Camera</string>
+      <string>&amp;Export Only Primary Camera</string>
+     </property>
+     <property name="toolTip">
+      <string>Export animation from the primary active camera only (Alt+E)</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="m_exportLocalCoordsCheckbox">
      <property name="text">
-      <string>Export As Local To The Selected Object</string>
+      <string>Export As &amp;Local To The Selected Object</string>
+     </property>
+     <property name="toolTip">
+      <string>Export coordinates relative to the selected parent object (Alt+L)</string>
      </property>
     </widget>
    </item>
