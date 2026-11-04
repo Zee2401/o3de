@@ -44,14 +44,20 @@
        <item>
         <widget class="QCheckBox" name="m_animationTimeExport">
          <property name="text">
-          <string>Animation</string>
+          <string>&amp;Animation</string>
+         </property>
+         <property name="toolTip">
+          <string>Export global key times for animation tracks (Alt+A)</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="m_soundTimeExport">
          <property name="text">
-          <string>Sound</string>
+          <string>&amp;Sound</string>
+         </property>
+         <property name="toolTip">
+          <string>Export global key times for sound tracks (Alt+S)</string>
          </property>
         </widget>
        </item>
@@ -81,6 +87,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>m_animationTimeExport</tabstop>
+  <tabstop>m_soundTimeExport</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
