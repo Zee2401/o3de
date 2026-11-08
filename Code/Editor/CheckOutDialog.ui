@@ -80,21 +80,30 @@
      <item>
       <widget class="QCheckBox" name="chkForAll">
        <property name="text">
-        <string>Apply to all</string>
+        <string>&amp;Apply to all</string>
+       </property>
+       <property name="toolTip">
+        <string>Apply this choice to all remaining files in the operation (Alt+A)</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="buttonCheckout">
        <property name="text">
-        <string>Check Out</string>
+        <string>&amp;Check Out</string>
+       </property>
+       <property name="toolTip">
+        <string>Check out this file from source control (Alt+C)</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="buttonOverwrite">
        <property name="text">
-        <string>Overwrite</string>
+        <string>&amp;Overwrite</string>
+       </property>
+       <property name="toolTip">
+        <string>Make file writable by overwriting without checking out (Alt+O)</string>
        </property>
       </widget>
      </item>
@@ -116,6 +125,9 @@
        <property name="text">
         <string>Cancel</string>
        </property>
+       <property name="toolTip">
+        <string>Cancel the operation</string>
+       </property>
       </widget>
      </item>
     </layout>
@@ -123,6 +135,7 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>chkForAll</tabstop>
   <tabstop>buttonCheckout</tabstop>
   <tabstop>buttonOverwrite</tabstop>
   <tabstop>buttonCancel</tabstop>
