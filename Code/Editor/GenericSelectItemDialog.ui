@@ -15,13 +15,20 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QTreeWidget" name="m_tree">
+       <property name="toolTip">
+        <string>Select an item from the tree</string>
+       </property>
        <property name="headerHidden">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="m_listBox"/>
+      <widget class="QListWidget" name="m_listBox">
+       <property name="toolTip">
+        <string>Select an item from the list</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QTextEdit" name="m_desc">
@@ -30,6 +37,9 @@
 	 <width>16777215</width>
          <height>80</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>Description of the selected item</string>
        </property>
        <property name="readOnly">
         <bool>true</bool>
@@ -41,7 +51,10 @@
        <item>
         <widget class="QPushButton" name="m_newButton">
          <property name="text">
-          <string>New...</string>
+          <string>&amp;New...</string>
+         </property>
+         <property name="toolTip">
+          <string>Create a new item (Alt+N)</string>
          </property>
         </widget>
        </item>
@@ -58,6 +71,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>m_tree</tabstop>
+  <tabstop>m_listBox</tabstop>
+  <tabstop>m_desc</tabstop>
+  <tabstop>m_newButton</tabstop>
+  <tabstop>m_buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
